@@ -1,0 +1,97 @@
+ // * CHANGELOG ===================
+ /*
+ * v 2.0 (19.09.2021)
+ * - New: Gamepad support
+ * - New: Addition weapons and equipment's parameters (SP, EX) (PRO)
+ * - New: Addition custom weapons and equipment's descriptions (PRO)
+ * - New: Items name color matching Quality System level color
+ *      (see new Plugin Parameters)
+ * - New: Added show and hide Map Inventory UI script calls
+ * - Fixed: Battle Test from RPG Maker Editor not works with Map Inventory Plugin
+ * - Fixed: Sticky inventory (chest) windows when dragging
+ * - Added support for: Alpha NET Z multiplayer plugin
+ * - Added support for: Alpha ABS Z active battle system plugin
+ * - Some small fixes and changes
+ *
+ * v 1.9 (11.05.2021)
+ * - New: Limited Cells System (PRO)
+ * - New: Plugin commands for MZ
+ * - Plugin parameter: Description static position?
+ *      (allows you set static position for description windows)
+ * - New: Items now supports multiple types
+ *      (for example: Weapon|Tool)
+ * - New: You can set custom icons for diffirent chests
+ *      (script call MISetIconForChest)
+ * - Fixed: Take All button and Gold Item bug
+ * - Some small fixes and changes
+ *
+ * v 1.8 (02.02.2021)
+ * - Added extra items descriptions
+ * - Added Throw Out feature (PRO)
+ * - More comfortable plugin parameters
+ * - Bug fixes and small changes
+ * 
+ * v 1.7 (23.11.2020)
+ * - Now you can change inventory size
+ * - Plugin parameter: Use custom size of cells?
+ *      (allows you change cells size and count per page)
+ * - New: Change Gold event command now works with visual chests
+ * - Plugin parameter: Gold Item
+ *      (you can add gold as item in visual chests)
+ * - New: Using images instead icons (PRO)
+ *      (see also new plugin parameter: Icons images in Windows?)
+ * - Bug fixes and small changes
+ *  
+ * v 1.6 (09.10.2020)
+ * - New: Hot Items System (PRO)
+ * - New: Chests item drop chance (PRO)
+ * - Some small fixes and changes
+ *
+ * v 1.5 (09.09.2020)
+ * - Added MZ Support
+ * - Fixed: Weight is not taken into account when you using standard Event Change Items (and etc.) commands
+ * - New: Limited Types Stored Chests (PRO)
+ * - New: Equipments statistic table
+ * - New: Now you can create empty Stored chests (PRO)
+ * - Some small fixes and changes
+ * 
+ * v 1.4 (05.08.2020)
+ * - New: Items Quality System
+ * - New: Screen Button for open Inventory (PRO)
+ * - Improvements to Item Weight System (PRO)
+ *    - Notify when inventory is overweight
+ *    - Auto State when inventory is overweight (optional)
+ *    - Slowdown movement speed when inventory is overweight (optional)
+ *    - You can create equipments that's rise inventory max weight
+ *    - You can create consumable items that's rise inventory max weight permanently
+ * - Added new Script Calls
+ * - Some small fixes and changes
+ * 
+ * v 1.3 (10.07.2020)
+ * - New: Possibility to delete unnecessary categories
+ * - New: Added restriction for dragging windows by mouse to out of screen
+ * - New: Now you can devide count when moving items between storages (RPO)
+ * - New: Added items weights system (PRO)
+ * - Fixed: Inventory is closing when player use item with Common Event calls
+ * - Some small fixes and changes
+ * 
+ * v 1.2 (05.06.2020)
+ * - New: Description text auto word wrap
+ * - New: Support up to 8 party members (PRO)
+ * - New: Direct using items with 'None' scope
+ * - New: Select a party member when equip armors or weapons
+ * - New: HP, MP, TP gauges (PRO)
+ * - Improved Items sorting (now by ID, then by occasion)
+ * - Fixed: Items no longer disappear from the chest(or storage) if you take more than possible (max items)
+ * - Improved YEP_ItemCore compability
+ *
+ * v 1.1 (23.04.2020)
+ * - New: Script calls for work with Player Storage
+ * - New: Select a party member when using items
+ * - New: Move items from inventory to StoredChest
+ * - Improved checking of the conditions of use of the items
+ * - New plugin parameters
+ * 
+ * v 1.0 - Release (16.03.2020)
+ */
+ // ===============================
