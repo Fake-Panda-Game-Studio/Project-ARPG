@@ -8,7 +8,7 @@ Please get familiar with parallax mapping.
 https://www.youtube.com/watch?v=64nxvCaPaJw&t=40s&ab_channel=Echo607
 https://www.youtube.com/watch?v=mNwrFZdlW2E&t=472s&ab_channel=LvLUpDesign
 
-Jun-30-2022 to Jul-05-2022
+Jun-30-2022 to Jul-15-2022
 
 Please make the prologuelevel:郊区森林 and 在光明教堂Cathedral of Light
-Detail will be sent later.
+By using empty pixel map. Needed material in tilesets file.
