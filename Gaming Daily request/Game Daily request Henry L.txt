@@ -1,0 +1,3 @@
+Aug-3 2022
+
+Werewolf Boss state machine design and logic

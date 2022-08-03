@@ -12,3 +12,7 @@ Jun-30-2022 to Jul-15-2022
 
 Please make the prologuelevel:郊区森林 and 在光明教堂Cathedral of Light
 By using empty pixel map. Needed material in tilesets file.
+
+Aug 03
+
+Make Cathedral of Light, render and layer it.
