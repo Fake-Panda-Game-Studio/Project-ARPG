@@ -1,0 +1,6 @@
+1. Copy folders img and js in your project root directory
+2. In Plugin Manager add and activate PKD_ExtendedLoot.js
+
+
+
+PKD_ExtendedLoot.js - single plugin file for both RPG Maker's (MZ and MV)

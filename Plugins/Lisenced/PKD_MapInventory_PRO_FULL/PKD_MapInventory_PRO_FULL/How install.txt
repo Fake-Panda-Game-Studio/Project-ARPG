@@ -1,0 +1,14 @@
+1. Open folder data
+2. Copy all files from data folder to $YOUR PROJECT FOLDER$\data\
+ Files to copy:
+	-  PKD_MapInventorySettings.json
+	-  PKD_UserChestSettings.json
+	-  PKD_MapChestSettings.json
+
+3. Open folder img
+
+4. Copy folder pMapInventory to $YOUR PROJECT FOLDER$\img\
+
+5. Copy PKD_MapInventory.js to $YOUR PROJECT FOLDER$\js\plugins\
+
+6. Plug PKD_MapInventory in Plugin Manager

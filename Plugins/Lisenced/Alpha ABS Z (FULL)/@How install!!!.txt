@@ -1,0 +1,8 @@
+1) Download Alpha ABS Z Demo Project
+
+https://www.dropbox.com/s/fxo6e2k886642gn/AABSZ_DemoProject.zip?dl=1
+
+2) Replace Alpha_ABSZ.js file in folder js/plugins to one from PRO folder
+
+3) For install Alpha ABS Z in your project, read this:
+https://github.com/KageDesu/Alpha-ABS-Z/wiki/Download-and-install-guide
