@@ -1,5 +1,5 @@
 /*:
- * @plugindesc (v.0.6.1)[BASIC] Active Battle System
+ * @plugindesc (v.0.7)[PRO] Active Battle System
  * @author Pheonix KageDesu
  * @target MZ
  * @url https://kdworkshop.net/plugins/alpha-abs-z/
@@ -235,6 +235,26 @@
  * @default true
  * @desc Is shake screen when player receive damage?
  * 
+ * @param commonEventOnPlayerDeath:int
+ * @parent playerAndPartySettingsGroup
+ * @text On Death Event
+ * @type common_event
+ * @default 0
+ * @desc Common Event when player is dead. If 0 - Game Over screen.
+ * 
+ * @param characterDeadMotionType:int
+ * @parent commonEventOnPlayerDeath:int
+ * @text Show Death Motion
+ * @type select
+ * @option Never
+ * @value 0
+ * @option Always
+ * @value 1
+ * @option If not have AnimaX
+ * @value 2
+ * @default 1
+ * @desc Show character (player or ally) dead motion [from SV Battler] sprite? 
+ * 
  * @param playerVisualSettingsGroup
  * @parent playerAndPartySettingsGroup
  * @text UI Elements Settings
@@ -345,6 +365,13 @@
  * @off No
  * @default true
  * @desc If you dinamycally change region Id's on map during game, set this parameter to NO (false)
+ * 
+ * @param spawn_points:structA
+ * @parent enemiesSpawnSettingsGroup
+ * @text Spawn Points
+ * @type struct<LSpawnPoint>[]
+ * @default []
+ * @desc Spawning points definitions for <absSpawnPoint:ID> event comment. Read Wiki for more information.
  * 
  * @param spacer|map @text‏‏‎ ‎@desc ===============================================
  * 
@@ -488,7 +515,7 @@
  * 
  */
 /*:ru
- * @plugindesc (v.0.6.1)[BASIC] Активная боевая система
+ * @plugindesc (v.0.7)[PRO] Активная боевая система
  * @author Pheonix KageDesu
  * @target MZ
  * @url https://kdworkshop.net/plugins/alpha-abs-z/
@@ -725,6 +752,26 @@
  * @default true
  * @desc Активировать эффект тряски экрана когда игрок получает урон?
  * 
+ * @param commonEventOnPlayerDeath:int
+ * @parent playerAndPartySettingsGroup
+ * @text При смерти игрока
+ * @type common_event
+ * @default 0
+ * @desc Общее событие при смерти игрока. Если 0 - то сразу экран Game Over
+ * 
+ * @param characterDeadMotionType:int
+ * @parent commonEventOnPlayerDeath:int
+ * @text Show Death Motion
+ * @type select
+ * @option Нет
+ * @value 0
+ * @option Всегда
+ * @value 1
+ * @option Если нет AnimaX
+ * @value 2
+ * @default 1
+ * @desc Показывать Dead Motion SV Battler спрайт персонажа (игрок или союзник только)
+ * 
  * @param playerVisualSettingsGroup
  * @parent playerAndPartySettingsGroup
  * @text Интерфейс
@@ -782,146 +829,154 @@
  * @desc [PRO] Исп. параметр <miniHpGaugeStyle> чтобы назначить индивидуальную полоску здоровья для конкретного врага
  * 
  * @param enemyInfoVisualSettings:struct
- * @text Enemy Info
+ * @text Информация о враге
  * @type struct<LEnemyInfoVisual>
  * @parent enemyVisualSettingsGroup
- * @desc Enemy Info visual settings [information when you select\hover enemy]
+ * @desc Визаульные настройки окошка информации о враге [когда наводишь мышку на врага]
  * @default {"visible:bool":"true","position:struct":"{\"x:e\":\"640\",\"y:e\":\"66\"}","image":"Enemy_Background","isCanBeEdited:bool":"true","isHideWithMessage:bool":"true","nameFormat":"%1","nameText:s":"{\"visible:bool\":\"true\",\"size:struct\":\"{\\\"w:int\\\":\\\"100\\\",\\\"h:int\\\":\\\"20\\\"}\",\"margins:struct\":\"{\\\"x:int\\\":\\\"10\\\",\\\"y:int\\\":\\\"6\\\"}\",\"alignment:str\":\"left\",\"outline:struct\":\"{\\\"color:css\\\":\\\"#000000\\\",\\\"width:int\\\":\\\"3\\\"}\",\"font:struct\":\"{\\\"face:str\\\":\\\"AABS_2\\\",\\\"size:int\\\":\\\"16\\\",\\\"italic:bool\\\":\\\"false\\\"}\",\"textColor:css\":\"#d05816\"}","levelFormat":"Lv. %1","levelText:s":"{\"visible:bool\":\"true\",\"size:struct\":\"{\\\"w:int\\\":\\\"100\\\",\\\"h:int\\\":\\\"20\\\"}\",\"margins:struct\":\"{\\\"x:int\\\":\\\"60\\\",\\\"y:int\\\":\\\"4\\\"}\",\"alignment:str\":\"right\",\"outline:struct\":\"{\\\"color:css\\\":\\\"#000000\\\",\\\"width:int\\\":\\\"2\\\"}\",\"font:struct\":\"{\\\"face:str\\\":\\\"AABS_1\\\",\\\"size:int\\\":\\\"12\\\",\\\"italic:bool\\\":\\\"false\\\"}\",\"textColor:css\":\"#edeb6a\"}","hpTextFormat":"%1 / %2","hpText:s":"{\"visible:bool\":\"true\",\"size:struct\":\"{\\\"w:int\\\":\\\"100\\\",\\\"h:int\\\":\\\"20\\\"}\",\"margins:struct\":\"{\\\"x:int\\\":\\\"12\\\",\\\"y:int\\\":\\\"28\\\"}\",\"alignment:str\":\"left\",\"outline:struct\":\"{\\\"color:css\\\":\\\"#000000\\\",\\\"width:int\\\":\\\"2\\\"}\",\"font:struct\":\"{\\\"face:str\\\":\\\"AABS_0\\\",\\\"size:int\\\":\\\"13\\\",\\\"italic:bool\\\":\\\"false\\\"}\",\"textColor:css\":\"#edead8\"}","gauge:s":"{\"visible:bool\":\"true\",\"vertical:bool\":\"false\",\"fill\":\"Player_HPGauge\",\"foreground\":\"\",\"mask\":\"\",\"backColor:css\":\"#000000\",\"backOpacity:int\":\"160\"}","gaugeMargins:s":"{\"x:int\":\"6\",\"y:int\":\"28\"}","face:s":"{\"visible:bool\":\"true\",\"faceName\":\"\",\"faceIndex:i\":\"0\",\"mirror:b\":\"false\",\"size:i\":\"74\",\"margins:s\":\"{\\\"x:int\\\":\\\"92\\\",\\\"y:int\\\":\\\"10\\\"}\"}","battleState:s":"{\"visible:bool\":\"true\",\"image\":\"Enemy_BattleState_Free\",\"margins:s\":\"{\\\"x:int\\\":\\\"142\\\",\\\"y:int\\\":\\\"60\\\"}\"}","foregroundImage:s":"{\"visible:bool\":\"true\",\"image\":\"\",\"margins:s\":\"{\\\"x:int\\\":\\\"0\\\",\\\"y:int\\\":\\\"0\\\"}\"}"}
  * 
  * @param enemies_noPassVision:intA
  * @parent enemySettingsGroup
- * @text No Pass Vision Regions
+ * @text Регионы без обзора
  * @type number[]
  * @min 1
  * @max 255
  * @default []
- * @desc The numbers of the regions through which the enemies can not see. Global, for all enemies.
+ * @desc Номера регионов, через которые враг НЕ видит. Глобальная настройка, для всех врагов.
  * 
  * @param enemies_noPassVision2:intA
  * @parent enemySettingsGroup
- * @text No Pass Vision Terrains
+ * @text Территории без обзора
  * @type number[]
  * @min 1
  * @max 7
  * @default []
- * @desc The terrains tags (1-7) through which the enemies can not see. Global, for all enemies.
+ * @desc Тэги территорий (1-7) через которые враг НЕ видит. Глобальная настройка, для всех врагов.
  * 
  * @param enemiesSpawnSettingsGroup
  * @parent enemySettingsGroup
- * @text Spawning Settings
+ * @text Настройки спавна
  * 
  * @param enemies_spawn_mapId:int
  * @parent enemiesSpawnSettingsGroup
- * @text Spawn Map ID
+ * @text Карта спавна
  * @type number
  * @min 0
  * @default 0
- * @desc [Required] Map ID with events templates for spawning. 0 - spawn system not will works
+ * @desc [Необходимо] Номер карты, на которой будут хранится шаблоны событий для спавна. 0 - система не будет работать
  * 
  * @param enemies_spawn_aboveEvents:b
  * @parent enemiesSpawnSettingsGroup
- * @text Is spawn above events?
+ * @text Поверх событий?
  * @type boolean
  * @on Yes
  * @off No
  * @default false
- * @desc Is spawning enemies above another events (or enemies) allowed?
+ * @desc Можно ли спавнить врагов поверх событий или других врагов?
  * 
  * @param enemies_spawn_cacheAllowed:b
  * @parent enemiesSpawnSettingsGroup
- * @text Is use region cache?
+ * @text Кэш регионов
  * @type boolean
- * @on Yes (more performance)
- * @off No
+ * @on Да (производительность)
+ * @off Нет
  * @default true
- * @desc If you dinamycally change region Id's on map during game, set this parameter to NO (false)
+ * @desc Если какой-либо плагин динамически меняет номера регионов в течении игры, то ВЫКЛ этот параметр
+ * 
+ * @param spawn_points:structA
+ * @parent enemiesSpawnSettingsGroup
+ * @text Spawn Points
+ * @type struct<LSpawnPoint>[]
+ * @default []
+ * @desc Набор точек спавна для события с <absSpawnPoint:ID>. Читайте Wiki документацию.
  * 
  * @param spacer|map @text‏‏‎ ‎@desc ===============================================
  * 
  * @param mapSettingsGroup
- * @text Map settings
+ * @text Карта
  * 
  * @param mapScrolling:s
- * @text Map Scrolling
+ * @text Прокрутка карты
  * @parent mapSettingsGroup
  * @type struct<LMapScrollSettings>
  * @default {"isEnabled:b":"false","scrollZone:int":"10","speed:int":"5","delay:int":"60","resetOnMove:b":"true","resetOnAction:b":"true"}
- * @desc Mouse map scrolling settings
+ * @desc Настройки прокрутки карты
  * 
  * @param map_noProjectilePass:intA
  * @parent mapSettingsGroup
- * @text No Pass Projectiles Regions
+ * @text Твёрдые регионы
  * @type number[]
  * @min 1
  * @max 255
  * @default []
- * @desc The numbers of the regions through which the projectiles can not pass. Global, for all projectiles.
+ * @desc Номера регионов, через которые НЕ могут проходить летающие навыки. Глобальная, для всех карт.
  * 
  * @param map_noProjectilePass2:intA
  * @parent mapSettingsGroup
- * @text No Pass Projectiles Terrains
+ * @text Твёрдые Территории
  * @type number[]
  * @min 1
  * @max 7
  * @default []
- * @desc The terrains tags (1-7) through which the projectiles can not pass. Global, for all projectiles.
+ * @desc Тэги территорий (1-7), через которые НЕ могут проходить летающие навыки. Глобальная, для всех карт.
+ * 
  * 
  * @param miniHpGaugeSetings:s
- * @text Mini HP Gauges
+ * @text Мини полоска здоровья
  * @parent mapSettingsGroup
  * @type struct<LMiniHpGaugeSettings>
  * @default {"active:b":"true","showOnlyOnHover:b":"true","showOnDamage:b":"true"}
- * @desc Mini HP gauges above ABS events settings
+ * @desc Настройки отображения мини полоски здоровья над АБС событиями
  * 
  * 
  * 
  * 
  * 
  * @command ABSEventSettings
- * @text ABS Enemy Configurate
- * @desc Configurate enemy ABS parameters for this certaint event
+ * @text Настройки АБС врага
+ * @desc Настройки АБС параметров для текущего события (не все)
  * 
  * @arg MainGroup
- * @text Main Group
+ * @text Основные
  * 
  * @arg viewRadius
  * @parent MainGroup
- * @text View Radius
+ * @text Область видимости
  * @type number
  * @min 1
  * @max 100
  * @default 5
- * @desc On how many map cells sees enemy
+ * @desc Как далеко (клетки карты) видит данный враг
  * 
  * @arg returnRadius
  * @parent MainGroup
- * @text  Return Radius
+ * @text  Область возврата
  * @type number
  * @min 1
  * @max 100
  * @default 12
- * @desc How far can the enemy move away from the place where the battle begins
+ * @desc Как далеко может отойти враг в бою от начальной точки (где он начал бой)
  * 
  * @arg onDeath
  * @parent MainGroup
- * @text On Death
+ * @text Смерть
  * @type text
  * @default
- * @desc ABS Script action (SAction), called when enemy is die
+ * @desc ABS скрипт (SAction), вызываемый когда враг погибает
  * 
  * @arg MapGroup
- * @text Map Group
+ * @text Карта
  * 
  * @arg shatterEffect
  * @parent MapGroup
- * @text Shatter Effect?
+ * @text Эффект разбития?
  * @type boolean
  * @default true
- * @desc Is play sprite shatter effect when enemy is die?
+ * @desc Проигрывать эффект разбития спрайта когда враг погибает?
  * 
  * @arg deadSwitch
  * @parent MapGroup
- * @text Dead Switch
+ * @text Переключатель
  * @type select
  * @option A
  * @option B
@@ -929,52 +984,52 @@
  * @option D
  * @option 0
  * @default 0
- * @desc Will turn ON this self.switch when enemy is die ( 0 - nothing )
+ * @desc Данный переключатель будет ВКЛ, когда враг погибает (0 - ничего)
  * 
  * @arg eraseOnDead
  * @parent deadSwitch
- * @text Erase on Dead?
+ * @text Удалять при смерти?
  * @type boolean
  * @default true
- * @desc Erase Event when enemy is die? Only if NOT HAVE Dead Switch
+ * @desc Удалять данное событие когда враг погибает? Только если переключатель = 0
  * 
  * @arg VisualGroup
- * @text Visual Group
+ * @text Визаульные настройки
  * 
  * @arg UIInfo
  * @parent VisualGroup
- * @text Show UI Info?
+ * @text Показывать на UI?
  * @type boolean
  * @default true
- * @desc Is show portrait UI when enemy is under cursor?
+ * @desc Показывать информацию о данном противнике на UI ?
  * 
  * @arg faceName
  * @parent VisualGroup
- * @text Face Name
+ * @text Портрет
  * @type file
  * @required 1
  * @dir img\faces
  * @default
- * @desc Image name for portrait UI
+ * @desc Название файла изборажения с портретом для данного врага
  * 
  * @arg faceIndex
  * @parent faceName
- * @text Face Index
+ * @text Индекс
  * @type number
  * @min 0
  * @max 100
  * @default 0
- * @desc Face index on face image for portrait UI
+ * @desc Индекс лица на файле изображения портрета
  * 
  * @arg AnimationGroup
- * @text Animation Group
+ * @text Анимация
  * 
  * @arg hitAnimationId
  * @parent AnimationGroup
- * @text Hit Animation
+ * @text Анимация при ударе
  * @type animation
  * @default 1
- * @desc Hit animation on character when enemy attacks
+ * @desc Анимация удара на персонаже (игроке), когда данный враг атакует его
  * 
  */
 
@@ -1025,6 +1080,56 @@
  @default {} 
 
 */
+
+
+/*~struct~LStateIconSettings:ru
+
+ @param visible:b
+ @text Видимый?
+ @type boolean 
+ @on Да, видимый
+ @off Нет
+ @desc Является ли данный элемент видимым?
+ @default true 
+
+ @param position:s
+ @text Позиция
+ @type struct<XY> 
+ @desc Позиция на экране в пикселях
+ @default {"x:int":"0","y:int":"0"} 
+
+ @param isCanBeEdited:b
+ @text Редактируемый?
+ @type boolean
+ @default true
+ @desc Может ли игрок редактировать этот элемент в UI редакторе?
+
+ @param textFormat:str
+ @text Осталось времени
+ @type text 
+ @desc Формат строки, сколько осталось времени. %1 будет заменён на оставшееся количество секунд
+ @default %1 
+
+ @param textFormatA:str
+ @text Осталось действий
+ @type text 
+ @desc Формат строки. %1 будет заменён на оставшееся количество действия до конца состояния [Только для состояний]
+ @default A:%1 
+
+ @param text:struct
+ @text Время (текст)
+ @type struct<CText> 
+ @desc Настройки текста остатка времени (действий)
+ @default {} 
+
+ @param icon:s
+ @text Иконка
+ @type struct<str6> 
+ @desc Настройки иконки
+ @default {} 
+
+*/
+
 /*~struct~LDamagePopUpVisualSettings:
  * @param id
  * @text ID
@@ -1087,6 +1192,70 @@
  * @default {"name":"","margins:struct":"{\"x:int\":\"0\",\"y:int\":\"0\"}","fadeInSpeed:int":"20"}
  * @type struct<LDPUImage>
 */
+
+/*~struct~LDamagePopUpVisualSettings:ru
+ * @param id
+ * @text ID
+ * @default
+ * @desc Уникальный ID данного стиля, ипользуется в параметре <popUpStyleId:X>
+ *
+ * @param randDX:int
+ * @text Случ. X
+ * @type number
+ * @default 0
+ * @min 0
+ * @desc Случайное значение в пикселях, которое будет добавлено к координате Х (+-) на старте
+ *
+ * @param randDY:int
+ * @text Случ. Y
+ * @type number
+ * @default 0
+ * @min 0
+ * @desc Случайное значение в пикселях, которое будет добавлено к координате Y (+-) на старте
+ *
+ * @param stayTime:int
+ * @text Время жизни
+ * @type number
+ * @default 12
+ * @min 1
+ * @desc Время жизни в секундах перед тем как сообщение начнёт исчезать
+ *
+ * @param changeFontSize:int
+ * @text Размер текста (конец)
+ * @type number
+ * @default 22
+ * @min 1
+ * @desc Конечное значение размера текста. Может быть больше, меньше, или равно (чтобы не изменялсь) значение в настройках текста
+ *
+ *
+ * @param noFlyUp:bool
+ * @text Статическое?
+ * @type boolean
+ * @default false
+ * @on На месте
+ * @off Летит
+ * @desc Будет ли сообщение стоять на месте? ВЫКЛ - будет взлетать вверх при истечении срока жизни
+ * 
+ * @param noFadeOut:bool
+ * @text Всегда видимое?
+ * @type boolean
+ * @default false
+ * @on Всегда
+ * @off Исчезает
+ * @desc Будет ли сообщение всегда НЕ прозрачным? ВЫКЛ - будет исчезать при истечении срока жизни
+ * 
+ * @param text:struct
+ * @text Текст
+ * @type struct<CText>
+ * @default {"visible:bool":"true","size:struct":"{\"w:int\":\"100\",\"h:int\":\"100\"}","margins:struct":"{\"x:int\":\"0\",\"y:int\":\"0\"}","alignment:str":"center","outline:struct":"{\"color:css\":\"#000000\",\"width:int\":\"3\"}","font:struct":"{\"face:str\":\"AABS_0\",\"size:int\":\"14\",\"italic:bool\":\"false\"}","textColor:css":"#FFFFFF"}
+ * @desc Настройки текста. Параметр - размер текста не используется.
+ *
+ * @param image:struct
+ * @text Доп. изображение
+ * @default {"name":"","margins:struct":"{\"x:int\":\"0\",\"y:int\":\"0\"}","fadeInSpeed:int":"20"}
+ * @type struct<LDPUImage>
+*/
+
 
 /*~struct~LDPUImage:
  * @param name
@@ -1335,6 +1504,14 @@
     @off No
     @desc Always only attack (no move) when rotating if mouse clicked on map?
 
+    @param multiTouch:b
+    @text Allow MultiTouch?
+    @type boolean
+    @default false
+    @on Yes
+    @off No
+    @desc [For devices with touchscreen] Allow multitouch control?
+
     @param keybingind
     @text Key Bindings
 
@@ -1355,6 +1532,7 @@
     @parent keybingind
     @default Control
     @desc TODO:
+
 */
 /*~struct~LActorGauge:
  * @param visible:bool
@@ -1949,6 +2127,80 @@
 
 */
 
+/*~struct~LSpawnPoint:
+
+ @param id:str
+ @text ID
+ @type text 
+ @desc Unique spawn point ID for <absSpawnPoint:ID> event comment
+ @default spawnPoint
+
+ @param spawnPointType:str
+ @text Spawn Type
+ @type select
+ @option self
+ @option region
+ @option player
+ @desc Self - spawn around self (event). Region - spawn in certain region. Player - spawn around player.
+ @default self 
+
+ @param spawnRadius:str
+ @parent spawnPointType:str
+ @text Radius or Region
+ @type text
+ @desc Radius (self, player) or Region (for region type) [Extended Value]
+ @default 3
+
+ @param spawnMax:str
+ @text Max
+ @type text 
+ @desc Maximum spawned enemies count. 0 - not limits. [Extended Value]
+ @default 3
+
+
+ @param spawnAliveMax:str
+ @parent spawnMax:str
+ @text Max alive
+ @type text 
+ @desc Max. alive spawned enemies at same time. 0 - not limits. [Extended Value]
+ @default 2 
+
+
+ @param spawnRate:str
+ @text Rate
+ @type text 
+ @desc Spawn once at (Rate) seconds. Minimum 1. [Extended Value]
+ @default 4
+
+ @param spawnEnemiesId:str
+ @text Events to spawn
+ @type text 
+ @desc Enemies events (from Spawn Map) id's for spawn. [Extended Value]
+ @default 1, 2, 3
+
+
+ @param conditionSwitch:i
+ @text Switch
+ @type switch 
+ @desc 0 - no any. If Switch if FALSE -> not spawn.
+ @default 0
+
+ @param visorRadius:i
+ @text Visor
+ @type number 
+ @min 0
+ @desc 0 - always. X - player should be in this range from spawn point for spawning process.
+ @default 3
+
+
+ @param endCommonEvent:i
+ @text On Reach Max
+ @type common_event 
+ @desc Call common event when spawned Max count is reached
+ @default 0
+
+*/
+
 
 var Imported = Imported || {};
 Imported.Alpha_ABSZ = true;
@@ -1971,7 +2223,7 @@ AA.link = function (library) {
 };
 
 
-AA.Version = 60; // 0.6
+AA.Version = 70;
 
 //TODO: Задавать версию необходимого NET и проверять
 
@@ -2007,7 +2259,6 @@ AA.isPro = function() {
     return true;
 };
 
-
 /*
 # ==========================================================================
 # ==========================================================================
@@ -2032,7 +2283,7 @@ AA.isPro = function() {
 // * LIBRARY WITH MZ AND MZ SUPPORT
 //! {OUTER FILE}
 
-//?rev 23.04.22
+//?rev 21.06.22
 var KDCore;
 
 window.Imported = window.Imported || {};
@@ -2043,7 +2294,7 @@ KDCore = KDCore || {};
 
 // * Двузначные числа нельзя в версии, сравнение идёт по первой цифре поулчается (3.43 - нельзя, можно 3.4.3)
 //%[МЕНЯТЬ ПРИ ИЗМЕНЕНИИ]
-KDCore._fileVersion = '2.8.3';
+KDCore._fileVersion = '2.9.2';
 
 // * Методы и библиотеки данной версии
 KDCore._loader = 'loader_' + KDCore._fileVersion;
@@ -2353,6 +2604,7 @@ KDCore.registerLibraryToLoad(function() {
     }
     this.blt(bitmap, 0, 0, bitmap.width, bitmap.height, x, y, sw, sh);
   };
+  //TODO: Не работает?
   Bitmap.prototype.drawInMe = function(bitmap) {
     return Bitmap.prototype.drawOnMe(bitmap, 0, 0, this.width, this.height);
   };
@@ -2360,6 +2612,41 @@ KDCore.registerLibraryToLoad(function() {
     return this.drawText(text, 0, 0, this.width, this.height, position);
   };
 });
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ Game_CharacterBase.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = Game_CharacterBase.prototype;
+  // * Нахожусь ли Я в точке по диагонале (рядом), относительно char
+  _.kdInDiagonalPointRelativeTo = function(char) {
+    var e, x, y;
+    try {
+      if (char == null) {
+        return false;
+      }
+      ({x, y} = char);
+      if (x === this.x - 1 && ((y === this.y - 1) || (y === this.y + 1))) {
+        return true; // * left up or down
+      }
+      if (x === this.x + 1 && (y === this.y - 1 || y === this.y + 1)) {
+        return true; // * right up or down
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+    }
+    return false;
+  };
+})();
+
+// ■ END Game_CharacterBase.coffee
+//---------------------------------------------------------------------------
 
 
 // Generated by CoffeeScript 2.6.1
@@ -3823,6 +4110,127 @@ KDCore.registerLibraryToLoad(function() {
 
 
 // Generated by CoffeeScript 2.6.1
+// * Класс для глобального события игры (НЕ события на карте)
+KDCore.registerLibraryToLoad(function() {
+  //@[AUTO EXTEND]
+  return KDCore.GEvent = class GEvent {
+    constructor(name) {
+      this.name = name;
+      this.clear();
+    }
+
+    addListener(listener, isSingle = false) {
+      if (listener == null) {
+        return;
+      }
+      if (isSingle === true) {
+        this.listeners = [listener];
+      } else {
+        this.listeners.push(listener);
+      }
+    }
+
+    removeListener(listener) {
+      if (listener == null) {
+        return;
+      }
+      return this.listener.delete(listener);
+    }
+
+    call() {
+      var i, l, len, ref;
+      ref = this.listeners;
+      for (i = 0, len = ref.length; i < len; i++) {
+        l = ref[i];
+        l();
+      }
+    }
+
+    clear() {
+      return this.listeners = [];
+    }
+
+  };
+});
+
+
+// Generated by CoffeeScript 2.6.1
+// * Менеджер для управления глобальными событиями игры (GEvent) (НЕ события на карте)
+KDCore.registerLibraryToLoad(function() {
+  var GEventsManager;
+  // * Данный менеджер глобальный, т.е. с ним работают ВСЕ плагины, которые его используют!
+  GEventsManager = function() {};
+  (function() {
+    var _;
+    _ = GEventsManager;
+    // * Существует ли событие с данным именем
+    _.isEventExists = function(gEventName) {
+      return this._getEventByName(gEventName) != null;
+    };
+    // * Получить список всех зарегестрированных событий (имён)
+    _.getAllEvents = function() {
+      if (this.events == null) {
+        return [];
+      }
+      return this.events.map(function(ev) {
+        return ev.name;
+      });
+    };
+    // * Зарегестрировать событие (используется только имя события)
+    _.register = function(gEventName) {
+      if (this.events == null) {
+        this.events = [];
+      }
+      this.events.push(new KDCore.GEvent(gEventName));
+    };
+    // * Подписаться на событие (имя события) и слушатель
+    // * если isSingle == true - то у события может быть только один исполнитель
+    _.subscribeFor = function(evName, listener, isSingle = false) {
+      var ref;
+      return (ref = this._getEventByName(evName)) != null ? ref.addListener(listener, isSingle) : void 0;
+    };
+    // * Подписаться на событие (уникально) для объекта
+    // * Т.е. при вызове этого метода ещё раз, если объект
+    // * уже подписан на событие, ничего не будет (без дубликатов)
+    //? ВНИМАНИЕ ! Если объект подписался через subscribeForX, то
+    // выполнив clear по данному evName, он уже не подпишится!
+    _.subscribeForX = function(context, evName, listener) {
+      var e, key;
+      try {
+        key = "__kdCoreGEvent_" + evName;
+        if (context[key] == null) {
+          this.subscribeFor(evName, listener);
+          return context[key] = true;
+        }
+      } catch (error) {
+        e = error;
+        return KDCore.warning(e);
+      }
+    };
+    // * Вызвать событие (по имени)
+    _.call = function(evName) {
+      var ref;
+      return (ref = this._getEventByName(evName)) != null ? ref.call() : void 0;
+    };
+    _.clear = function(evName) {
+      var ref;
+      return (ref = this._getEventByName(evName)) != null ? ref.clear() : void 0;
+    };
+    _._getEventByName = function(name) {
+      if (!this.events) {
+        return null;
+      }
+      return this.events.find(function(ev) {
+        return ev.name === name;
+      });
+    };
+  })();
+  //@[EXTEND]
+  return KDCore.GEventsManager = GEventsManager;
+});
+
+
+// Generated by CoffeeScript 2.6.1
 KDCore.registerLibraryToLoad(function() {
   //@[AUTO EXTEND]
   //?[DEPRECATED]
@@ -4035,7 +4443,7 @@ KDCore.registerLibraryToLoad(function() {
         switch (type) {
           case "int":
           case "i":
-            return parseInt(item);
+            return Number(item);
           case "intA": // * массив чисел
             if (String.any(item)) {
               return JsonEx.parse(item).map((e) => {
@@ -4073,7 +4481,14 @@ KDCore.registerLibraryToLoad(function() {
             }
             break;
           case "note": // * если несколько строк в тексте
-            return JsonEx.parse(item);
+            try {
+              return JsonEx.parse(item);
+            } catch (error) {
+              e = error;
+              KDCore.warning(e);
+              return item;
+            }
+            break;
           case "css":
             return item.toCss();
           case "color":
@@ -4083,7 +4498,7 @@ KDCore.registerLibraryToLoad(function() {
         }
       } catch (error) {
         e = error;
-        console.warn(e);
+        KDCore.warning(e);
         return item;
       }
     }
@@ -5029,32 +5444,6 @@ KDCore.registerLibraryToLoad(function() {
   };
 });
 
-// Generated by CoffeeScript 2.6.1
-KDCore.registerLibraryToLoad(function() {
-  var ALIAS___startLoading, _;
-  // * В версии RPG Maker MZ 1.5.0 появился баг что картинки не успевают прогрузится
-  // * Данный фикс, возвращает старое поведение
-  if (!KDCore.isMZ()) {
-    return;
-  }
-  //@[DEFINES]
-  _ = Bitmap.prototype;
-  //@[ALIAS]
-  ALIAS___startLoading = _._startLoading;
-  return _._startLoading = function() {
-    if (Utils.hasEncryptedImages()) {
-      ALIAS___startLoading.call(this, ...arguments);
-    } else {
-      // * Это из RPG Maker MZ до версии 1.5
-      this._image = new Image();
-      this._image.onload = this._onLoad.bind(this);
-      this._image.onerror = this._onError.bind(this);
-      this._destroyCanvas();
-      this._loadingState = "loading";
-      this._image.src = this._url;
-    }
-  };
-});
 
 // Generated by CoffeeScript 2.6.1
 KDCore.registerLibraryToLoad(function() {
@@ -6557,14 +6946,14 @@ KDCore.registerLibraryToLoad(function() {
             text = text.replace("%" + i, arguments[i]);
           } catch (error) {
             e = error;
-            KDCore.UI.warning(e);
+            KDCore.warning(e);
             text = "[wrong format text input]";
           }
         }
         return text;
       } catch (error) {
         e = error;
-        KDCore.UI.warning(e);
+        KDCore.warning(e);
         return "[wrong format text input]";
       }
     };
@@ -7522,6 +7911,114 @@ KDCore.registerLibraryToLoad(function() {
 
 // Generated by CoffeeScript 2.6.1
 KDCore.registerLibraryToLoad(function() {
+  var HUI;
+  // * Html UI Manager
+  // * Набор инструментов для работы с HTML элементами интерфейса
+  HUI = function() {};
+  (function() {
+    var _;
+    //@[DEFINES]
+    _ = HUI;
+    _.init = function() {
+      // * Данный набор инструментов могут использовать многие плагины, поэтому проверка
+      if (this.isInited()) {
+        return;
+      }
+      this._createMainParentInHtml();
+      this._extendGraphicsClass();
+      this.refresh();
+    };
+    // * Был ли создан (инициализирован) основной элемент
+    _.isInited = function() {
+      return this.parent() != null;
+    };
+    // * Основной элемент родитель для всех элементов UI
+    _.parent = function() {
+      return this._parent;
+    };
+    _.refresh = function() {
+      if (!this.isInited()) {
+        return;
+      }
+      Graphics._centerElement(this._parent);
+      this._parent.style.zIndex = 2;
+      this._parent.style.width = Graphics._canvas.style.width;
+      this._parent.style.height = Graphics._canvas.style.height;
+    };
+    _.addCSS = function(name, folder = "css") {
+      var head;
+      if (!this.isInited()) {
+        this.init();
+      }
+      head = document.getElementsByTagName("head")[0];
+      if (head != null) {
+        head.insertAdjacentHTML("beforeend", "<link rel=\"stylesheet\" href=\"$0/$1.css\" />".replace("$0", folder).replace("$1", name));
+      }
+    };
+    _.addElement = function(id, html, classes = null) {
+      var cls, element, i, len;
+      if (!this.isInited()) {
+        this.init();
+      }
+      element = document.createElement("div");
+      element.id = id;
+      element.innerHTML = html;
+      if (classes != null) {
+        for (i = 0, len = classes.length; i < len; i++) {
+          cls = classes[i];
+          element.classList.add(cls);
+        }
+      }
+      this._parent.appendChild(element);
+      return element;
+    };
+    // * Может быть NULL
+    _.getElement = function(id) {
+      return document.getElementById(id);
+    };
+    _.removeElement = function(element) {
+      if (element == null) {
+        return;
+      }
+      if (KDCore.SDK.isString(element)) {
+        this.removeElementById(element);
+      } else {
+        this.removeElementById(element.id);
+      }
+    };
+    _.removeElementById = function(elementId) {
+      var element;
+      if (!this.isInited()) {
+        return;
+      }
+      element = this.getElement(elementId);
+      if (element != null) {
+        this._parent.removeChild(element);
+      }
+    };
+    // * PRIVATE ------------------------------------------------------------------
+    _._createMainParentInHtml = function() {
+      this._parent = document.createElement("div");
+      this._parent.id = "KDCoreMain";
+      document.body.appendChild(this._parent);
+    };
+    _._extendGraphicsClass = function() {
+      var ALIAS___updateCanvas;
+      //@[ALIAS]
+      ALIAS___updateCanvas = Graphics._updateCanvas;
+      Graphics._updateCanvas = function() {
+        ALIAS___updateCanvas.call(this);
+        return KDCore.HUI.refresh();
+      };
+    };
+  })();
+  //@[EXTEND]
+  return KDCore.HUI = HUI;
+});
+
+
+// Generated by CoffeeScript 2.6.1
+KDCore.registerLibraryToLoad(function() {
   var ALIAS___onMouseUp, ALIAS___onRightButtonDown, ALIAS__clear, ALIAS__update, _;
   // * Right mouse pressed
   // * Определение когда правая (вторая) кнопка мыши зажата и удерживается
@@ -7755,6 +8252,34 @@ KDCore.registerLibraryToLoad(function() {
 
 // Generated by CoffeeScript 2.6.1
 KDCore.registerLibraryToLoad(function() {
+  var ALIAS___startLoading, _;
+  // * В версии RPG Maker MZ 1.5.0 появился баг что картинки не успевают прогрузится
+  // * Данный фикс, возвращает старое поведение
+  if (!KDCore.isMZ()) {
+    return;
+  }
+  //@[DEFINES]
+  _ = Bitmap.prototype;
+  //@[ALIAS]
+  ALIAS___startLoading = _._startLoading;
+  return _._startLoading = function() {
+    if (Utils.hasEncryptedImages()) {
+      ALIAS___startLoading.call(this, ...arguments);
+    } else {
+      // * Это из RPG Maker MZ до версии 1.5
+      this._image = new Image();
+      this._image.onload = this._onLoad.bind(this);
+      this._image.onerror = this._onError.bind(this);
+      this._destroyCanvas();
+      this._loadingState = "loading";
+      this._image.src = this._url;
+    }
+  };
+});
+
+
+// Generated by CoffeeScript 2.6.1
+KDCore.registerLibraryToLoad(function() {
   var alias_WBDTEX_KDCore29122021;
   // * <center>, для RPG Maker MZ и если нету Visu Message Core
   if (KDCore.isMZ()) {
@@ -7874,7 +8399,25 @@ if (KDCore._requireLoadLibrary === true) {
 // ==========================================================================
 // ==========================================================================
 
-//Plugin KDCore builded by PKD PluginBuilder 2.1 - 23.04.2022
+//Plugin KDCore builded by PKD PluginBuilder 2.1 - 21.06.2022
+
+// * Данный класс вынесен в .JS со старой реализацией, чтобы
+// * вызвать this.eventId = eventId перед родительским конструктором
+// * Остальной код в 2_AAEnemyBattler_Impl.coffee
+
+function AAEnemyBattler() {
+    this.initialize.apply(this, arguments);
+}
+
+AAEnemyBattler.prototype = Object.create(Game_Enemy.prototype);
+AAEnemyBattler.prototype.constructor = AAEnemyBattler;
+
+// * Так же передаём номер события, чтобы был доступ к модели и логике
+AAEnemyBattler.prototype.initialize = function (enemyId, eventId) {
+    this.eventId = eventId;
+    Game_Enemy.prototype.initialize.call(this, enemyId, 0, 0);
+    this.aaInit();
+};
 
 function Game_AASpawnedEvent() {
     this.initialize.apply(this, arguments);
@@ -7928,6 +8471,84 @@ Game_AASpawnedEvent.prototype.aaCheckAndActivateABSBehaviour = function() {
         this.initABS();
     }
 };
+
+// * Теперь будет работать мульти тоуч, т.е. можно будет нажимать несколько
+// кнопок сразу (навыки и кнопки), работает с Mobile Controls
+// можно ходить на джойстик (удерживая) и нажимать при этом атаку или навыки
+
+AA.ApplyMultitouchMode = function(){
+    
+    //$[OVER]
+    TouchInput._onTouchStart = function(event) {
+        this._pMultiTouches = [];
+        for (const touch of event.changedTouches) {
+            const x = Graphics.pageToCanvasX(touch.pageX);
+            const y = Graphics.pageToCanvasY(touch.pageY);
+            if (Graphics.isInsideCanvas(x, y)) {
+                this._screenPressed = true;
+                this._pressedTime = 0;
+                if (event.touches.length >= 2) {
+                    //this._onCancel(x, y);
+                    for(let touchX of event.touches) {
+                        let xx = Graphics.pageToCanvasX(touchX.pageX);
+                        let yy = Graphics.pageToCanvasX(touchX.pageY);
+                        this._pMultiTouches.push({x: xx, y: yy});
+                    }
+                    this._onTrigger(x, y);
+                } else {
+                    this._onTrigger(x, y);
+                }
+                event.preventDefault();
+            }
+        }
+        if (window.cordova || window.navigator.standalone) {
+            event.preventDefault();
+        }
+    };
+
+    TouchInput.pIsMultiTouched = function() {
+        return this._pMultiTouches && this._pMultiTouches.length > 0;
+    };
+
+    TouchInput.pClearMultiTouch = function() {
+        this._pMultiTouches = [];
+    };
+
+    //@[ALIAS]
+    var _alias_TouchInput__onTouchEnd = TouchInput._onTouchEnd;
+    TouchInput._onTouchEnd = function (event) {
+        if(this.pIsMultiTouched()) {
+            this.pClearMultiTouch();
+            _alias_TouchInput__onTouchEnd.call(this, event);
+            this._screenPressed = true;
+        } else
+            _alias_TouchInput__onTouchEnd.call(this, event);
+    };
+
+    // * KDCore.Sprite Extension
+    (function(){
+        var _ = KDCore.Sprite.prototype;
+
+        _.isUnderMouse = function() {
+            let isUnderMouseX = this.inPosition(TouchInput);
+            if(isUnderMouseX) {
+                return true;
+            } else {
+                if(TouchInput.pIsMultiTouched()) {
+                    for(let touch of TouchInput._pMultiTouches) {
+                        if(this.inPosition(touch)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        };
+    })();
+
+};
+
 
 //TODO: Сделать как параметр плагина? 12, 24, 32
 //$[OVER]
@@ -8021,129 +8642,6 @@ Game_Temp.prototype.animationCursor = function() {
     }, 250);
 };
 
-
-
-// Generated by CoffeeScript 2.6.1
-// * Так же передаём номер события, чтобы был доступ к модели и логике
-var AAEnemyBattler;
-
-AAEnemyBattler = class AAEnemyBattler extends Game_Enemy {
-  constructor(enemyId, eventId) {
-    super(enemyId, 0, 0);
-    this.eventId = eventId;
-    // * Проверка делается один раз, так как навыки не меняются
-    this._isHaveAnyAASkill = this._checkAASkillsInActions();
-    this._aaAttackHitAnimationId = this.char().AAModel().hitAnimationId;
-    return;
-  }
-
-  AACharacter() {
-    return this.char();
-  }
-
-  char() {
-    return $gameMap.event(this.eventId);
-  }
-
-  getAASkills() {
-    return this._selectAASkillsFromActions().map(function(skillId) {
-      return $dataSkills[skillId];
-    });
-  }
-
-  
-    // * Если ли у врага хотябы одно действие с АБС навыком
-  isHaveAnyAASkill() {
-    return this._isHaveAnyAASkill === true;
-  }
-
-  aaIsActionValid(action) {
-    return AA.Utils.isAAObject(action.skillId);
-  }
-
-  isActionValid(action) {
-    var isABS;
-    isABS = this.aaIsActionValid(action);
-    return isABS && Game_Enemy.prototype.isActionValid.call(this, action);
-  }
-
-  attackAnimationId1() {
-    return this._aaAttackHitAnimationId;
-  }
-
-  // * У монстров не может быть двуручной атаки, поэтому всегда 0
-  attackAnimationId2() {
-    return 0;
-  }
-
-  //$[OVER]
-  getDefaultWeaponMotionAnimationWeaponId() {
-    var e;
-    try {
-      return this.char().AAModel().weaponMotionType;
-    } catch (error) {
-      e = error;
-      AA.w(e);
-    }
-    return 0;
-  }
-
-};
-
-(function() {  //╒═════════════════════════════════════════════════════════════════════════╛
-  // ■ AAEnemyBattler.coffee
-  //╒═════════════════════════════════════════════════════════════════════════╛
-  //---------------------------------------------------------------------------
-  var _;
-  //@[DEFINES]
-  _ = AAEnemyBattler.prototype;
-  // * Среди всех действий врага, есть хотябы одно АБC
-  // * Эта проверка нужна, чтобы сразу отметить врага как неспособного сражаться
-  _._checkAASkillsInActions = function() {
-    var aaActions;
-    aaActions = this.enemy().actions.filter((a) => {
-      return this.aaIsActionValid(a);
-    });
-    return aaActions.length > 0;
-  };
-  // * Выборка всех возможных АБС навыков из доступных действий
-  // * (Тут смотритеся и canUse и можно ли использовать действие по условию в самом действии)
-  _._selectAASkillsFromActions = function() {
-    var aaSkills, actionList;
-    aaSkills = [];
-    actionList = this.enemy().actions.filter((a) => {
-      return this.isActionValid(a);
-    });
-    if (actionList.length > 0) {
-      aaSkills = this._aaSelectAllABSActions(actionList);
-    }
-    return aaSkills;
-  };
-  
-  // * Метод аналогичен selectAllActions, только изменён под АБС
-  // * Возвращает все АА навыки, которые проходят условия Action из БД
-  _._aaSelectAllABSActions = function(actionList) {
-    var aaSkills, action, i, j, ratingMax, ratingZero, ref;
-    aaSkills = [];
-    ratingMax = Math.max(...actionList.map(function(a) {
-      return a.rating;
-    }));
-    ratingZero = ratingMax - 3;
-    actionList = actionList.filter(function(a) {
-      return a.rating > ratingZero;
-    });
-    for (i = j = 0, ref = actionList.length; (0 <= ref ? j < ref : j > ref); i = 0 <= ref ? ++j : --j) {
-      action = this.selectAction(actionList, ratingZero);
-      if (action != null) {
-        aaSkills.push(action.skillId);
-      }
-    }
-    return aaSkills;
-  };
-})();
-
-// ■ END AAEnemyBattler.coffee
-//---------------------------------------------------------------------------
 
 
 // Generated by CoffeeScript 2.6.1
@@ -8374,58 +8872,6 @@ AAEntity = class AAEntity {
 
 
 // Generated by CoffeeScript 2.6.1
-// * Глабольный менедреж событий в АБС
-AA.EV = function() {};
-
-(function() {  //╒═════════════════════════════════════════════════════════════════════════╛
-  // ■ IMPLEMENTATION.coffee
-  //╒═════════════════════════════════════════════════════════════════════════╛
-  //---------------------------------------------------------------------------
-  var _;
-  //@[DEFINES]
-  _ = AA.EV;
-  _.init = function() {
-    //"INIT ABS GEVENTS SUB SYSTEM".p()
-    this.events = new AA.GEvents();
-    return this._initABSGEvents();
-  };
-  _.subscribeFor = function(evName, listener) {
-    return this.events.subscribeFor(evName, listener);
-  };
-  _.call = function(evName) {
-    return this.events.call(evName);
-  };
-})();
-
-(function() {  //╒═════════════════════════════════════════════════════════════════════════╛
-  // ■ EVENTS.coffee
-  //╒═════════════════════════════════════════════════════════════════════════╛
-  //---------------------------------------------------------------------------
-  var _;
-  //@[DEFINES]
-  _ = AA.EV;
-  _._initABSGEvents = function() {
-    // * Когда АБС ставиться на паузу
-    this.events.register("PauseABS");
-    // * Когда игрок начинает выбирать зону действия навыка
-    this.events.register("PlayerSkillSelector");
-    // * Когда выполнился (закончился) навык Projectile на карте
-    // * Запрашивает очистку кеша
-    this.events.register("MapSkillsRequestsClean");
-    // * Смена события под курсором
-    this.events.register("UnderMouseEventChanged");
-    // * Персонаж игрока готов
-    this.events.register("ABSPartyLeaderReady");
-    // * Больше нет персонажа игрока (пустая партия)
-    this.events.register("ABSPartyLeaderNone");
-  };
-})();
-
-// ■ END EVENTS.coffee
-//---------------------------------------------------------------------------
-
-
-// Generated by CoffeeScript 2.6.1
 // * Глабольный менедреж управления персонажем в АБС
 AA.Input = function() {};
 
@@ -8470,7 +8916,8 @@ AA.IKey = function() {};
     _.IsStaticAttackWhenRotating = this.settings.isStaticAtkRot;
     this._loadSkillPanelSymbols();
     this.applyInputSettings();
-    return this.applyKeybindings();
+    this.applyKeybindings();
+    return this.applyMultitouch();
   };
   //"INIT ABS INPUT SUB SYSTEM".p()
 
@@ -8684,6 +9131,20 @@ AA.IKey = function() {};
     }
     return false;
   };
+  // * MULTITOUCH (mobile only)
+  // ======================================================================
+  _.applyMultitouch = function() {
+    var e;
+    try {
+      if (this.settings.multiTouch !== true) {
+        return;
+      }
+      return AA.ApplyMultitouchMode();
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
 })();
 
 // ■ END IMPLEMENTATION.coffee
@@ -8884,12 +9345,15 @@ AA.SAaction = function() {};
     }
     return _.ACTIONS.contains(cmd);
   };
-  //?MAIN OUTER (Основной метод вызова)
+  //%[MAIN] OUTER (Основной метод вызова)
   // * Выполнить AA Script Action
   _.execute = function(action, char) {
     var cmd, e;
     if (!_.isProper(action)) {
       return;
+    }
+    if (char instanceof Game_Interpreter) {
+      char = this.extractProperChar(char);
     }
     AANetworkManager.executeSA(action, char);
     try {
@@ -8923,6 +9387,14 @@ AA.SAaction = function() {};
     } catch (error) {
       e = error;
       return AA.w(e);
+    }
+  };
+  // * Если было вызвано из события, то преобразуем в Event
+  _.extractProperChar = function(char) {
+    if (char.eventId() > 0) {
+      return $gameMap.event(char.eventId());
+    } else {
+      return null;
     }
   };
   // * ss_A_true_2 , ss_B_false, ss_C_false_3 (evId)
@@ -9030,7 +9502,7 @@ AA.SAaction = function() {};
         char.aaStartCommonEvent(ceId);
       }
     } else {
-      $gameTemp.reserveCommonEvent(ceId);
+      AA.Utils.startCE(ceId);
     }
   };
   // * ev_5 ; start event 5 on this map
@@ -9420,7 +9892,7 @@ AASkill2 = class AASkill2 {
 
   // * Extended Values =========================================
 
-    //TODO: Эксперементально (уже используется в коде)
+    //TODO: Эксперементально (но уже используется в коде)
 
     //TODO: заменить все radius в коде, на этот метод
   getERadius() {
@@ -9429,6 +9901,10 @@ AASkill2 = class AASkill2 {
 
   getETargetLimitType() {
     return KDCore.Utils.getEValue(this.targetLimitType);
+  }
+
+  getETargetLimit() {
+    return KDCore.Utils.getEValue(this.targetLimit);
   }
 
 };
@@ -9452,6 +9928,7 @@ AASkill2 = class AASkill2 {
   // * Базовые (фундаментальные) АБС параметры навыка
   _._initBase = function() {
     // * Область поражения (1 - Х)
+    //?EVal
     this.radius = 1;
     this.range = 1;
     //facing dir 0, point position 1, point direction 2
@@ -9460,7 +9937,9 @@ AASkill2 = class AASkill2 {
   };
   // * Основные АБС параметры навыка
   _._initMain = function() {
+    //?EVal
     this.targetLimit = 0; // * Нет ограничения по количеству целей
+    //?EVal
     this.targetLimitType = 0; // * 0 - Любая цель, 1 - Ближайшая, 2 - Дальняя
     this.friendlyEffect = 0; // * Еффект на дружественную команду (и себя)
     this.opponentsEffect = 1; // * Еффект на противоположную команду
@@ -9737,6 +10216,7 @@ AAState = class AAState {
     this.onStart = null;
     this.onTick = null; // * каждую секунду
     this.onEnd = null;
+    this.activeSkill = null;
     return;
   }
 
@@ -9760,6 +10240,10 @@ AAState = class AAState {
     return this.state().removeAtBattleEnd === true;
   }
 
+  isHaveActiveSkill() {
+    return this.activeSkill != null;
+  }
+
   // * Получить случайное значение Duration in Turns
   // * Значение между state.minTurns и state.maxTurns
   getTurnsValue() {
@@ -9774,12 +10258,36 @@ AAState = class AAState {
 
   // * Установить набор параметров из Note (принимает массив пар: имя - значение)
   setNoteParameters(params) {
-    var i, len, p;
-    for (i = 0, len = params.length; i < len; i++) {
-      p = params[i];
+    var j, len, p;
+    for (j = 0, len = params.length; j < len; j++) {
+      p = params[j];
       this[p[0]] = p[1];
     }
     this._convertParameters();
+  }
+
+  getActiveSkillParameters() {
+    var e, params;
+    if (!this.isHaveActiveSkill()) {
+      return null;
+    }
+    try {
+      // * Собираем один раз для оптимизации
+      if (this._activeSkillParams == null) {
+        this._activeSkillParams = {};
+      }
+      //%[I] Перейти на Extended Values ?
+      params = this.activeSkill.toString().split(',').map(function(i) {
+        return parseInt(i);
+      });
+      this._activeSkillParams.skillId = params[0];
+      this._activeSkillParams.rate = params[1] || 1;
+      this._activeSkillParams.radius = params[2] || 3;
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+    }
+    return this._activeSkillParams;
   }
 
 };
@@ -9815,7 +10323,8 @@ AA.System = function() {};
     //TODO: * Лог свой для сообщений версий
     _.initSystem = function() {
       //"INIT ABS SYSTEM".p()
-      AA.EV.init();
+      //AA.EV.init()
+      this.initGEvents();
       this.loadParameters();
       this.loadExtensions();
     };
@@ -9939,18 +10448,28 @@ AA.System = function() {};
     };
     // * Сцена карты загрузилась (или попали на сцену из меню, или Transfer)
     _.onMapSceneLoaded = function() {
+      AA.UI.init();
       this.startABS();
       AA.UI.refresh();
+      this.subscribeForSceneMapGEvents();
     };
     // * Сцена карты завершается (переключение сцены)
     _.onMapSceneStopped = function() {
       AA.UI.terminate();
       $gamePlayer.aaOnMapSceneEnd();
       $gameTemp.aaClearAllAILogicThreads();
+      this.clearSceneMapGEvents();
     };
     _.onTitleScreen = function() {};
     // * Новая карта (Data)
-    _.onNewMapLoaded = function() {};
+    _.onNewMapLoaded = function() {
+      // * Ссылка на последнее событие, которое было динамически создано
+      $gameTemp.aaLastSpawnedEvent = null;
+      // * Очищаем флаг, что есть хоть одна точка спавна
+      $gameTemp.aaSpawnPointExistsOnMap = null;
+      // * Очищам флаг, что есть хоть одно событие локатор
+      return $gameTemp.aaLocatorEventExistsOnMap = null;
+    };
     // * Перед сохранением
     _.onGameSave = function() {};
     // * После сохранения
@@ -9959,6 +10478,41 @@ AA.System = function() {};
     _.onGameLoad = function() {};
     // * После загрузки
     _.onGameLoaded = function() {};
+  })();
+  (function() {    // -----------------------------------------------------------------------
+
+    // * Глобальные события KDCore 2.9+
+    // -----------------------------------------------------------------------
+    _.subscribeForSceneMapGEvents = function() {
+      $gamePlayer.subscribeForGEvents();
+    };
+    // * Очищаем события которые существют только на сцене карты
+    _.clearSceneMapGEvents = function() {
+      AA.EV.clear('PlayerSkillSelector');
+      AA.EV.clear('MapSkillsRequestsClean');
+      AA.EV.clear('UnderMouseEventChanged');
+      AA.EV.clear('ABSPartyLeaderReady');
+      AA.EV.clear('ABSPartyLeaderNone');
+    };
+    _.initGEvents = function() {
+      var i, item, len, list;
+      //@[SHORTCUT]
+      AA.EV = KDCore.GEventsManager;
+      list = [
+        'PauseABS', // * Когда АБС ставиться на паузу
+        'PlayerSkillSelector', // * Когда игрок начинает выбирать зону действия навыка
+        // * Когда выполнился (закончился) навык Projectile на карте
+        // * Запрашивает очистку кеша
+        'MapSkillsRequestsClean',
+        'UnderMouseEventChanged', // * Смена события под курсором
+        'ABSPartyLeaderReady', // * Персонаж игрока готов
+        'ABSPartyLeaderNone' // * Больше нет персонажа игрока (пустая партия)
+      ];
+      for (i = 0, len = list.length; i < len; i++) {
+        item = list[i];
+        KDCore.GEventsManager.register(item);
+      }
+    };
   })();
 })();
 
@@ -10145,110 +10699,6 @@ AIFlowMachine = class AIFlowMachine {
 })();
 
 // ■ END AIFlowMachine.coffee
-//---------------------------------------------------------------------------
-
-
-// Generated by CoffeeScript 2.6.1
-// * Класс для АБС события игры (НЕ события на карте)
-
-//╒═════════════════════════════════════════════════════════════════════════╛
-// ■ 1_GEvent.coffee
-//╒═════════════════════════════════════════════════════════════════════════╛
-//---------------------------------------------------------------------------
-(function() {
-  var GEvent;
-  GEvent = class GEvent {
-    constructor(name) {
-      this.name = name;
-      this.listeners = [];
-    }
-
-    addListener(listener) {
-      if (listener != null) {
-        return this.listeners.push(listener);
-      }
-    }
-
-    removeListener(listener) {
-      if (listener == null) {
-        return;
-      }
-      return this.listener.delete(listener);
-    }
-
-    call() {
-      var i, l, len, ref;
-      ref = this.listeners;
-      for (i = 0, len = ref.length; i < len; i++) {
-        l = ref[i];
-        l();
-      }
-    }
-
-  };
-  AA.link(GEvent);
-})();
-
-// ■ END 1_GEvent.coffee
-//---------------------------------------------------------------------------
-
-
-// Generated by CoffeeScript 2.6.1
-// * Класс - менеджер для управления АБС событиями игры (GEvent) (НЕ события на карте)
-
-//╒═════════════════════════════════════════════════════════════════════════╛
-// ■ 1_GEventsManager.coffee
-//╒═════════════════════════════════════════════════════════════════════════╛
-//---------------------------------------------------------------------------
-//$[NOT STORABLE]
-(function() {
-  var GEvents;
-  GEvents = class GEvents {
-    constructor() {
-      this.events = [];
-      return;
-    }
-
-    // * Существует ли событие с данным именем
-    isEventExists(gEventName) {
-      return this._getEventByName(gEventName) != null;
-    }
-
-    // * Получить список всех зарегестрированных событий (имён)
-    getAllEvents() {
-      return this.events.map(function(ev) {
-        return ev.name;
-      });
-    }
-
-    // * Зарегестрировать событие (используется только имя события)
-    register(gEventName) {
-      this.events.push(new AA.GEvent(gEventName));
-    }
-
-    // * Подписаться на событие (имя события) и слушатель
-    subscribeFor(evName, listener) {
-      var ref;
-      return (ref = this._getEventByName(evName)) != null ? ref.addListener(listener) : void 0;
-    }
-
-    // * Вызвать событие (по имени)
-    call(evName) {
-      var ref;
-      return (ref = this._getEventByName(evName)) != null ? ref.call() : void 0;
-    }
-
-    _getEventByName(name) {
-      return this.events.find(function(ev) {
-        return ev.name === name;
-      });
-    }
-
-  };
-  AA.link(GEvents);
-})();
-
-// ■ END 1_GEventsManager.coffee
 //---------------------------------------------------------------------------
 
 
@@ -10470,12 +10920,6 @@ do ->
 
 
 // Generated by CoffeeScript 2.6.1
-AA.isPro = function() {
-  return false;
-};
-
-
-// Generated by CoffeeScript 2.6.1
 // * Данный класс используется чтобы вызывать (использовать)
 // ABS навыки через uAPI
 //╒═════════════════════════════════════════════════════════════════════════╛
@@ -10519,6 +10963,118 @@ AADummyCharacter = class AADummyCharacter extends Game_Character {
 
 
 // ■ END AADummyCharacter.coffee
+//---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
+// * Определение класса в файле 1_AAEnemyBattler.js
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ AAEnemyBattler.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = AAEnemyBattler.prototype;
+  _.aaInit = function() {
+    // * Проверка делается один раз, так как навыки не меняются
+    this._isHaveAnyAASkill = this._checkAASkillsInActions();
+    this._aaAttackHitAnimationId = this.char().AAModel().hitAnimationId;
+  };
+  _.AACharacter = function() {
+    return this.char();
+  };
+  _.char = function() {
+    return $gameMap.event(this.eventId);
+  };
+  _.getAASkills = function() {
+    return this._selectAASkillsFromActions().map(function(skillId) {
+      return $dataSkills[skillId];
+    });
+  };
+  
+  // * Если ли у врага хотябы одно действие с АБС навыком
+  _.isHaveAnyAASkill = function() {
+    return this._isHaveAnyAASkill === true;
+  };
+  _.aaIsActionValid = function(action) {
+    return AA.Utils.isAAObject(action.skillId);
+  };
+  _.isActionValid = function(action) {
+    var isABS;
+    isABS = this.aaIsActionValid(action);
+    return isABS && Game_Enemy.prototype.isActionValid.call(this, action);
+  };
+  _.attackAnimationId1 = function() {
+    return this._aaAttackHitAnimationId;
+  };
+  // * У монстров не может быть двуручной атаки, поэтому всегда 0
+  _.attackAnimationId2 = function() {
+    return 0;
+  };
+  //$[OVER]
+  return _.getDefaultWeaponMotionAnimationWeaponId = function() {
+    var e;
+    try {
+      return this.char().AAModel().weaponMotionType;
+    } catch (error) {
+      e = error;
+      AA.w(e);
+    }
+    return 0;
+  };
+})();
+
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = AAEnemyBattler.prototype;
+  // * Среди всех действий врага, есть хотябы одно АБC
+  // * Эта проверка нужна, чтобы сразу отметить врага как неспособного сражаться
+  _._checkAASkillsInActions = function() {
+    var aaActions;
+    aaActions = this.enemy().actions.filter((a) => {
+      return this.aaIsActionValid(a);
+    });
+    return aaActions.length > 0;
+  };
+  // * Выборка всех возможных АБС навыков из доступных действий
+  // * (Тут смотритеся и canUse и можно ли использовать действие по условию в самом действии)
+  _._selectAASkillsFromActions = function() {
+    var aaSkills, actionList;
+    aaSkills = [];
+    actionList = this.enemy().actions.filter((a) => {
+      return this.isActionValid(a);
+    });
+    if (actionList.length > 0) {
+      aaSkills = this._aaSelectAllABSActions(actionList);
+    }
+    return aaSkills;
+  };
+  
+  // * Метод аналогичен selectAllActions, только изменён под АБС
+  // * Возвращает все АА навыки, которые проходят условия Action из БД
+  _._aaSelectAllABSActions = function(actionList) {
+    var aaSkills, action, i, j, ratingMax, ratingZero, ref;
+    aaSkills = [];
+    ratingMax = Math.max(...actionList.map(function(a) {
+      return a.rating;
+    }));
+    ratingZero = ratingMax - 3;
+    actionList = actionList.filter(function(a) {
+      return a.rating > ratingZero;
+    });
+    for (i = j = 0, ref = actionList.length; (0 <= ref ? j < ref : j > ref); i = 0 <= ref ? ++j : --j) {
+      action = this.selectAction(actionList, ratingZero);
+      if (action != null) {
+        aaSkills.push(action.skillId);
+      }
+    }
+    return aaSkills;
+  };
+})();
+
+// ■ END AAEnemyBattler.coffee
 //---------------------------------------------------------------------------
 
 
@@ -10726,7 +11282,7 @@ AAStatesSet = class AAStatesSet {
   // * Battler передаётся сразу (для оптимизации)
   // * Так как onStateTick вызывается из метода _updateTimers,
   // * который уже имеет ссылку на battler
-  //? Вызывается каждую секунду дейсвия состояния
+  //? Вызывается каждую секунду действия состояния
   _._onStateTick = function(stateId, battler) {
     var state;
     state = this.item(stateId);
@@ -10735,6 +11291,59 @@ AAStatesSet = class AAStatesSet {
         battler = this.battler();
       }
       AA.SAaction.execute(state.onTick, battler.AACharacter());
+    }
+    if (state.isHaveActiveSkill()) {
+      this._executeStateActiveSkill(stateId, battler.AACharacter());
+    }
+  };
+  // * Выполнить активный навык для состояния
+  _._executeStateActiveSkill = function(stateId, character) {
+    var absSkill, e, executeSkillDelayed, i, len, ownerId, params, skill, state, t, targets, teamId, turnsLeft;
+    try {
+      state = this.item(stateId);
+      params = state.getActiveSkillParameters();
+      // * Получаем остаток от оставшихся секунд, чтобы узнать можно выполнять или нет
+      // * Если остаток == 0, значит делится, т.е. можно выполнить
+      if (params.rate > 1) {
+        turnsLeft = this.getDisplayValueForState(stateId);
+        if (turnsLeft % params.rate !== 0) {
+          return;
+        }
+      }
+      skill = $dataSkills[params.skillId];
+      if (skill == null) {
+        return;
+      }
+      absSkill = skill.AASkill;
+      if (absSkill == null) {
+        return;
+      }
+      //TODO: ally, for healing
+      // * Находим все возможные цели в области действия состояния
+      targets = AATargetsManager.getAvailableTargetsInRadius(character, params.radius);
+      // * Фильтруем по дистанции и лимиту
+      targets = AATargetsManager.applySkillTargetsLimit(character, targets, absSkill);
+      if (targets == null) {
+        return;
+      }
+      if (targets.length === 0) {
+        return;
+      }
+      ownerId = character.aaCharId();
+      teamId = character.AAEntity().teamId();
+      executeSkillDelayed = function(charId) {
+        return AA.Utils.callDelayed(function() {
+          return uAPI.executeAASkillOnChar(ownerId, teamId, params.skillId, charId);
+        }, Math.random() * 400);
+      };
+      for (i = 0, len = targets.length; i < len; i++) {
+        t = targets[i];
+        // * Через отдельный метод, чтобы не было дублирование eventId
+        executeSkillDelayed(t.aaCharId());
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
     }
   };
   _._updateTimers = function(battler) {
@@ -11357,6 +11966,56 @@ AA.Network.SetupNETCharacter = function() {
 
 
 // Generated by CoffeeScript 2.6.1
+//? Правильная обработка Dead состояния игрока
+
+//@[EXTENSION]
+AA.extend(function() {
+  // * Методы ниже даже не учитываются, если плагин не подключён
+  if (Imported.PKD_AnimaX !== true) {
+    return;
+  }
+  return (function() {    //╒═════════════════════════════════════════════════════════════════════════╛
+    // ■ XAnimaSetController.coffee
+    //╒═════════════════════════════════════════════════════════════════════════╛
+    //---------------------------------------------------------------------------
+    var ALIAS___nextActionFrame, ALIAS___updateAction, _;
+    
+    //@[DEFINES]
+    _ = XAnimaSetController.prototype;
+    
+    //@[ALIAS]
+    ALIAS___updateAction = _._updateAction;
+    _._updateAction = function(c) {
+      var isInitialFrame;
+      isInitialFrame = this._initialFrame === true;
+      ALIAS___updateAction.call(this, ...arguments);
+      if (this.rootAnimation.aaNoRepeatFlag === true && isInitialFrame === false && c._aaAnimaXDeathPlayedFlag === true) {
+        this._initialFrame = false; // * Чтобы метод _setInitialFrame сработал ещё раз
+        this._setInitialFrame(this.rootAnimation.frames - 1);
+        this._nextActionFrame(c); // * Ставим сразу последний кадр
+      }
+    };
+    
+    //@[ALIAS]
+    ALIAS___nextActionFrame = _._nextActionFrame;
+    _._nextActionFrame = function(c) {
+      var isLastFrame;
+      isLastFrame = this.cFrame === this.rootAnimation.frames - 1;
+      ALIAS___nextActionFrame.call(this, ...arguments);
+      if (this.rootAnimation.aaNoRepeatFlag === true && isLastFrame === true) {
+        this.cFrame = this.rootAnimation.frames - 1;
+        c._aaAnimaXDeathPlayedFlag = true;
+        this.requestRefresh();
+      }
+    };
+  })();
+});
+
+// ■ END XAnimaSetController.coffee
+//---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
 // * Класс для Action для навыков ABS
 
 // * Большинство методов из Game_Action просто не используются
@@ -11454,390 +12113,305 @@ AABattleAction = class AABattleAction extends Game_Action {
 };
 
 
-var _0x21b8cd = _0x4941;
-(function (_0x46fca9, _0x27035c) {
-    var _0x73b59d = _0x4941, _0x4fd16e = _0x46fca9();
-    while (!![]) {
-        try {
-            var _0x4f7f9c = parseInt(_0x73b59d(0x1a4)) / 0x1 + -parseInt(_0x73b59d(0x1df)) / 0x2 * (-parseInt(_0x73b59d(0x1dc)) / 0x3) + parseInt(_0x73b59d(0x1d6)) / 0x4 * (-parseInt(_0x73b59d(0x1db)) / 0x5) + parseInt(_0x73b59d(0x1a7)) / 0x6 + parseInt(_0x73b59d(0x1c5)) / 0x7 * (parseInt(_0x73b59d(0x1a2)) / 0x8) + parseInt(_0x73b59d(0x201)) / 0x9 + -parseInt(_0x73b59d(0x1e2)) / 0xa;
-            if (_0x4f7f9c === _0x27035c)
-                break;
-            else
-                _0x4fd16e['push'](_0x4fd16e['shift']());
-        } catch (_0x511bf5) {
-            _0x4fd16e['push'](_0x4fd16e['shift']());
-        }
+// Generated by CoffeeScript 2.6.1
+// * Класс с методами взаимодействия навыков и Entities (аналог Battle Process)
+
+//$[ENCODE]
+window.AABattleActionsManager = function() {};
+
+(function() {  //╒═════════════════════════════════════════════════════════════════════════╛
+  // ■ IMPLEMENTATION.coffee
+  //╒═════════════════════════════════════════════════════════════════════════╛
+  //---------------------------------------------------------------------------
+  var _;
+  //@[DEFINES]
+  _ = AABattleActionsManager;
+  _.startAASkill = function(aaSkill, subject, targetPoint) {
+    var direction, i, j, nextPoint, ref, target;
+    if (aaSkill == null) {
+      return;
     }
-}(_0x4c07, 0x7b035), window[_0x21b8cd(0x1b7)] = function () {
-}, (function () {
-    var _0x13d99a = _0x21b8cd, _0x99b082;
-    _0x99b082 = AABattleActionsManager, _0x99b082[_0x13d99a(0x1e5)] = function (_0x507248, _0x3e9eeb, _0x1bcfea) {
-        var _0x5598f3 = _0x13d99a;
-        if (_0x5598f3(0x1c0) !== _0x5598f3(0x1c0)) {
-            var _0x40bb73, _0x4bba4b;
-            try {
-                _0x40bb73 = _0x1ff1dc[_0x5598f3(0x1f4)](), _0x40bb73 != null && _0x40bb73[_0x5598f3(0x1bb)]();
-            } catch (_0x18cf1f) {
-                _0x4bba4b = _0x18cf1f, _0x59dd36[_0x5598f3(0x1b9)]('\x5f\x65\x6e\x64\x41\x63\x74\x69\x6f\x6e', _0x4bba4b);
-            }
+    // * Выполняем SAction onStart
+    AA.SAaction.execute(aaSkill.onStart, subject);
+    if (aaSkill.isSelfAction()) {
+      //"SELF ACTION".p()
+      this.applySkillAction(subject, subject, aaSkill);
+    } else if (aaSkill.isInstant()) {
+      //"INSTANT ACTION".p()
+      // * Надо получить точку по направлению
+      if (!aaSkill.isInPoint()) {
+        nextPoint = subject;
+        direction = subject.direction();
+        for (i = j = 1, ref = aaSkill.range; (1 <= ref ? j <= ref : j >= ref); i = 1 <= ref ? ++j : --j) {
+          nextPoint = AA.Utils.Math.getProjectilePointByDirection(nextPoint, direction);
+          target = AATargetsManager.getTargetInPoint(subject, aaSkill, nextPoint);
+          if (target == null) {
+            // * Если цели нет, просто передаём точку на карте (для NoContact навыков)
+            target = nextPoint;
+          }
+          this.applySkillAction(subject, target, aaSkill);
+        }
+      } else {
+        this.applySkillAction(subject, targetPoint, aaSkill);
+      }
+    } else {
+      $gameMap.startAASkill(aaSkill, subject, targetPoint);
+    }
+  };
+  
+  // * Выполнение действия АБС навыка на карте или Entity
+  _.applySkillAction = function(subject, target, absSkill) {
+    var animationId, e, targets, x, y;
+    try {
+      //"applySkillAction".p()
+      animationId = this.getProperAnimationId(subject, absSkill);
+      if (target instanceof Game_Character) {
+        if (absSkill.animationOnMap === 0) {
+          this.playAnimationOnCharacter(target, animationId);
         } else {
-            var _0x2cbb25, _0x1103c3, _0x541534, _0x3d1036, _0x48bc21, _0x458dee;
-            if (_0x507248 == null) {
-                if (_0x5598f3(0x1aa) !== _0x5598f3(0x1aa))
-                    _0x12b514 = _0x7bbb4a, _0x259b2a['\x77\x61\x72\x6e\x69\x6e\x67'](_0x5598f3(0x1e9), _0x354e97);
-                else
-                    return;
-            }
-            AA[_0x5598f3(0x1b3)][_0x5598f3(0x1c8)](_0x507248[_0x5598f3(0x1a8)], _0x3e9eeb);
-            if (_0x507248['\x69\x73\x53\x65\x6c\x66\x41\x63\x74\x69\x6f\x6e']())
-                this['\x61\x70\x70\x6c\x79\x53\x6b\x69\x6c\x6c\x41\x63\x74\x69\x6f\x6e'](_0x3e9eeb, _0x3e9eeb, _0x507248);
-            else {
-                if (_0x507248[_0x5598f3(0x1eb)]()) {
-                    if (!_0x507248['\x69\x73\x49\x6e\x50\x6f\x69\x6e\x74']()) {
-                        if (_0x5598f3(0x202) !== _0x5598f3(0x1dd)) {
-                            _0x3d1036 = _0x3e9eeb, _0x2cbb25 = _0x3e9eeb['\x64\x69\x72\x65\x63\x74\x69\x6f\x6e']();
-                            for (_0x1103c3 = _0x541534 = 0x1, _0x48bc21 = _0x507248['\x72\x61\x6e\x67\x65']; 0x1 <= _0x48bc21 ? _0x541534 <= _0x48bc21 : _0x541534 >= _0x48bc21; _0x1103c3 = 0x1 <= _0x48bc21 ? ++_0x541534 : --_0x541534) {
-                                _0x3d1036 = AA['\x55\x74\x69\x6c\x73']['\x4d\x61\x74\x68']['\x67\x65\x74\x50\x72\x6f\x6a\x65\x63\x74\x69\x6c\x65\x50\x6f\x69\x6e\x74\x42\x79\x44\x69\x72\x65\x63\x74\x69\x6f\x6e'](_0x3d1036, _0x2cbb25), _0x458dee = AATargetsManager[_0x5598f3(0x1e8)](_0x3e9eeb, _0x507248, _0x3d1036), _0x458dee == null && (_0x458dee = _0x3d1036), this[_0x5598f3(0x1af)](_0x3e9eeb, _0x458dee, _0x507248);
-                            }
-                        } else
-                            _0x38c17b['\x70\x65\x72\x66\x6f\x72\x6d\x4d\x69\x73\x73']();
-                    } else {
-                        if (_0x5598f3(0x1ad) === _0x5598f3(0x1b2))
-                            return _0x18c4e9 = _0x4cde8b, _0x319f84['\x77'](_0x31a779), 0x0;
-                        else
-                            this['\x61\x70\x70\x6c\x79\x53\x6b\x69\x6c\x6c\x41\x63\x74\x69\x6f\x6e'](_0x3e9eeb, _0x1bcfea, _0x507248);
-                    }
-                } else
-                    $gameMap['\x73\x74\x61\x72\x74\x41\x41\x53\x6b\x69\x6c\x6c'](_0x507248, _0x3e9eeb, _0x1bcfea);
-            }
+          this.playAnimationOnMap(target.x, target.y, animationId);
         }
-    }, _0x99b082[_0x13d99a(0x1af)] = function (_0x2cb089, _0x28bdd5, _0x424425) {
-        var _0x3b0b5f = _0x13d99a, _0x5f0fb1, _0x3764b6, _0x14961c, _0x4e23ee, _0x241d28;
-        try {
-            if (_0x3b0b5f(0x1fd) !== '\x6f\x79\x6a\x66\x78') {
-                _0x5f0fb1 = this[_0x3b0b5f(0x1a6)](_0x2cb089, _0x424425);
-                if (_0x28bdd5 instanceof Game_Character)
-                    _0x3b0b5f(0x1b5) === '\x66\x4d\x54\x5a\x4d' ? _0x424425[_0x3b0b5f(0x1ec)] === 0x0 ? this[_0x3b0b5f(0x1e9)](_0x28bdd5, _0x5f0fb1) : this[_0x3b0b5f(0x1d1)](_0x28bdd5['\x78'], _0x28bdd5['\x79'], _0x5f0fb1) : this['\x61\x70\x70\x6c\x79\x53\x6b\x69\x6c\x6c\x41\x63\x74\x69\x6f\x6e'](_0x10f7e0, _0x2a60d9, _0x421c86);
-                else {
-                    if (!_0x424425[_0x3b0b5f(0x1e7)]())
-                        return;
-                    ({
-                        x: _0x4e23ee,
-                        y: _0x241d28
-                    } = _0x28bdd5, this['\x70\x6c\x61\x79\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x4f\x6e\x4d\x61\x70'](_0x4e23ee, _0x241d28, _0x5f0fb1));
-                }
-                _0x14961c = AATargetsManager['\x63\x6f\x6c\x6c\x65\x63\x74\x54\x61\x72\x67\x74\x65\x73\x46\x6f\x72\x53\x6b\x69\x6c\x6c'](_0x2cb089, _0x424425, _0x28bdd5), _0x424425['\x69\x73\x48\x61\x76\x65\x54\x61\x72\x67\x65\x74\x4c\x69\x6d\x69\x74']() && _0x14961c['\x6c\x65\x6e\x67\x74\x68'] > 0x1 && (_0x14961c = AATargetsManager[_0x3b0b5f(0x1da)](_0x14961c, asbsSkill)), this['\x70\x65\x72\x66\x6f\x72\x6d\x42\x61\x74\x74\x6c\x65\x41\x63\x74\x69\x6f\x6e'](_0x2cb089, _0x424425, _0x14961c);
-            } else
-                _0x56cb34[_0x3b0b5f(0x1e4)](_0x2a21c3, _0x2ef80d);
-        } catch (_0x3e3af3) {
-            _0x3764b6 = _0x3e3af3, AA['\x77'](_0x3764b6);
+      } else {
+        // * Если навык требует контакт, то нет никаких эффектов
+        if (!absSkill.isNoContact()) {
+          return;
         }
-    }, _0x99b082['\x67\x65\x74\x50\x72\x6f\x70\x65\x72\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x49\x64'] = function (_0xd12e26, _0x31848d) {
-        var _0x1b48e6 = _0x13d99a, _0x3d5d53, _0x147ad1;
-        try {
-            if ('\x4f\x53\x47\x48\x78' === '\x4c\x58\x51\x64\x49')
-                _0x1f7add[_0x1b48e6(0x1e4)](_0x195195, _0x1b9bb1);
-            else {
-                _0x3d5d53 = _0x31848d[_0x1b48e6(0x1d4)]();
-                if (_0x3d5d53 === -0x1) {
-                    if (_0x1b48e6(0x200) !== '\x6a\x41\x73\x56\x48')
-                        return _0xd12e26[_0x1b48e6(0x1ed)]()[_0x1b48e6(0x1b1)]();
-                    else
-                        _0x18afac[_0x1b48e6(0x1cc)]();
-                }
-                return _0x3d5d53;
-            }
-        } catch (_0x35f4fa) {
-            return _0x147ad1 = _0x35f4fa, AA['\x77'](_0x147ad1), 0x0;
+        ({x, y} = target);
+        this.playAnimationOnMap(x, y, animationId);
+      }
+      targets = AATargetsManager.collectTargtesForSkill(subject, absSkill, target);
+      if (absSkill.isHaveTargetLimit() && targets.length > 1) {
+        targets = AATargetsManager.applySkillTargetsLimit(subject, targets, absSkill);
+      }
+      this.performBattleAction(subject, absSkill, targets);
+    } catch (error) {
+      //TODO: Do Common Action (Выполнение обычных действий на событиях или персонажах)
+      e = error;
+      AA.w(e);
+    }
+  };
+  //TODO: Добавить параметр Animation Scalling ??? Чтобы скалировать обычную анимацию на карте и не переделывать каждую
+
+  // * Анимация с учётом оружия
+  _.getProperAnimationId = function(subject, absSkill) {
+    var animationId, e;
+    try {
+      animationId = absSkill.animationId();
+      if (animationId === -1) { // * Normal attack
+        return subject.AABattler().attackAnimationId1();
+      }
+      //TODO: attackAnimationId2 if dual weild
+      return animationId;
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return 0;
+    }
+  };
+  //TODO: [Идея] Проигрывание анимации на всём экране или в координатах экрана
+
+  // * Воспроизвести анимацию на персонаже
+  _.playAnimationOnCharacter = function(char, animationId) {
+    var e;
+    try {
+      if ((animationId != null) && animationId > 0) {
+        AANetworkManager.playAnimationOnCharacter(char, animationId);
+        $gameTemp.requestAnimation([char], animationId, false);
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning("playAnimationOnCharacter", e);
+    }
+  };
+  // * Воспроизвести анимацию в точке на карте
+  _.playAnimationOnMap = function(x, y, animationId) {
+    var e;
+    if (!KDCore.Utils.isSceneMap()) {
+      return;
+    }
+    try {
+      if ((animationId != null) && animationId > 0) {
+        AANetworkManager.playAnimationOnMap(x, y, animationId);
+        $gameMap.aaRequestMapAnimation(x, y, animationId);
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning("playAnimationOnMap", e);
+    }
+  };
+  // * ======================================================================
+  // * BATTLE ACTION LOGIC
+
+  // * subject и target - это characters, не battlers
+  _.performBattleAction = function(subject, skill, targets) {
+    var action, e;
+    //"PERFORM BATTLE ACTION".p()
+    //"SUB".p()
+    //console.info(subject)
+    //"SKILL".p()
+    //console.info(skill)
+    //"TARG".p()
+    //console.info(targets)
+    if (subject == null) {
+      return;
+    }
+    if (skill == null) {
+      return;
+    }
+    try {
+      action = new AABattleAction(subject, skill);
+      if (!action.isValid()) {
+        return;
+      }
+      this._startAction(action, targets);
+      this._endAction(action);
+    } catch (error) {
+      e = error;
+      KDCore.warning("performBattleAction", e);
+    }
+  };
+  _._startAction = function(action, targets) {
+    var e, j, len, t;
+    try {
+      // * Вызов общих событий навыка (предмета)
+      //TODO: Вызов общих событий AASkill ???
+      action.applyGlobal();
+      for (j = 0, len = targets.length; j < len; j++) {
+        t = targets[j];
+        this._invokeAction(t, action);
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning("_startAction", e);
+    }
+  };
+  _._invokeAction = function(target, action) {
+    var e;
+    try {
+      //TODO: Возможно Drain с текущим алгоритмом работать не будут
+      // * Сейчас каждый игрок отправляет свой Observer, т.е. нельзя
+      // * изменить значение HP персонажа на другом клиенте, надо
+      // * вызывать метод, который меняет на текущем клиенте (собственнике персонажа)
+      if (AA.Network.isNetworkGame()) {
+        if (target instanceof Game_Event) {
+          if (ANGameManager.isMapMaster()) {
+            this._applyActionOnTarget(target, action);
+          } else {
+            AANetworkManager.applyActionOnTarget(target, action);
+          }
+        } else if (target instanceof NETCharacter) {
+          AANetworkManager.applyActionOnTarget(target, action); // * Game_Player (SELF)
+        } else {
+          this._applyActionOnTarget(target, action);
         }
-    }, _0x99b082['\x70\x6c\x61\x79\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x4f\x6e\x43\x68\x61\x72\x61\x63\x74\x65\x72'] = function (_0x904073, _0x38a352) {
-        var _0xac4f1e = _0x13d99a, _0x1c79c9;
-        try {
-            if (_0xac4f1e(0x1ac) !== _0xac4f1e(0x1fe)) {
-                if (_0x38a352 != null && _0x38a352 > 0x0) {
-                    if (_0xac4f1e(0x1f8) !== _0xac4f1e(0x1fc))
-                        AANetworkManager['\x70\x6c\x61\x79\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x4f\x6e\x43\x68\x61\x72\x61\x63\x74\x65\x72'](_0x904073, _0x38a352), $gameTemp['\x72\x65\x71\x75\x65\x73\x74\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e']([_0x904073], _0x38a352, ![]);
-                    else
-                        return;
-                }
-            } else {
-                if (_0x8df0f4 == null)
-                    return;
-                if (_0x51200d == null)
-                    return;
-                _0x4dc08d[_0xac4f1e(0x1de)](_0x3e0ca6), this[_0xac4f1e(0x1ff)](_0x1f1550, _0x40b1cd);
-            }
-        } catch (_0x1f1f5e) {
-            _0x1c79c9 = _0x1f1f5e, KDCore['\x77\x61\x72\x6e\x69\x6e\x67'](_0xac4f1e(0x1e9), _0x1c79c9);
+      } else {
+        this._applyActionOnTarget(target, action);
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning("_invokeAction", e);
+    }
+  };
+  _._applyActionOnTarget = function(target, action) {
+    var e;
+    try {
+      if (action == null) {
+        return;
+      }
+      if (target == null) {
+        return;
+      }
+      //TODO: repeats time?
+      //TODO: CE on Use
+      //TODO: Impulse?
+      action.apply(target);
+      this._onActionResult(target, action);
+    } catch (error) {
+      e = error;
+      AA.w(e);
+    }
+  };
+  _._onActionResult = function(target, action) {
+    var battler, e;
+    try {
+      battler = target.AABattler();
+      if (!battler.result().used) {
+        return;
+      }
+      this._performActionResultOnTarget(target);
+      battler.startDamagePopup();
+      action.subject().startDamagePopup();
+      target.aaOnActionOnMe(action);
+      // * Сохраняем данные для uAPI
+      $gameTemp.aaLastUsedAction = action;
+      $gameTemp.aaLastUsedActionTarget = target;
+      try {
+        AA.SAaction.execute(action.AASkill().onHit, target);
+      } catch (error) {
+        e = error;
+        KDCore.warning("skill: onHit Script Action issue", e);
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning("_onActionResult", e);
+    }
+  };
+  // * Звуковые и визуальные эффекты после действия (на цели)
+  _._performActionResultOnTarget = function(target) {
+    var battler, e, result;
+    try {
+      battler = target.AABattler();
+      result = battler.result();
+      // * MISS
+      if (result.missed) {
+        battler.performMiss();
+      // * EVADE
+      } else if (result.evaded) {
+        if (result.physical) {
+          battler.performEvasion();
+        } else {
+          battler.performMagicEvasion(); // * DAMAGE
         }
-    }, _0x99b082['\x70\x6c\x61\x79\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x4f\x6e\x4d\x61\x70'] = function (_0x5edb23, _0x2978bc, _0x25f9b7) {
-        var _0x1ded5f = _0x13d99a, _0x4a4c27;
-        if (!KDCore['\x55\x74\x69\x6c\x73'][_0x1ded5f(0x1c2)]()) {
-            if (_0x1ded5f(0x208) === _0x1ded5f(0x208))
-                return;
-            else {
-                _0x410ddb = _0x281ac7[_0x1ded5f(0x1d4)]();
-                if (_0x230687 === -0x1)
-                    return _0x51405e[_0x1ded5f(0x1ed)]()['\x61\x74\x74\x61\x63\x6b\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x49\x64\x31']();
-                return _0xad29fd;
-            }
+      } else {
+        // * HP
+        if (result.hpAffected) {
+          if (result.hpDamage > 0 && !result.drain) {
+            battler.performDamage();
+          }
+          if (result.hpDamage < 0) {
+            battler.performRecovery();
+          }
         }
-        try {
-            _0x1ded5f(0x1be) !== '\x47\x63\x67\x59\x76' ? _0x25f9b7 != null && _0x25f9b7 > 0x0 && (AANetworkManager[_0x1ded5f(0x1d1)](_0x5edb23, _0x2978bc, _0x25f9b7), $gameMap[_0x1ded5f(0x1d2)](_0x5edb23, _0x2978bc, _0x25f9b7)) : (_0x59c64e = _0x441fb1, _0x493fca['\x77\x61\x72\x6e\x69\x6e\x67'](_0x1ded5f(0x1ff), _0x22063));
-        } catch (_0x5489b6) {
-            if (_0x1ded5f(0x1d7) === _0x1ded5f(0x1b8)) {
-                var _0x5bce41, _0x1256e4;
-                try {
-                    _0x5bce41 = _0x493a14[_0x1ded5f(0x1d4)]();
-                    if (_0x5bce41 === -0x1)
-                        return _0x4ec1ed[_0x1ded5f(0x1ed)]()[_0x1ded5f(0x1b1)]();
-                    return _0x5bce41;
-                } catch (_0x130598) {
-                    return _0x1256e4 = _0x130598, _0x27c365['\x77'](_0x1256e4), 0x0;
-                }
-            } else
-                _0x4a4c27 = _0x5489b6, KDCore[_0x1ded5f(0x1b9)](_0x1ded5f(0x1d1), _0x4a4c27);
+        // * MP and TP
+        if (battler.isAlive() && (result.mpDamage !== 0 || result.tpDamage !== 0)) {
+          if (result.mpDamage < 0 || result.tpDamage < 0) {
+            battler.performRecovery();
+          }
         }
-    }, _0x99b082[_0x13d99a(0x1ea)] = function (_0x77fe2c, _0x3788ca, _0x4b3f3c) {
-        var _0x15f457 = _0x13d99a, _0x2b0145, _0x38a85d;
-        if (_0x77fe2c == null) {
-            if (_0x15f457(0x1d5) === _0x15f457(0x1d5))
-                return;
-            else
-                return;
-        }
-        if (_0x3788ca == null)
-            return;
-        try {
-            if (_0x15f457(0x1cd) === '\x53\x42\x49\x42\x67')
-                _0x1b91fb = _0x49bab6[_0x492044], this[_0x15f457(0x1c4)](_0xadbd1, _0x2694d9);
-            else {
-                _0x2b0145 = new AABattleAction(_0x77fe2c, _0x3788ca);
-                if (!_0x2b0145[_0x15f457(0x1a0)]())
-                    return;
-                this[_0x15f457(0x1d0)](_0x2b0145, _0x4b3f3c), this['\x5f\x65\x6e\x64\x41\x63\x74\x69\x6f\x6e'](_0x2b0145);
-            }
-        } catch (_0x1886e3) {
-            _0x38a85d = _0x1886e3, KDCore['\x77\x61\x72\x6e\x69\x6e\x67'](_0x15f457(0x1ea), _0x38a85d);
-        }
-    }, _0x99b082['\x5f\x73\x74\x61\x72\x74\x41\x63\x74\x69\x6f\x6e'] = function (_0x153ae5, _0x4026e9) {
-        var _0x1863b0 = _0x13d99a, _0x211933, _0x5d91c7, _0x20cd9e, _0x539318;
-        try {
-            _0x153ae5[_0x1863b0(0x1f6)]();
-            for (_0x5d91c7 = 0x0, _0x20cd9e = _0x4026e9[_0x1863b0(0x1fb)]; _0x5d91c7 < _0x20cd9e; _0x5d91c7++) {
-                _0x539318 = _0x4026e9[_0x5d91c7], this['\x5f\x69\x6e\x76\x6f\x6b\x65\x41\x63\x74\x69\x6f\x6e'](_0x539318, _0x153ae5);
-            }
-        } catch (_0xcdb791) {
-            _0x211933 = _0xcdb791, KDCore[_0x1863b0(0x1b9)](_0x1863b0(0x1d0), _0x211933);
-        }
-    }, _0x99b082[_0x13d99a(0x1c4)] = function (_0x2b0cab, _0x246a05) {
-        var _0x1d8b2c = _0x13d99a, _0x46961d;
-        try {
-            if (AA[_0x1d8b2c(0x1a1)]['\x69\x73\x4e\x65\x74\x77\x6f\x72\x6b\x47\x61\x6d\x65']()) {
-                if (_0x1d8b2c(0x1e0) !== _0x1d8b2c(0x1a3)) {
-                    if (_0x2b0cab instanceof Game_Event)
-                        ANGameManager[_0x1d8b2c(0x1b6)]() ? this[_0x1d8b2c(0x1cb)](_0x2b0cab, _0x246a05) : _0x1d8b2c(0x204) !== _0x1d8b2c(0x1c6) ? AANetworkManager[_0x1d8b2c(0x1e4)](_0x2b0cab, _0x246a05) : _0x57793c['\x6f\x6e\x41\x41\x41\x63\x74\x69\x6f\x6e\x43\x6f\x6d\x70\x6c\x65\x74\x65']();
-                    else
-                        _0x2b0cab instanceof NETCharacter ? AANetworkManager[_0x1d8b2c(0x1e4)](_0x2b0cab, _0x246a05) : this[_0x1d8b2c(0x1cb)](_0x2b0cab, _0x246a05);
-                } else
-                    this['\x5f\x61\x70\x70\x6c\x79\x41\x63\x74\x69\x6f\x6e\x4f\x6e\x54\x61\x72\x67\x65\x74'](_0x27b50e, _0x2f6b45);
-            } else
-                _0x1d8b2c(0x1c3) !== '\x72\x73\x70\x76\x5a' ? this[_0x1d8b2c(0x1cb)](_0x19e848, _0x1ac22f) : this[_0x1d8b2c(0x1cb)](_0x2b0cab, _0x246a05);
-        } catch (_0x333c2e) {
-            _0x46961d = _0x333c2e, KDCore['\x77\x61\x72\x6e\x69\x6e\x67'](_0x1d8b2c(0x1c4), _0x46961d);
-        }
-    }, _0x99b082[_0x13d99a(0x1cb)] = function (_0x182362, _0x5f0ca9) {
-        var _0x3ab7aa = _0x13d99a, _0x41e07c;
-        try {
-            if (_0x5f0ca9 == null) {
-                if (_0x3ab7aa(0x1ab) !== _0x3ab7aa(0x205))
-                    return;
-                else {
-                    _0x4c0be6 = new _0x5c3eb9(_0xc00e9a, _0x116e00);
-                    if (!_0x5547db[_0x3ab7aa(0x1a0)]())
-                        return;
-                    this['\x5f\x73\x74\x61\x72\x74\x41\x63\x74\x69\x6f\x6e'](_0x1e522e, _0x5bcd82), this[_0x3ab7aa(0x1f3)](_0x5f23e1);
-                }
-            }
-            if (_0x182362 == null) {
-                if (_0x3ab7aa(0x1ce) === _0x3ab7aa(0x1ce))
-                    return;
-                else
-                    _0x4f326a['\x70\x65\x72\x66\x6f\x72\x6d\x4d\x61\x67\x69\x63\x45\x76\x61\x73\x69\x6f\x6e']();
-            }
-            _0x5f0ca9['\x61\x70\x70\x6c\x79'](_0x182362), this[_0x3ab7aa(0x1ff)](_0x182362, _0x5f0ca9);
-        } catch (_0x22862a) {
-            _0x3ab7aa(0x1f2) !== '\x52\x43\x77\x46\x70' ? (_0x2c635a = _0x21d5f9, _0x5e2a43['\x77'](_0x4d0a2e)) : (_0x41e07c = _0x22862a, AA['\x77'](_0x41e07c));
-        }
-    }, _0x99b082[_0x13d99a(0x1ff)] = function (_0x53f5ff, _0x5570e4) {
-        var _0x35da15 = _0x13d99a;
-        if (_0x35da15(0x1d8) === _0x35da15(0x1d8)) {
-            var _0x24200c, _0x52a110;
-            try {
-                if ('\x6a\x41\x47\x6f\x6a' !== _0x35da15(0x1b0)) {
-                    _0x24200c = _0x53f5ff[_0x35da15(0x1ed)]();
-                    if (!_0x24200c[_0x35da15(0x1ae)]()[_0x35da15(0x206)])
-                        return;
-                    this[_0x35da15(0x1d9)](_0x53f5ff), _0x24200c[_0x35da15(0x1c1)](), _0x5570e4[_0x35da15(0x1f4)]()['\x73\x74\x61\x72\x74\x44\x61\x6d\x61\x67\x65\x50\x6f\x70\x75\x70'](), _0x53f5ff[_0x35da15(0x1ef)](_0x5570e4);
-                    try {
-                        AA[_0x35da15(0x1b3)][_0x35da15(0x1c8)](_0x5570e4[_0x35da15(0x1f9)]()['\x6f\x6e\x48\x69\x74'], _0x53f5ff);
-                    } catch (_0x153dbd) {
-                        _0x35da15(0x1ba) !== _0x35da15(0x1ba) ? (_0x16d117 = _0x4e5621, _0x2c9626['\x77\x61\x72\x6e\x69\x6e\x67'](_0x35da15(0x1f1), _0x536c5e)) : (_0x52a110 = _0x153dbd, KDCore[_0x35da15(0x1b9)]('\x73\x6b\x69\x6c\x6c\x3a\x20\x6f\x6e\x48\x69\x74\x20\x53\x63\x72\x69\x70\x74\x20\x41\x63\x74\x69\x6f\x6e\x20\x69\x73\x73\x75\x65', _0x52a110));
-                    }
-                } else
-                    _0xbca44e = _0xf7af8b, _0x45ab67[_0x35da15(0x1b9)]('\x5f\x69\x6e\x76\x6f\x6b\x65\x41\x63\x74\x69\x6f\x6e', _0x151aa0);
-            } catch (_0x4d4b22) {
-                _0x52a110 = _0x4d4b22, KDCore[_0x35da15(0x1b9)](_0x35da15(0x1ff), _0x52a110);
-            }
-        } else
-            (_0x26360c[_0x35da15(0x209)] < 0x0 || _0x31c440[_0x35da15(0x1ca)] < 0x0) && _0x36a01f[_0x35da15(0x1cc)]();
-    }, _0x99b082['\x5f\x70\x65\x72\x66\x6f\x72\x6d\x41\x63\x74\x69\x6f\x6e\x52\x65\x73\x75\x6c\x74\x4f\x6e\x54\x61\x72\x67\x65\x74'] = function (_0x4facc3) {
-        var _0x1d7611 = _0x13d99a;
-        if (_0x1d7611(0x1e1) !== _0x1d7611(0x1e1))
-            _0xbd391e != null && _0x406eb2 > 0x0 && (_0x234454[_0x1d7611(0x1e9)](_0x24a806, _0x32b5f7), _0x817114[_0x1d7611(0x1cf)]([_0x1e6b3e], _0x2a7733, ![]));
-        else {
-            var _0x452eb3, _0x315fdf, _0x280083;
-            try {
-                _0x452eb3 = _0x4facc3['\x41\x41\x42\x61\x74\x74\x6c\x65\x72'](), _0x280083 = _0x452eb3[_0x1d7611(0x1ae)]();
-                if (_0x280083[_0x1d7611(0x1fa)])
-                    _0x452eb3[_0x1d7611(0x1bc)]();
-                else
-                    _0x280083[_0x1d7611(0x1c7)] ? _0x280083[_0x1d7611(0x1a5)] ? _0x452eb3[_0x1d7611(0x207)]() : '\x58\x6b\x44\x6e\x6b' === _0x1d7611(0x1b4) ? this[_0x1d7611(0x1d1)](_0x1d8fa8['\x78'], _0x49b0eb['\x79'], _0x686e51) : _0x452eb3['\x70\x65\x72\x66\x6f\x72\x6d\x4d\x61\x67\x69\x63\x45\x76\x61\x73\x69\x6f\x6e']() : (_0x280083[_0x1d7611(0x1bf)] && (_0x280083[_0x1d7611(0x1f0)] > 0x0 && !_0x280083[_0x1d7611(0x1bd)] && _0x452eb3['\x70\x65\x72\x66\x6f\x72\x6d\x44\x61\x6d\x61\x67\x65'](), _0x280083['\x68\x70\x44\x61\x6d\x61\x67\x65'] < 0x0 && _0x452eb3[_0x1d7611(0x1cc)]()), _0x452eb3[_0x1d7611(0x1f5)]() && (_0x280083['\x6d\x70\x44\x61\x6d\x61\x67\x65'] !== 0x0 || _0x280083[_0x1d7611(0x1ca)] !== 0x0) && (_0x1d7611(0x1f7) === _0x1d7611(0x1e6) ? (_0xc07b01[_0x1d7611(0x1f0)] > 0x0 && !_0x11c6f4['\x64\x72\x61\x69\x6e'] && _0x5c2359[_0x1d7611(0x1d3)](), _0x49aad[_0x1d7611(0x1f0)] < 0x0 && _0x32b38a[_0x1d7611(0x1cc)]()) : (_0x280083['\x6d\x70\x44\x61\x6d\x61\x67\x65'] < 0x0 || _0x280083[_0x1d7611(0x1ca)] < 0x0) && (_0x1d7611(0x1a9) === _0x1d7611(0x203) ? _0x1fdb5f['\x69\x73\x4d\x61\x70\x4d\x61\x73\x74\x65\x72']() ? this[_0x1d7611(0x1cb)](_0x1d18eb, _0x5842e9) : _0x2a7ada[_0x1d7611(0x1e4)](_0x3c2441, _0xb6a48d) : _0x452eb3[_0x1d7611(0x1cc)]())));
-            } catch (_0x398a90) {
-                _0x315fdf = _0x398a90, KDCore['\x77\x61\x72\x6e\x69\x6e\x67'](_0x1d7611(0x1f1), _0x315fdf);
-            }
-        }
-    }, _0x99b082[_0x13d99a(0x1f3)] = function (_0x333c12) {
-        var _0x2d0b65 = _0x13d99a, _0x2dea41, _0xabdfa0;
-        try {
-            _0x2d0b65(0x1c9) === _0x2d0b65(0x1c9) ? (_0x2dea41 = _0x333c12[_0x2d0b65(0x1f4)](), _0x2dea41 != null && (_0x2d0b65(0x1e3) === _0x2d0b65(0x1e3) ? _0x2dea41[_0x2d0b65(0x1bb)]() : _0x3e7512 = _0x21839d)) : this['\x61\x70\x70\x6c\x79\x53\x6b\x69\x6c\x6c\x41\x63\x74\x69\x6f\x6e'](_0x5f1ce5, _0x335d40, _0x139b3e);
-        } catch (_0x8f5e02) {
-            _0x2d0b65(0x1ee) === '\x74\x55\x7a\x75\x4f' ? (_0xabdfa0 = _0x8f5e02, KDCore['\x77\x61\x72\x6e\x69\x6e\x67'](_0x2d0b65(0x1f3), _0xabdfa0)) : (_0x1a1098 = _0x5db3cd, _0x48e2bc[_0x2d0b65(0x1b9)]('\x5f\x73\x74\x61\x72\x74\x41\x63\x74\x69\x6f\x6e', _0x32e166));
-        }
-    };
-}()));
-function _0x4941(_0x2aeb32, _0x2e2e92) {
-    var _0x4c071d = _0x4c07();
-    return _0x4941 = function (_0x4941c, _0x327c96) {
-        _0x4941c = _0x4941c - 0x1a0;
-        var _0x4d1819 = _0x4c071d[_0x4941c];
-        return _0x4d1819;
-    }, _0x4941(_0x2aeb32, _0x2e2e92);
-}
-function _0x4c07() {
-    var _0xb3e7ef = [
-        '\x55\x6a\x4f\x6e\x77',
-        '\x5f\x6f\x6e\x41\x63\x74\x69\x6f\x6e\x52\x65\x73\x75\x6c\x74',
-        '\x6f\x71\x46\x61\x78',
-        '\x31\x30\x39\x30\x38\x35\x34\x51\x6b\x51\x69\x55\x63',
-        '\x4f\x41\x67\x55\x53',
-        '\x77\x6b\x65\x4b\x43',
-        '\x74\x75\x50\x6a\x55',
-        '\x62\x4b\x73\x41\x6e',
-        '\x75\x73\x65\x64',
-        '\x70\x65\x72\x66\x6f\x72\x6d\x45\x76\x61\x73\x69\x6f\x6e',
-        '\x69\x52\x6b\x73\x6a',
-        '\x6d\x70\x44\x61\x6d\x61\x67\x65',
-        '\x69\x73\x56\x61\x6c\x69\x64',
-        '\x4e\x65\x74\x77\x6f\x72\x6b',
-        '\x32\x33\x38\x39\x39\x36\x38\x51\x4a\x6f\x4b\x67\x6b',
-        '\x55\x4f\x65\x42\x4d',
-        '\x34\x38\x36\x39\x39\x38\x56\x67\x6f\x5a\x54\x72',
-        '\x70\x68\x79\x73\x69\x63\x61\x6c',
-        '\x67\x65\x74\x50\x72\x6f\x70\x65\x72\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x49\x64',
-        '\x32\x38\x35\x33\x39\x37\x38\x6a\x4a\x77\x64\x70\x75',
-        '\x6f\x6e\x53\x74\x61\x72\x74',
-        '\x7a\x70\x52\x51\x6a',
-        '\x45\x58\x6f\x45\x64',
-        '\x4e\x54\x53\x6c\x42',
-        '\x73\x41\x58\x45\x73',
-        '\x79\x4d\x55\x68\x75',
-        '\x72\x65\x73\x75\x6c\x74',
-        '\x61\x70\x70\x6c\x79\x53\x6b\x69\x6c\x6c\x41\x63\x74\x69\x6f\x6e',
-        '\x47\x6a\x4f\x7a\x4c',
-        '\x61\x74\x74\x61\x63\x6b\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x49\x64\x31',
-        '\x79\x6c\x77\x5a\x6e',
-        '\x53\x41\x61\x63\x74\x69\x6f\x6e',
-        '\x4b\x46\x61\x4e\x51',
-        '\x66\x4d\x54\x5a\x4d',
-        '\x69\x73\x4d\x61\x70\x4d\x61\x73\x74\x65\x72',
-        '\x41\x41\x42\x61\x74\x74\x6c\x65\x41\x63\x74\x69\x6f\x6e\x73\x4d\x61\x6e\x61\x67\x65\x72',
-        '\x71\x67\x42\x71\x53',
-        '\x77\x61\x72\x6e\x69\x6e\x67',
-        '\x56\x72\x67\x74\x76',
-        '\x6f\x6e\x41\x41\x41\x63\x74\x69\x6f\x6e\x43\x6f\x6d\x70\x6c\x65\x74\x65',
-        '\x70\x65\x72\x66\x6f\x72\x6d\x4d\x69\x73\x73',
-        '\x64\x72\x61\x69\x6e',
-        '\x79\x45\x57\x79\x61',
-        '\x68\x70\x41\x66\x66\x65\x63\x74\x65\x64',
-        '\x77\x6e\x6b\x7a\x44',
-        '\x73\x74\x61\x72\x74\x44\x61\x6d\x61\x67\x65\x50\x6f\x70\x75\x70',
-        '\x69\x73\x53\x63\x65\x6e\x65\x4d\x61\x70',
-        '\x72\x73\x70\x76\x5a',
-        '\x5f\x69\x6e\x76\x6f\x6b\x65\x41\x63\x74\x69\x6f\x6e',
-        '\x32\x31\x6e\x55\x58\x6d\x78\x6b',
-        '\x46\x47\x50\x6c\x63',
-        '\x65\x76\x61\x64\x65\x64',
-        '\x65\x78\x65\x63\x75\x74\x65',
-        '\x58\x52\x64\x4b\x42',
-        '\x74\x70\x44\x61\x6d\x61\x67\x65',
-        '\x5f\x61\x70\x70\x6c\x79\x41\x63\x74\x69\x6f\x6e\x4f\x6e\x54\x61\x72\x67\x65\x74',
-        '\x70\x65\x72\x66\x6f\x72\x6d\x52\x65\x63\x6f\x76\x65\x72\x79',
-        '\x65\x50\x6c\x75\x76',
-        '\x44\x79\x78\x64\x62',
-        '\x72\x65\x71\x75\x65\x73\x74\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e',
-        '\x5f\x73\x74\x61\x72\x74\x41\x63\x74\x69\x6f\x6e',
-        '\x70\x6c\x61\x79\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x4f\x6e\x4d\x61\x70',
-        '\x61\x61\x52\x65\x71\x75\x65\x73\x74\x4d\x61\x70\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e',
-        '\x70\x65\x72\x66\x6f\x72\x6d\x44\x61\x6d\x61\x67\x65',
-        '\x61\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x49\x64',
-        '\x44\x6d\x69\x4f\x73',
-        '\x38\x74\x4d\x63\x68\x6a\x4a',
-        '\x74\x7a\x41\x4d\x47',
-        '\x6f\x65\x61\x47\x6b',
-        '\x5f\x70\x65\x72\x66\x6f\x72\x6d\x41\x63\x74\x69\x6f\x6e\x52\x65\x73\x75\x6c\x74\x4f\x6e\x54\x61\x72\x67\x65\x74',
-        '\x61\x70\x70\x6c\x79\x53\x6b\x69\x6c\x6c\x54\x61\x72\x67\x65\x74\x73\x4c\x69\x6d\x69\x74',
-        '\x32\x32\x35\x32\x31\x30\x35\x70\x68\x7a\x4e\x52\x51',
-        '\x37\x31\x34\x39\x35\x34\x55\x62\x66\x4c\x73\x4d',
-        '\x4d\x54\x65\x77\x71',
-        '\x61\x70\x70\x6c\x79',
-        '\x32\x54\x50\x65\x4f\x57\x47',
-        '\x44\x4d\x46\x54\x46',
-        '\x6d\x54\x7a\x50\x4e',
-        '\x38\x31\x33\x37\x32\x30\x30\x76\x51\x75\x53\x72\x49',
-        '\x6f\x54\x43\x55\x66',
-        '\x61\x70\x70\x6c\x79\x41\x63\x74\x69\x6f\x6e\x4f\x6e\x54\x61\x72\x67\x65\x74',
-        '\x73\x74\x61\x72\x74\x41\x41\x53\x6b\x69\x6c\x6c',
-        '\x66\x54\x4c\x43\x63',
-        '\x69\x73\x4e\x6f\x43\x6f\x6e\x74\x61\x63\x74',
-        '\x67\x65\x74\x54\x61\x72\x67\x65\x74\x49\x6e\x50\x6f\x69\x6e\x74',
-        '\x70\x6c\x61\x79\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x4f\x6e\x43\x68\x61\x72\x61\x63\x74\x65\x72',
-        '\x70\x65\x72\x66\x6f\x72\x6d\x42\x61\x74\x74\x6c\x65\x41\x63\x74\x69\x6f\x6e',
-        '\x69\x73\x49\x6e\x73\x74\x61\x6e\x74',
-        '\x61\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x4f\x6e\x4d\x61\x70',
-        '\x41\x41\x42\x61\x74\x74\x6c\x65\x72',
-        '\x74\x55\x7a\x75\x4f',
-        '\x61\x61\x4f\x6e\x41\x63\x74\x69\x6f\x6e\x4f\x6e\x4d\x65',
-        '\x68\x70\x44\x61\x6d\x61\x67\x65',
-        '\x5f\x61\x63\x74\x69\x6f\x6e\x52\x65\x73\x75\x6c\x74\x4f\x6e\x44\x61\x6d\x61\x67\x65',
-        '\x52\x43\x77\x46\x70',
-        '\x5f\x65\x6e\x64\x41\x63\x74\x69\x6f\x6e',
-        '\x73\x75\x62\x6a\x65\x63\x74',
-        '\x69\x73\x41\x6c\x69\x76\x65',
-        '\x61\x70\x70\x6c\x79\x47\x6c\x6f\x62\x61\x6c',
-        '\x57\x62\x67\x4c\x72',
-        '\x46\x48\x59\x66\x66',
-        '\x41\x41\x53\x6b\x69\x6c\x6c',
-        '\x6d\x69\x73\x73\x65\x64',
-        '\x6c\x65\x6e\x67\x74\x68',
-        '\x6e\x52\x42\x6e\x77',
-        '\x6a\x53\x4f\x79\x56'
-    ];
-    _0x4c07 = function () {
-        return _0xb3e7ef;
-    };
-    return _0x4c07();
-}
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning("_actionResultOnDamage", e);
+    }
+  };
+  //TODO: Надо каждую секунду вызывать battler.onTurnEnd ???
+  _._endAction = function(action) {
+    var battler, e;
+    try {
+      battler = action.subject();
+      if (battler != null) {
+        battler.onAAActionComplete();
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning("_endAction", e);
+    }
+  };
+})();
+
+// ■ END IMPLEMENTATION.coffee
+//---------------------------------------------------------------------------
+
 
 // Generated by CoffeeScript 2.6.1
 // * Глабольный менеджер с вспомогательными методами для АБС боя
@@ -11870,6 +12444,14 @@ AABattleManager = function() {};
   _ = AA.Utils;
   (function() {    // * Общее
     // -----------------------------------------------------------------------
+    _.isValidCE = function(commonEventId) {
+      return commonEventId > 0 && ($dataCommonEvents[commonEventId] != null);
+    };
+    _.startCE = function(commonEventId) {
+      if (this.isValidCE(commonEventId)) {
+        return $gameTemp.reserveCommonEvent(commonEventId);
+      }
+    };
     _.checkSwitch = function(value) {
       if (isFinite(value)) {
         return false;
@@ -12013,7 +12595,7 @@ AABattleManager = function() {};
         }
         if (this.isAAObject(dataItem) && String.any(dataItem.AASkill.ssImg)) {
           return dataItem.AASkill.ssImg;
-        } else if (String.any(dataItem.meta.ssImg)) {
+        } else if ((dataItem.meta != null) && String.any(dataItem.meta.ssImg)) {
           return dataItem.meta.ssImg;
         }
         return dataItem.iconIndex;
@@ -12112,6 +12694,31 @@ AABattleManager = function() {};
         }
       }
       return null;
+    };
+  })();
+  (function() {    // * Работа с изображениями (кастомными анимациями)
+    // -----------------------------------------------------------------------
+    return _.getFramesAndSpeed = function(imageName) {
+      var e, items, result;
+      result = {
+        f: 1,
+        s: 1
+      };
+      if (!String.any(imageName)) {
+        return result;
+      }
+      try {
+        items = imageName.match(/\((.*)\)/i);
+        if (items != null) {
+          items = items[1].split(',');
+          result.f = Number(items[0]);
+          result.s = Number(items[1]);
+        }
+      } catch (error) {
+        e = error;
+        AA.w(e);
+      }
+      return result;
     };
   })();
   (function() {    // * Конвертирование направлений
@@ -12520,6 +13127,126 @@ AAEnemyModelData = (function() {
 //@selectionColor = "#FF00FF"
 //@selectionOffset = [0, -10]
 //@selectionImage = "targetSelectedDottedSquare"
+
+
+// Generated by CoffeeScript 2.6.1
+var AAEventLocatorController;
+
+AAEventLocatorController = class AAEventLocatorController {
+  constructor() {
+    this.locatorCheckThread = new KDCore.TimedUpdate(60, this.refreshLocators.bind(this));
+  }
+
+  isActive() {
+    return AA.isABSMap();
+  }
+
+  locators() {
+    return $gameMap.eventsWithLocators();
+  }
+
+  refreshLocators() {
+    var e, ev, i, len, ref, results;
+    if (!this.isActive()) {
+      return;
+    }
+    try {
+      ref = this.locators();
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        ev = ref[i];
+        results.push(this._refreshLocator(ev));
+      }
+      return results;
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  }
+
+  update() {
+    if (!$gameTemp.aaLocatorEventExistsOnMap) {
+      return;
+    }
+    return this.locatorCheckThread.update();
+  }
+
+  //%[I] Определять остальные виды событий, не только АБС
+  //TODO: Это надо будет потом сделать (см. Game_Event_ExtraAAParams -> _aaExtractLocator комменатрий)
+  _refreshLocator(ev) {
+    var commonEvent, e, isSearchComplete, loopMode, radius, searchType, settings, teamId;
+    settings = ev._aaLocatorConfig;
+    if (settings == null) {
+      return;
+    }
+    commonEvent = settings[2];
+    if (!(commonEvent > 0)) {
+      // * Нет смысла, если нет общего события на запуск
+      ev._aaLocatorConfig = null;
+      return;
+    }
+    radius = settings[0] || 1;
+    searchType = settings[1] || 0;
+    if (settings[3] != null) {
+      loopMode = settings[3];
+    } else {
+      loopMode = 1; // * 1 - once, by default
+    }
+    isSearchComplete = false;
+    if (searchType >= -1) {
+      // * -1 Мой TeamId
+      if (searchType === -1) {
+        if (ev.isABS()) {
+          teamId = ev.AAEntity().teamId();
+        } else {
+          teamId = 0; // * Если простое событие, то сбрасываем на 0
+        }
+      } else {
+        teamId = searchType;
+      }
+      isSearchComplete = this._checkLocatorForAAEvents(ev, radius, teamId);
+    } else {
+
+    }
+    //TODO: simple events searach
+
+    // * Не нашли никого, пропуск
+    if (!isSearchComplete) {
+      return;
+    }
+    try {
+      // * Запускаем общее событие relative
+      ev.aaStartCommonEvent(commonEvent);
+      $gameTemp.aaLastActivatedLocator = ev;
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+    }
+    if (loopMode > 0) {
+      // * Отключаем локатор
+      ev._aaLocatorConfig = null;
+    }
+  }
+
+  _checkLocatorForAAEvents(ev, radius, teamId) {
+    var candidates;
+    // * Только AA события (и игрок)
+    candidates = AATargetsManager.collectAllABSEntitiesOnMap();
+    // * Тут равно, потому что мы ищем этот teamId
+    candidates = candidates.filter(function(c) {
+      return c.AAEntity().teamId() === teamId;
+    });
+    // * Фильтруем по радиусу
+    candidates = AATargetsManager.getFilteredInRadius(ev, radius, candidates);
+    if (candidates.length > 0) {
+      $gameTemp.aaLastLocatorTarget = candidates[0];
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+};
 
 
 // Generated by CoffeeScript 2.6.1
@@ -13483,479 +14210,593 @@ AAPlayerEntity = class AAPlayerEntity extends AAEntity {
 };
 
 
-function _0x588f() {
-    var _0x5e2337 = [
-        '\x32\x31\x31\x38\x43\x59\x58\x54\x59\x6c',
-        '\x69\x73\x4e\x65\x74\x77\x6f\x72\x6b\x47\x61\x6d\x65',
-        '\x69\x73\x48\x61\x73\x54\x61\x72\x67\x65\x74',
-        '\x56\x63\x66\x75\x4e',
-        '\x69\x73\x4d\x79\x45\x6e\x65\x6d\x79',
-        '\x31\x30\x66\x48\x59\x4a\x4f\x77',
-        '\x68\x6d\x56\x72\x74',
-        '\x65\x76\x65\x6e\x74\x73\x58\x79\x41\x41\x45\x78\x74',
-        '\x77\x58\x43\x6b\x56',
-        '\x69\x73\x43\x68\x61\x72\x45\x78\x74\x49\x6e\x52\x61\x64\x69\x75\x73',
-        '\x67\x65\x74\x53\x63\x72\x65\x65\x6e\x45\x78\x74\x44\x69\x73\x74\x61\x6e\x63\x65',
-        '\x67\x65\x74\x41\x41\x53\x6b\x69\x6c\x6c\x4f\x62\x6a\x65\x63\x74',
-        '\x69\x73\x53\x69\x6e\x67\x6c\x65\x54\x61\x72\x67\x65\x74\x41\x72\x65\x61',
-        '\x6c\x45\x78\x6b\x6b',
-        '\x61\x61\x47\x65\x74\x45\x78\x74\x65\x6e\x64\x65\x64\x50\x6f\x69\x6e\x74\x73\x46\x6f\x72',
-        '\x79\x51\x6b\x55\x6d',
-        '\x46\x45\x75\x46\x4f',
-        '\x70\x4e\x7a\x6b\x74',
-        '\x41\x74\x46\x54\x6e',
-        '\x31\x30\x32\x39\x31\x33\x34\x43\x5a\x52\x61\x6d\x6a',
-        '\x4e\x65\x74\x77\x6f\x72\x6b',
-        '\x61\x70\x70\x6c\x79\x53\x6b\x69\x6c\x6c\x54\x61\x72\x67\x65\x74\x73\x4c\x69\x6d\x69\x74',
-        '\x41\x41\x42\x61\x74\x74\x6c\x65\x72',
-        '\x35\x39\x33\x30\x49\x48\x50\x4b\x4b\x54',
-        '\x69\x73\x49\x6e\x73\x74\x61\x6e\x74',
-        '\x41\x41\x45\x6e\x74\x69\x74\x79',
-        '\x50\x6f\x69\x6e\x74',
-        '\x4d\x61\x74\x68',
-        '\x67\x65\x74\x54\x61\x72\x67\x65\x74\x49\x6e\x50\x6f\x69\x6e\x74',
-        '\x61\x61\x49\x73\x48\x61\x76\x65\x45\x78\x74\x65\x6e\x64\x65\x64\x48\x69\x74\x42\x6f\x78\x65\x73',
-        '\x50\x66\x77\x66\x45',
-        '\x4f\x49\x4a\x76\x6f',
-        '\x69\x73\x56\x61\x6c\x69\x64\x54\x61\x72\x67\x65\x74',
-        '\x73\x63\x72\x65\x65\x6e\x58\x45\x78\x74',
-        '\x6d\x59\x45\x78\x72',
-        '\x70\x6f\x73\x45\x78\x74',
-        '\x73\x63\x72\x65\x65\x6e\x58',
-        '\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x41\x41\x45\x76\x65\x6e\x74\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73',
-        '\x66\x69\x6c\x74\x65\x72',
-        '\x68\x6c\x65\x6f\x7a',
-        '\x6f\x67\x61\x6d\x50',
-        '\x78\x76\x6d\x56\x71',
-        '\x35\x38\x32\x30\x34\x35\x72\x41\x70\x45\x79\x7a',
-        '\x73\x63\x72\x65\x65\x6e\x59',
-        '\x45\x64\x47\x6f\x77',
-        '\x63\x6f\x6c\x6c\x65\x63\x74\x41\x6c\x6c\x41\x42\x53\x45\x6e\x74\x69\x74\x69\x65\x73\x4f\x6e\x4d\x61\x70',
-        '\x38\x53\x44\x77\x76\x75\x73',
-        '\x63\x6f\x6c\x6c\x65\x63\x74\x54\x61\x72\x67\x65\x74\x73\x46\x6f\x72\x53\x6b\x69\x6c\x6c\x49\x6e\x53\x63\x72\x65\x65\x6e\x50\x6f\x69\x6e\x74',
-        '\x67\x65\x74\x41\x6c\x6c\x57\x68\x6f\x48\x61\x76\x65\x50\x6c\x61\x79\x65\x72\x41\x73\x54\x61\x72\x67\x65\x74\x49\x6e\x52\x61\x6e\x67\x65',
-        '\x59\x67\x72\x4f\x59',
-        '\x71\x54\x70\x45\x5a',
-        '\x68\x64\x4b\x68\x69',
-        '\x63\x6f\x6e\x76\x65\x72\x74\x54\x6f\x4d\x61\x70',
-        '\x6c\x65\x6e\x67\x74\x68',
-        '\x54\x4d\x68\x64\x6c',
-        '\x70\x75\x73\x68',
-        '\x63\x79\x59\x52\x69',
-        '\x55\x74\x69\x6c\x73',
-        '\x69\x73\x41\x6c\x69\x76\x65',
-        '\x4c\x47\x53\x67\x6e',
-        '\x67\x65\x74\x46\x69\x6c\x74\x65\x72\x65\x64\x49\x6e\x52\x61\x64\x69\x75\x73',
-        '\x69\x73\x41\x63\x74\x69\x76\x65',
-        '\x69\x73\x46\x6f\x72\x46\x72\x69\x65\x6e\x64\x73',
-        '\x32\x30\x37\x32\x38\x30\x30\x49\x73\x43\x4b\x71\x77',
-        '\x72\x61\x64\x69\x75\x73',
-        '\x33\x31\x34\x33\x35\x33\x39\x71\x57\x58\x6e\x70\x47',
-        '\x67\x65\x74\x58\x59\x44\x69\x73\x74\x61\x6e\x63\x65',
-        '\x67\x65\x74\x41\x76\x61\x69\x6c\x61\x62\x6c\x65\x54\x61\x72\x67\x65\x74\x73\x49\x6e\x52\x61\x64\x69\x75\x73',
-        '\x42\x53\x48\x58\x67',
-        '\x72\x61\x6e\x67\x65',
-        '\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x4e\x65\x74\x77\x6f\x72\x6b\x43\x68\x61\x72\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73',
-        '\x69\x73\x45\x6d\x70\x74\x79',
-        '\x50\x53\x76\x57\x45',
-        '\x5f\x61\x61\x53\x6b\x69\x6c\x6c\x53\x65\x6c\x65\x63\x74\x6f\x72\x54\x61\x72\x67\x65\x74\x73',
-        '\x69\x73\x46\x6f\x72\x45\x6e\x65\x6d\x69\x65\x73',
-        '\x6e\x65\x74\x43\x68\x61\x72\x73',
-        '\x31\x32\x30\x30\x36\x33\x36\x39\x46\x77\x43\x6a\x50\x72',
-        '\x71\x6d\x45\x4d\x66',
-        '\x67\x65\x74\x41\x6c\x6c\x57\x68\x6f\x48\x61\x76\x65\x50\x6c\x61\x79\x65\x72\x41\x73\x54\x61\x72\x67\x65\x74',
-        '\x55\x61\x63\x69\x61',
-        '\x64\x69\x73\x74\x54\x6f\x43\x6f\x6c',
-        '\x6f\x70\x43\x47\x6e',
-        '\x66\x69\x6c\x74\x65\x72\x65\x64\x54\x61\x72\x67\x65\x74\x73\x46\x6f\x72\x53\x75\x62\x6a\x65\x63\x74',
-        '\x70\x52\x6c\x51\x4d',
-        '\x62\x55\x4a\x72\x6e',
-        '\x7a\x70\x71\x50\x4e',
-        '\x4c\x61\x42\x52\x47',
-        '\x55\x73\x50\x49\x55',
-        '\x72\x4d\x4b\x75\x41',
-        '\x57\x57\x43\x44\x73',
-        '\x41\x41\x53\x6b\x69\x6c\x6c',
-        '\x63\x6f\x6c\x6c\x65\x63\x74\x54\x61\x72\x67\x65\x74\x73\x46\x6f\x72\x53\x6b\x69\x6c\x6c\x49\x6e\x4d\x61\x70\x50\x6f\x69\x6e\x74',
-        '\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x41\x6c\x6c\x41\x41\x45\x6e\x74\x69\x74\x69\x65\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73',
-        '\x59\x6b\x6b\x71\x49',
-        '\x74\x63\x59\x4d\x53',
-        '\x65\x76\x65\x6e\x74\x73\x41\x41',
-        '\x73\x43\x49\x56\x6b',
-        '\x75\x4d\x68\x7a\x55',
-        '\x73\x63\x72\x65\x65\x6e\x59\x45\x78\x74',
-        '\x6d\x69\x6e',
-        '\x6e\x5a\x54\x4d\x41',
-        '\x63\x6f\x6e\x76\x65\x72\x74\x54\x6f\x53\x63\x72\x65\x65\x6e',
-        '\x57\x4c\x49\x54\x76',
-        '\x32\x30\x35\x30\x32\x36\x33\x77\x58\x4f\x73\x6a\x51',
-        '\x74\x6f\x4d\x61\x70\x50\x6f\x69\x6e\x74',
-        '\x5f\x63\x72\x65\x61\x74\x65\x53\x71\x75\x61\x72\x65\x50\x6f\x69\x6e\x74\x73',
-        '\x79\x72\x67\x70\x73'
-    ];
-    _0x588f = function () {
-        return _0x5e2337;
-    };
-    return _0x588f();
-}
-function _0x2b07(_0x7dc9, _0x4ee451) {
-    var _0x588fd8 = _0x588f();
-    return _0x2b07 = function (_0x2b076f, _0xe6e0b0) {
-        _0x2b076f = _0x2b076f - 0x122;
-        var _0x57091c = _0x588fd8[_0x2b076f];
-        return _0x57091c;
-    }, _0x2b07(_0x7dc9, _0x4ee451);
-}
-(function (_0x1db6af, _0x1e7146) {
-    var _0x3e1cb3 = _0x2b07, _0x280500 = _0x1db6af();
-    while (!![]) {
-        try {
-            var _0x2b3bff = -parseInt(_0x3e1cb3(0x140)) / 0x1 + -parseInt(_0x3e1cb3(0x129)) / 0x2 + parseInt(_0x3e1cb3(0x17d)) / 0x3 + -parseInt(_0x3e1cb3(0x155)) / 0x4 + -parseInt(_0x3e1cb3(0x12d)) / 0x5 * (-parseInt(_0x3e1cb3(0x181)) / 0x6) + parseInt(_0x3e1cb3(0x157)) / 0x7 * (-parseInt(_0x3e1cb3(0x144)) / 0x8) + -parseInt(_0x3e1cb3(0x162)) / 0x9 * (-parseInt(_0x3e1cb3(0x186)) / 0xa);
-            if (_0x2b3bff === _0x1e7146)
-                break;
-            else
-                _0x280500['push'](_0x280500['shift']());
-        } catch (_0x5002de) {
-            _0x280500['push'](_0x280500['shift']());
-        }
+// Generated by CoffeeScript 2.6.1
+// * Класс отвечает за спавн монстров из точек спавна на АБС карте
+
+// * Данный класс создаётся на сцене карты и он сам проверяет все события со спавном
+// * и спавнит монстров, если это необходимо (таймеры храняться на событиях)
+
+//TODO: В демке сделать кристал, который можно настраивать сколько врагов одновременно хочешь?
+//TODO: Сколько врагов максимум хочешь?
+//TODO: Работа в сетевом режиме! (Это надо методы uAPI доделывать, чтобы они сами определелия и делали force у НЕ мап мастеров)
+var AASpawnPointsController;
+
+AASpawnPointsController = class AASpawnPointsController {
+  constructor() {
+    this.spawnCheckThread = new KDCore.TimedUpdate(60, this.refreshSpawn.bind(this));
+  }
+
+  isActive() {
+    return AA.isABSMap();
+  }
+
+  spawnPoints() {
+    return $gameMap.eventsWithSpawnPoints();
+  }
+
+  refreshSpawn() {
+    var e, i, len, ref, results, sp;
+    if (!this.isActive()) {
+      return;
     }
-}(_0x588f, 0x5ae07), window['\x41\x41\x54\x61\x72\x67\x65\x74\x73\x4d\x61\x6e\x61\x67\x65\x72'] = function () {
-}, (function () {
-    var _0x47ca83 = _0x2b07, _0x34fd06;
-    _0x34fd06 = AATargetsManager, _0x34fd06[_0x47ca83(0x132)] = function (_0x2b940c, _0x124aa7, _0x16dfd2) {
-        var _0x5cecc0 = _0x47ca83, _0x4513a2, _0x1f5ffe;
-        _0x4513a2 = this[_0x5cecc0(0x172)]([_0x16dfd2]);
-        if (_0x4513a2[_0x5cecc0(0x15d)]())
-            return null;
-        return _0x1f5ffe = this[_0x5cecc0(0x168)](_0x2b940c, _0x124aa7, _0x4513a2), _0x1f5ffe != null && _0x1f5ffe[_0x5cecc0(0x14b)] > 0x0 ? _0x1f5ffe[0x0] : null;
-    }, _0x34fd06['\x66\x69\x6c\x74\x65\x72\x65\x64\x54\x61\x72\x67\x65\x74\x73\x46\x6f\x72\x53\x75\x62\x6a\x65\x63\x74'] = function (_0x29bf07, _0x3cef7c, _0x204077) {
-        var _0x5b9c32 = _0x47ca83, _0x5bc5a9, _0x5604a3, _0xc4edf5, _0x1239f2, _0x240453, _0xa2fb1d, _0x57b473, _0x4afefe;
-        try {
-            _0xc4edf5 = _0x29bf07[_0x5b9c32(0x12f)](), _0x5bc5a9 = [];
-            if (_0x3cef7c[_0x5b9c32(0x160)]()) {
-                if (_0x5b9c32(0x167) !== _0x5b9c32(0x167))
-                    return _0xaf7afe[0x0];
-                else
-                    for (_0x1239f2 = 0x0, _0xa2fb1d = _0x204077[_0x5b9c32(0x14b)]; _0x1239f2 < _0xa2fb1d; _0x1239f2++) {
-                        if (_0x5b9c32(0x189) === _0x5b9c32(0x180))
-                            return _0x3b7655[_0x5b9c32(0x153)]();
-                        else
-                            _0x4afefe = _0x204077[_0x1239f2], _0xc4edf5[_0x5b9c32(0x185)](_0x4afefe[_0x5b9c32(0x12f)]()) && _0x5bc5a9['\x70\x75\x73\x68'](_0x4afefe);
-                    }
-            }
-            if (_0x3cef7c[_0x5b9c32(0x154)]())
-                for (_0x240453 = 0x0, _0x57b473 = _0x204077[_0x5b9c32(0x14b)]; _0x240453 < _0x57b473; _0x240453++) {
-                    if ('\x70\x4e\x7a\x6b\x74' === _0x5b9c32(0x127))
-                        _0x4afefe = _0x204077[_0x240453], !_0xc4edf5[_0x5b9c32(0x185)](_0x4afefe[_0x5b9c32(0x12f)]()) && _0x5bc5a9[_0x5b9c32(0x14d)](_0x4afefe);
-                    else {
-                        _0x31e6a4 = _0x530f66[_0x5b9c32(0x137)](), _0x56d962 = _0x55a765[_0x5b9c32(0x178)](), _0x526bea = [];
-                        for (_0x36a55a = 0x0, _0x256284 = _0x18628b[_0x5b9c32(0x14b)]; _0x533d4f < _0x1ffa23; _0x43e276++) {
-                            _0x38a55d = _0xa9d4ea[_0x2b321f];
-                            for (_0x4aa70c = 0x0, _0x338dde = _0x1206e1[_0x5b9c32(0x14b)]; _0x4a31c9 < _0x321ec3; _0xb95182++) {
-                                _0x49b625 = _0x51051e[_0xe0d8c3], _0x2c4619['\x70\x75\x73\x68'](_0x34eb25['\x55\x74\x69\x6c\x73'][_0x5b9c32(0x131)][_0x5b9c32(0x158)](_0xdaeb96, _0x36e3bf - _0x5dc39f, _0x4908ab, _0x18e130));
-                            }
-                        }
-                        return _0x1df779[_0x5b9c32(0x179)]();
-                    }
-                }
-            return _0x5bc5a9;
-        } catch (_0x2f6782) {
-            if (_0x5b9c32(0x126) === _0x5b9c32(0x14c))
-                _0x43cd9d[_0x5b9c32(0x14d)](..._0x4042cf['\x6e\x65\x74\x43\x68\x61\x72\x73']());
-            else
-                return _0x5604a3 = _0x2f6782, AA['\x77'](_0x5604a3), [];
+    try {
+      ref = this.spawnPoints();
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        sp = ref[i];
+        results.push(this._refreshSpawnForSP(sp));
+      }
+      return results;
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  }
+
+  update() {
+    if (!$gameTemp.aaSpawnPointExistsOnMap) {
+      return;
+    }
+    return this.spawnCheckThread.update();
+  }
+
+  _refreshSpawnForSP(sp) {
+    var e, settings;
+    settings = AA.PP.getSpawnPointSettings(sp._aaSpawnPointId);
+    if (settings == null) {
+      sp._aaSpawnPointId = null;
+      return; // * Не должно быть, но на всякий случай
+    }
+    // * Увеличиваем таймер спавна у каждого события
+    sp._aaSpawnPointStep++;
+    try {
+      this._workWithSpawnPoint(settings, sp);
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+    }
+  }
+
+  _workWithSpawnPoint(settings, event) {
+    // * Проверка условия - свитча
+    if (!this._isSpawnPointActive(settings.conditionSwitch)) {
+      return;
+    }
+    // * Проверка тайминга
+    if (!this._isProperSpawnRate(settings.spawnRate, event._aaSpawnPointStep)) {
+      return;
+    }
+    // * Провера видимости (если в кругу видимости должен быть)
+    if (!this._isInVisorRadius(settings.visorRadius, event)) {
+      return;
+    }
+    // * Проверка макс. кол-ва (или кол-ва живих)
+    if (!this._isCanSpawnNow(settings, event)) {
+      return;
+    }
+    // * Все условия пройдены, можно делать спавн
+    this._executeSpawnPoint(settings, event);
+  }
+
+  _isSpawnPointActive(conditionSwitch) {
+    if (conditionSwitch > 0) {
+      return $gameSwitches.value(conditionSwitch) === true;
+    } else {
+      return true;
+    }
+  }
+
+  _isInVisorRadius(visorRadius, event) {
+    if (visorRadius <= 0) {
+      return true;
+    }
+    return AA.Utils.Math.getDistanceMapPlayerPoint(event) <= visorRadius;
+  }
+
+  _isProperSpawnRate(spawnRate, eventSpawnStep) {
+    spawnRate = KDCore.Utils.getEValue(spawnRate);
+    return eventSpawnStep >= spawnRate;
+  }
+
+  _isCanSpawnNow({spawnMax, spawnAliveMax, endCommonEvent}, event) {
+    var e, spawnAliveMaxX, spawnMaxX, spawnedAlive;
+    try {
+      spawnMaxX = KDCore.Utils.getEValue(spawnMax);
+      if (spawnMaxX > 0) {
+        if (event._aaSpawnPointSpawnedCount >= spawnMaxX) {
+          // * Отключаем событие!
+          event._aaSpawnPointId = null;
+          // * Общее событие когда конец спавна!
+          AA.Utils.startCE(endCommonEvent);
+          return false;
         }
-    }, _0x34fd06['\x63\x6f\x6c\x6c\x65\x63\x74\x54\x61\x72\x67\x74\x65\x73\x46\x6f\x72\x53\x6b\x69\x6c\x6c'] = function (_0x8f9487, _0x4da5d0, _0x95e464) {
-        var _0x10e5e7 = _0x47ca83;
-        if (_0x10e5e7(0x169) === _0x10e5e7(0x147))
-            _0x540089 = new _0x4f8d97[(_0x10e5e7(0x130))](_0x49bfef['\x78'], _0x3e63ff['\x79']), _0x3d4fae = this[_0x10e5e7(0x145)](_0x1cbae4, _0x49dfd9[_0x10e5e7(0x17b)]());
-        else {
-            var _0x3d2537;
-            return _0x3d2537 = [], _0x4da5d0[_0x10e5e7(0x12e)]() && _0x8f9487 === $gamePlayer && $gameTemp[_0x10e5e7(0x15f)] != null ? _0x3d2537 = $gameTemp[_0x10e5e7(0x15f)] : _0x3d2537 = this[_0x10e5e7(0x171)](_0x4da5d0, _0x95e464), _0x3d2537 = _0x3d2537[_0x10e5e7(0x13c)](function (_0x5a5a0a) {
-                var _0x58cd97 = _0x10e5e7;
-                return _0x5a5a0a[_0x58cd97(0x153)]();
-            }), _0x3d2537 = this[_0x10e5e7(0x168)](_0x8f9487, _0x4da5d0, _0x3d2537), $gameTemp['\x5f\x61\x61\x53\x6b\x69\x6c\x6c\x53\x65\x6c\x65\x63\x74\x6f\x72\x54\x61\x72\x67\x65\x74\x73'] = null, _0x3d2537;
+      }
+      spawnAliveMaxX = KDCore.Utils.getEValue(spawnAliveMax);
+      if (spawnAliveMaxX > 0) {
+        spawnedAlive = uAPI.getSpawnPointSpawnedAlive(event.eventId());
+        if (spawnedAlive >= spawnAliveMaxX) {
+          event._aaSpawnPointStep = 0;
+          return false;
         }
-    }, _0x34fd06['\x63\x6f\x6c\x6c\x65\x63\x74\x54\x61\x72\x67\x65\x74\x73\x46\x6f\x72\x53\x6b\x69\x6c\x6c\x49\x6e\x4d\x61\x70\x50\x6f\x69\x6e\x74'] = function (_0x1ed29e, _0x5a1886) {
-        var _0x249c1d = _0x47ca83;
-        if ('\x71\x76\x6d\x43\x4f' !== '\x71\x76\x6d\x43\x4f') {
-            _0x3ac9fa = _0x1faf1a[_0xdfe158];
-            if (_0x5bf4e7['\x64\x69\x73\x74\x61\x6e\x63\x65'](_0x5c38d2['\x78'], _0x34b5f2['\x79'], _0x5a54f8['\x78'], _0x5c9bc8['\x79']) <= _0x2a0004)
-                return !![];
-        } else {
-            var _0x9410e1, _0x4a85f6;
-            if (_0x1ed29e == null)
-                return [];
-            if (_0x5a1886 == null)
-                return [];
-            _0x4a85f6 = [];
-            if (_0x5a1886 instanceof Game_Character && _0x1ed29e[_0x249c1d(0x122)]() && !(_0x5a1886 instanceof AADummyCharacter))
-                _0x4a85f6 = [_0x5a1886];
-            else {
-                if (_0x1ed29e['\x69\x73\x53\x69\x6e\x67\x6c\x65\x54\x61\x72\x67\x65\x74\x41\x72\x65\x61']()) {
-                    if ('\x54\x52\x56\x75\x73' !== _0x249c1d(0x13e))
-                        _0x4a85f6 = this['\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x41\x6c\x6c\x41\x41\x45\x6e\x74\x69\x74\x69\x65\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73']([_0x5a1886]);
-                    else
-                        return _0x22ea8a = _0x42376f, _0x23871d['\x77'](_0x545948), [];
-                } else
-                    _0x9410e1 = new KDCore[(_0x249c1d(0x130))](_0x5a1886['\x78'], _0x5a1886['\x79']), _0x4a85f6 = this[_0x249c1d(0x145)](_0x1ed29e, _0x9410e1[_0x249c1d(0x17b)]());
-            }
-            return _0x4a85f6;
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return false;
+    }
+    return true;
+  }
+
+  _executeSpawnPoint({spawnPointType, spawnRadius, spawnEnemiesId}, event) {
+    var spawned;
+    event._aaSpawnPointStep = 0; // * Зануляем таймер всегда, даже если нет спавна
+    spawnRadius = KDCore.Utils.getEValue(spawnRadius);
+    if (spawnPointType === 'region') {
+      this._spawnEnemyInRegion(spawnEnemiesId, spawnRadius);
+    } else if (spawnPointType === 'player') {
+      this._spawnEnemyAroundPlayer(spawnEnemiesId, spawnRadius);
+    } else {
+      this._spawnEnemyAroundSpawnPoint(spawnEnemiesId, spawnRadius, event);
+    }
+    spawned = uAPI.getLastSpawnedEnemy();
+    if (spawned == null) {
+      return;
+    }
+    // * Увеличиваем общее количество (на событии)
+    event._aaSpawnPointSpawnedCount += 1;
+    // * Присваиваем ID новому монстру для подсчёта Alive для этого события
+    spawned._aaSpawnPointRelativeId = event.eventId();
+  }
+
+  _spawnEnemyInRegion(spawnEnemiesId, regionId) {
+    if (regionId == null) {
+      return;
+    }
+    if (regionId <= 0) {
+      return;
+    }
+    uAPI.spawnEnemy(spawnEnemiesId, regionId);
+  }
+
+  _spawnEnemyAroundPlayer(spawnEnemiesId, radius) {
+    if (radius == null) {
+      radius = 1;
+    }
+    if (radius <= 0) {
+      radius = 1;
+    }
+    uAPI.spawnEnemyNearPlayer(spawnEnemiesId, radius);
+  }
+
+  _spawnEnemyAroundSpawnPoint(spawnEnemiesId, radius, {x, y}) {
+    if (radius == null) {
+      radius = 1;
+    }
+    if (radius <= 0) {
+      radius = 1;
+    }
+    uAPI.spawnEnemyAround(spawnEnemiesId, x, y, radius);
+  }
+
+};
+
+
+// Generated by CoffeeScript 2.6.1
+// * Менеджер по работе с целями (поиск целей, определение)
+
+//$[ENCODE]
+window.AATargetsManager = function() {};
+
+(function() {  //╒═════════════════════════════════════════════════════════════════════════╛
+  // ■ IMPLEMENTATION.coffee
+  //╒═════════════════════════════════════════════════════════════════════════╛
+  //---------------------------------------------------------------------------
+  var _;
+  //@[DEFINES]
+  _ = AATargetsManager;
+  // * Используется для определения цели для Instant NoProjectile Direction навыков
+  // * Проверка точки на наличие целей для навыка
+  //?[OUTER - used by AABattleActionsManager]
+  //? Этот навык используется напрямую для выбора целей в битве
+  _.getTargetInPoint = function(subject, aaSkill, point) {
+    var events, targets;
+    events = this._collectAllAAEntitiesInPoints([point]);
+    if (events.isEmpty()) {
+      return null;
+    }
+    // * В зависимости от Subject и в зависимости от действия навыка
+    targets = this.filteredTargetsForSubject(subject, aaSkill, events);
+    if ((targets != null) && targets.length > 0) {
+      return targets[0];
+    } else {
+      return null;
+    }
+  };
+  // * Отфильтровать цели (из найденных в точках) для Subject (навыка)
+  _.filteredTargetsForSubject = function(subject, aaSkill, targets) {
+    var candidates, e, entity, k, l, len, len1, t;
+    try {
+      entity = subject.AAEntity();
+      candidates = [];
+      if (aaSkill.isForEnemies()) {
+        for (k = 0, len = targets.length; k < len; k++) {
+          t = targets[k];
+          if (entity.isMyEnemy(t.AAEntity())) {
+            candidates.push(t);
+          }
         }
-    }, _0x34fd06[_0x47ca83(0x145)] = function (_0x20f176, _0x48e948) {
-        var _0x13a1fc = _0x47ca83, _0x44522c, _0x1e7bc0;
-        if (_0x20f176 == null)
-            return [];
-        if (_0x48e948 == null)
-            return [];
-        return _0x1e7bc0 = [], _0x44522c = this['\x5f\x63\x72\x65\x61\x74\x65\x53\x71\x75\x61\x72\x65\x50\x6f\x69\x6e\x74\x73'](_0x20f176[_0x13a1fc(0x156)], _0x48e948), _0x1e7bc0 = this[_0x13a1fc(0x172)](_0x44522c), _0x1e7bc0;
-    }, _0x34fd06['\x63\x6f\x6c\x6c\x65\x63\x74\x54\x61\x72\x67\x65\x74\x73\x46\x6f\x72\x50\x6c\x61\x79\x65\x72\x53\x65\x6c\x65\x63\x74\x6f\x72'] = function (_0x5433fd) {
-        var _0xdfdc05 = _0x47ca83, _0x50d5a6, _0x48d58f;
-        try {
-            return AA[_0xdfdc05(0x14f)]['\x4d\x61\x74\x68']['\x67\x65\x74\x44\x69\x73\x74\x61\x6e\x63\x65\x4d\x61\x70\x50\x6c\x61\x79\x65\x72\x50\x6f\x69\x6e\x74'](TouchInput[_0xdfdc05(0x17e)]()) <= _0x5433fd[_0xdfdc05(0x15b)] ? _0x48d58f = this[_0xdfdc05(0x145)](_0x5433fd, TouchInput) : _0xdfdc05(0x187) !== '\x68\x6d\x56\x72\x74' ? _0x1d49bd['\x70\x75\x73\x68'](new _0x37bb01['\x50\x6f\x69\x6e\x74'](_0x5051dc + _0x570665 / 0x2, _0x16ab9b + _0x539f7d)['\x63\x6f\x6e\x76\x65\x72\x74\x54\x6f\x4d\x61\x70']()) : _0x48d58f = [], this['\x66\x69\x6c\x74\x65\x72\x65\x64\x54\x61\x72\x67\x65\x74\x73\x46\x6f\x72\x53\x75\x62\x6a\x65\x63\x74']($gamePlayer, _0x5433fd, _0x48d58f);
-        } catch (_0x4dd132) {
-            return _0x50d5a6 = _0x4dd132, AA['\x77'](_0x50d5a6), [];
+      }
+      if (aaSkill.isForFriends()) {
+        for (l = 0, len1 = targets.length; l < len1; l++) {
+          t = targets[l];
+          if (!entity.isMyEnemy(t.AAEntity())) {
+            candidates.push(t);
+          }
         }
-    }, _0x34fd06[_0x47ca83(0x17f)] = function (_0x13b53b, _0x49e7ff) {
-        var _0x5af667 = _0x47ca83, _0x1071fc, _0x16141e, _0x46be85, _0x2df77d, _0x1438c4, _0xa9d011, _0x3ff0ef, _0x2c7447, _0x319f85, _0x29e38b, _0x36cdde, _0x215d52, _0x3c2a8b, _0x247fef, _0x5d1e3d, _0xcd2cbb, _0x1d89a1, _0x23a774;
-        _0x1071fc = $gameMap['\x74\x69\x6c\x65\x57\x69\x64\x74\x68'](), _0x16141e = _0x1071fc / 0x2, _0x319f85 = [], _0x29e38b = _0x13b53b * _0x1071fc / 0x2, _0x1d89a1 = _0x49e7ff['\x78'] - _0x29e38b, _0x23a774 = _0x49e7ff['\x79'] - _0x29e38b, _0x46be85 = _0x49e7ff['\x78'] + _0x29e38b, _0x2df77d = _0x49e7ff['\x79'] + _0x29e38b;
-        for (_0x1438c4 = _0x3ff0ef = _0x36cdde = _0x1d89a1, _0x215d52 = _0x46be85, _0x3c2a8b = _0x1071fc; _0x3c2a8b !== 0x0 && (_0x3c2a8b > 0x0 ? _0x3ff0ef < _0x215d52 : _0x3ff0ef > _0x215d52); _0x1438c4 = _0x3ff0ef += _0x3c2a8b) {
-            if ('\x64\x41\x68\x4a\x45' !== _0x5af667(0x149))
-                for (_0xa9d011 = _0x2c7447 = _0x247fef = _0x23a774, _0x5d1e3d = _0x2df77d, _0xcd2cbb = _0x1071fc; _0xcd2cbb !== 0x0 && (_0xcd2cbb > 0x0 ? _0x2c7447 < _0x5d1e3d : _0x2c7447 > _0x5d1e3d); _0xa9d011 = _0x2c7447 += _0xcd2cbb) {
-                    if (_0x5af667(0x174) === _0x5af667(0x176))
-                        return _0x25c301[_0x5af667(0x14f)][_0x5af667(0x131)][_0x5af667(0x158)](_0xf5e69['\x73\x63\x72\x65\x65\x6e\x58'](), _0x35fb42[_0x5af667(0x141)]() - _0x537b61, _0xb47787, _0xf51d80);
-                    else
-                        _0x319f85[_0x5af667(0x14d)](new KDCore[(_0x5af667(0x130))](_0x1438c4 + _0x16141e / 0x2, _0xa9d011 + _0x16141e)[_0x5af667(0x14a)]());
-                }
-            else
-                return null;
+      }
+      return candidates;
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return [];
+    }
+  };
+  // * Собрать цели для навыка (Projectile)
+  //?[OUTER - used by AABattleActionsManager]
+  //? Этот навык используется напрямую для выбора целей в битве
+  _.collectTargtesForSkill = function(subject, absSkill, point) {
+    var targets;
+    targets = [];
+    // * Точные цели селектора, если мнгновенный навык (только для игрока)
+    if (absSkill.isInstant() && subject === $gamePlayer && ($gameTemp._aaSkillSelectorTargets != null)) {
+      targets = $gameTemp._aaSkillSelectorTargets;
+    } else {
+      targets = this.collectTargetsForSkillInMapPoint(absSkill, point);
+    }
+    // * Убираем НЕ АБС события
+    targets = targets.filter(function(t) {
+      return t.isActive();
+    });
+    targets = this.filteredTargetsForSubject(subject, absSkill, targets);
+    // * Сбрасываем цели селектора
+    $gameTemp._aaSkillSelectorTargets = null;
+    return targets;
+  };
+  // * Собирает все возможные цели для навыка в точке карты
+  // * (Лучше использовать этот метод для определения целей)
+  _.collectTargetsForSkillInMapPoint = function(aaSkill, point) {
+    var kdPoint, targets;
+    if (aaSkill == null) {
+      return [];
+    }
+    if (point == null) {
+      return [];
+    }
+    targets = [];
+    if (point instanceof Game_Character && aaSkill.isSingleTargetArea() && !(point instanceof AADummyCharacter)) {
+      targets = [point];
+    } else {
+      if (aaSkill.isSingleTargetArea()) {
+        targets = this._collectAllAAEntitiesInPoints([point]);
+      } else {
+        kdPoint = new KDCore.Point(point.x, point.y);
+        targets = this.collectTargetsForSkillInScreenPoint(aaSkill, kdPoint.convertToScreen());
+      }
+    }
+    return targets;
+  };
+  // * Собирает все возможные цели для навыка в точке экрана
+  // * (Используется для сбора событий в радиусе)
+  _.collectTargetsForSkillInScreenPoint = function(aaSkill, point) {
+    var searchMapPoints, targets;
+    if (aaSkill == null) {
+      return [];
+    }
+    if (point == null) {
+      return [];
+    }
+    targets = [];
+    // * Сформировать квадрат выбора
+    searchMapPoints = this._createSquarePoints(aaSkill.radius, point);
+    targets = this._collectAllAAEntitiesInPoints(searchMapPoints);
+    return targets;
+  };
+  _.collectTargetsForPlayerSelector = function(aaSkill) {
+    var e, targets;
+    try {
+      // * Проверка range, если выходит за range, то не будут цели выделяться
+      if (AA.Utils.Math.getDistanceMapPlayerPoint(TouchInput.toMapPoint()) <= aaSkill.range) {
+        targets = this.collectTargetsForSkillInScreenPoint(aaSkill, TouchInput);
+      } else {
+        targets = [];
+      }
+      // * Фильтр целей сразу
+      return this.filteredTargetsForSubject($gamePlayer, aaSkill, targets);
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return [];
+    }
+  };
+  // * Создаём точки карты в квадратной области навыка (пиксели)
+  _._createSquarePoints = function(radius, point) {
+    var cellSize, cellSize2, ex, ey, i, j, k, l, points, pxRadius, ref, ref1, ref2, ref3, ref4, ref5, sx, sy;
+    cellSize = $gameMap.tileWidth();
+    cellSize2 = cellSize / 2;
+    points = [];
+    pxRadius = radius * cellSize / 2;
+    sx = point.x - pxRadius;
+    sy = point.y - pxRadius;
+    ex = point.x + pxRadius;
+    ey = point.y + pxRadius;
+    for (i = k = ref = sx, ref1 = ex, ref2 = cellSize; ref2 !== 0 && (ref2 > 0 ? k < ref1 : k > ref1); i = k += ref2) {
+      for (j = l = ref3 = sy, ref4 = ey, ref5 = cellSize; ref5 !== 0 && (ref5 > 0 ? l < ref4 : l > ref4); j = l += ref5) {
+        points.push(new KDCore.Point(i + cellSize2 / 2, j + cellSize2).convertToMap());
+      }
+    }
+    return points;
+  };
+  // * Собирает все АБС сущности (события + игрок + партия)
+  _._collectAllAAEntitiesInPoints = function(points) {
+    var aaEntities;
+    aaEntities = [];
+    aaEntities.push(...this._collectAAEventsInPoints(points));
+    aaEntities.push(...this._collectPartyMembersInPoints(points));
+    if (AA.Network.isNetworkGame()) {
+      aaEntities.push(...this._collectNetworkCharsInPoints(points));
+    }
+    //TODO: collect network characters as well
+    return aaEntities;
+  };
+  // * Собирает все АБС события (Активные) в точках карты
+  _._collectAAEventsInPoints = function(points) {
+    var e, events, k, len, p;
+    events = [];
+    try {
+      for (k = 0, len = points.length; k < len; k++) {
+        p = points[k];
+        events.push(...$gameMap.eventsXyAAExt(p.x, p.y));
+      }
+    } catch (error) {
+      e = error;
+      AA.w(e);
+    }
+    return events;
+  };
+  _._collectPartyMembersInPoints = function(points) {
+    var e, k, len, members, p;
+    members = [];
+    try {
+    //TODO: followers
+    // * Сейчас только проверка на игрока
+      for (k = 0, len = points.length; k < len; k++) {
+        p = points[k];
+        if ($gamePlayer.posExt(p.x, p.y)) {
+          members.push($gamePlayer);
+          break;
         }
-        return _0x319f85;
-    }, _0x34fd06[_0x47ca83(0x172)] = function (_0xda3807) {
-        var _0x28feb7 = _0x47ca83, _0x322c47;
-        return _0x322c47 = [], _0x322c47[_0x28feb7(0x14d)](...this[_0x28feb7(0x13b)](_0xda3807)), _0x322c47['\x70\x75\x73\x68'](...this['\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x50\x61\x72\x74\x79\x4d\x65\x6d\x62\x65\x72\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73'](_0xda3807)), AA[_0x28feb7(0x12a)]['\x69\x73\x4e\x65\x74\x77\x6f\x72\x6b\x47\x61\x6d\x65']() && _0x322c47[_0x28feb7(0x14d)](...this[_0x28feb7(0x15c)](_0xda3807)), _0x322c47;
-    }, _0x34fd06['\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x41\x41\x45\x76\x65\x6e\x74\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73'] = function (_0x4d791b) {
-        var _0x5ac842 = _0x47ca83, _0x4ec2d3, _0x49bfdf, _0x116327, _0x13f318, _0x4c5017;
-        _0x49bfdf = [];
-        try {
-            for (_0x116327 = 0x0, _0x13f318 = _0x4d791b[_0x5ac842(0x14b)]; _0x116327 < _0x13f318; _0x116327++) {
-                _0x4c5017 = _0x4d791b[_0x116327], _0x49bfdf[_0x5ac842(0x14d)](...$gameMap[_0x5ac842(0x188)](_0x4c5017['\x78'], _0x4c5017['\x79']));
-            }
-        } catch (_0x3a3090) {
-            _0x4ec2d3 = _0x3a3090, AA['\x77'](_0x4ec2d3);
+      }
+    } catch (error) {
+      e = error;
+      AA.w(e);
+    }
+    return members;
+  };
+  _._collectNetworkCharsInPoints = function(points) {
+    var e, k, len, members, p;
+    members = [];
+    try {
+      for (k = 0, len = points.length; k < len; k++) {
+        p = points[k];
+        members.push(...$gameMap.netChars().filter(function(c) {
+          return c.posExt(p.x, p.y);
+        }));
+      }
+    } catch (error) {
+      e = error;
+      AA.w(e);
+    }
+    return members;
+  };
+  _.collectAllABSEntitiesOnMap = function() {
+    var aaEntities;
+    aaEntities = [$gamePlayer];
+    aaEntities.push(...$gameMap.eventsAA());
+    //TODO: party members
+    if (AA.Network.isNetworkGame()) {
+      aaEntities.push(...$gameMap.netChars());
+    }
+    return aaEntities.filter(this.isValidTarget);
+  };
+  // * Быстрый метод проверки, находится ли игрок в определённом радиусе
+  _.isPlayerInRadius = function(point, radius) {
+    var e;
+    try {
+      return this.isCharExtInRadius(point, radius, $gamePlayer);
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return false;
+    }
+  };
+  //? forWho - Game_Character (with ABS)
+  _.getAvailableTargetsInRadius = function(forWho, radius) {
+    var candidates, e;
+    try {
+      // * forWho идёт как Point тоже
+      candidates = this.collectAllABSEntitiesOnMap();
+      candidates = candidates.filter(function(t) {
+        return forWho.isMyEnemy(t);
+      });
+      return this.getFilteredInRadius(forWho, radius, candidates);
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return [];
+    }
+  };
+  // * Получить сущности в радиусе (из набора сущностей)
+  _.getFilteredInRadius = function(point, radius, candidates) {
+    var c, e, k, len, members;
+    members = [];
+    try {
+      for (k = 0, len = candidates.length; k < len; k++) {
+        c = candidates[k];
+        if (this.isCharExtInRadius(point, radius, c)) {
+          members.push(c);
         }
-        return _0x49bfdf;
-    }, _0x34fd06['\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x50\x61\x72\x74\x79\x4d\x65\x6d\x62\x65\x72\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73'] = function (_0x5523b5) {
-        var _0x3874ae = _0x47ca83;
-        if (_0x3874ae(0x15a) === _0x3874ae(0x15a)) {
-            var _0x30e4a0, _0x17c9ad, _0x37ebea, _0x163794, _0x4bf2c4;
-            _0x163794 = [];
-            try {
-                for (_0x17c9ad = 0x0, _0x37ebea = _0x5523b5[_0x3874ae(0x14b)]; _0x17c9ad < _0x37ebea; _0x17c9ad++) {
-                    _0x4bf2c4 = _0x5523b5[_0x17c9ad];
-                    if ($gamePlayer['\x70\x6f\x73\x45\x78\x74'](_0x4bf2c4['\x78'], _0x4bf2c4['\x79'])) {
-                        _0x163794[_0x3874ae(0x14d)]($gamePlayer);
-                        break;
-                    }
-                }
-            } catch (_0x34fd3c) {
-                if (_0x3874ae(0x142) === _0x3874ae(0x163)) {
-                    var _0x3b488b, _0x3f931b;
-                    if (_0x53b3c2 == null)
-                        return [];
-                    if (_0x2d9c8c == null)
-                        return [];
-                    return _0x3f931b = [], _0x3b488b = this['\x5f\x63\x72\x65\x61\x74\x65\x53\x71\x75\x61\x72\x65\x50\x6f\x69\x6e\x74\x73'](_0x31911f['\x72\x61\x64\x69\x75\x73'], _0xe8ed8b), _0x3f931b = this['\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x41\x6c\x6c\x41\x41\x45\x6e\x74\x69\x74\x69\x65\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73'](_0x3b488b), _0x3f931b;
-                } else
-                    _0x30e4a0 = _0x34fd3c, AA['\x77'](_0x30e4a0);
-            }
-            return _0x163794;
-        } else
-            return _0xfa307c = this[_0x3874ae(0x143)](), _0x1546de = _0x1002ef['\x66\x69\x6c\x74\x65\x72'](function (_0x15cc72) {
-                var _0x504883 = _0x3874ae;
-                return _0x51101f[_0x504883(0x185)](_0x15cc72);
-            }), this[_0x3874ae(0x152)](_0x1340c7, _0xe54d8e, _0x2278e6);
-    }, _0x34fd06['\x5f\x63\x6f\x6c\x6c\x65\x63\x74\x4e\x65\x74\x77\x6f\x72\x6b\x43\x68\x61\x72\x73\x49\x6e\x50\x6f\x69\x6e\x74\x73'] = function (_0x224029) {
-        var _0x3c900d = _0x47ca83, _0x547863, _0x4be54a, _0x1ec2ee, _0x278e20, _0x6902bb;
-        _0x278e20 = [];
-        try {
-            if (_0x3c900d(0x16f) !== _0x3c900d(0x16f))
-                for (_0x7d6d1d = _0x182372 = _0x1a70c8 = _0x28bf0b, _0x1f039e = _0x24af59, _0x2f3feb = _0x2a5317; _0x182bf2 !== 0x0 && (_0x1dd65e > 0x0 ? _0x40c477 < _0x53b01f : _0xf5fdf > _0x350679); _0x1cd316 = _0x1e8f9 += _0x886e14) {
-                    _0x5b33a3[_0x3c900d(0x14d)](new _0x4cdde4['\x50\x6f\x69\x6e\x74'](_0x48318a + _0x236098 / 0x2, _0x4d3683 + _0x40dc87)[_0x3c900d(0x14a)]());
-                }
-            else
-                for (_0x4be54a = 0x0, _0x1ec2ee = _0x224029[_0x3c900d(0x14b)]; _0x4be54a < _0x1ec2ee; _0x4be54a++) {
-                    _0x6902bb = _0x224029[_0x4be54a], _0x278e20[_0x3c900d(0x14d)](...$gameMap['\x6e\x65\x74\x43\x68\x61\x72\x73']()[_0x3c900d(0x13c)](function (_0x84a2d0) {
-                        var _0x303029 = _0x3c900d;
-                        return _0x84a2d0[_0x303029(0x139)](_0x6902bb['\x78'], _0x6902bb['\x79']);
-                    }));
-                }
-        } catch (_0x578b84) {
-            _0x547863 = _0x578b84, AA['\x77'](_0x547863);
+      }
+    } catch (error) {
+      e = error;
+      AA.w(e);
+    }
+    return members;
+  };
+  // * Находится ли персонаж (точка) в радиусе (с учётом расширенных HitBox)
+  _.isCharExtInRadius = function(point, radius, char) {
+    var e, k, len, p, points;
+    try {
+      points = $gameMap.aaGetExtendedPointsFor(char);
+      for (k = 0, len = points.length; k < len; k++) {
+        p = points[k];
+        if ($gameMap.distance(point.x, point.y, p.x, p.y) <= radius) {
+          return true;
         }
-        return _0x278e20;
-    }, _0x34fd06['\x63\x6f\x6c\x6c\x65\x63\x74\x41\x6c\x6c\x41\x42\x53\x45\x6e\x74\x69\x74\x69\x65\x73\x4f\x6e\x4d\x61\x70'] = function () {
-        var _0x56aab6 = _0x47ca83, _0x47a9f6;
-        return _0x47a9f6 = [$gamePlayer], _0x47a9f6[_0x56aab6(0x14d)](...$gameMap['\x65\x76\x65\x6e\x74\x73\x41\x41']()), AA[_0x56aab6(0x12a)][_0x56aab6(0x182)]() && _0x47a9f6[_0x56aab6(0x14d)](...$gameMap[_0x56aab6(0x161)]()), _0x47a9f6[_0x56aab6(0x13c)](this['\x69\x73\x56\x61\x6c\x69\x64\x54\x61\x72\x67\x65\x74']);
-    }, _0x34fd06['\x69\x73\x50\x6c\x61\x79\x65\x72\x49\x6e\x52\x61\x64\x69\x75\x73'] = function (_0x5a00e3, _0x194928) {
-        var _0x419c49 = _0x47ca83, _0x42b841;
-        try {
-            return this[_0x419c49(0x18a)](_0x5a00e3, _0x194928, $gamePlayer);
-        } catch (_0x537a6c) {
-            return _0x42b841 = _0x537a6c, AA['\x77'](_0x42b841), ![];
+      }
+    } catch (error) {
+      e = error;
+      AA.w(e);
+    }
+    return false;
+  };
+  // * Получить дистанцию между персонажем и точкой (на экране)
+  // * Учитываются расширенные HitBox
+  _.getScreenExtDistance = function(char, offsetY, x2, y2) {
+    var dist, e, k, l, len, len1, screenXs, screenYs, x, y;
+    try {
+      if (char == null) {
+        return 1000;
+      }
+      if (char.aaIsHaveExtendedHitBoxes()) {
+        screenXs = char.screenXExt();
+        screenYs = char.screenYExt();
+        dist = [];
+        for (k = 0, len = screenXs.length; k < len; k++) {
+          x = screenXs[k];
+          for (l = 0, len1 = screenYs.length; l < len1; l++) {
+            y = screenYs[l];
+            dist.push(AA.Utils.Math.getXYDistance(x, y - offsetY, x2, y2));
+          }
         }
-    }, _0x34fd06[_0x47ca83(0x159)] = function (_0x5f1ce4, _0x291002) {
-        var _0x4b48ec = _0x47ca83, _0x43b5bd, _0x2168b4;
-        try {
-            return _0x43b5bd = this['\x63\x6f\x6c\x6c\x65\x63\x74\x41\x6c\x6c\x41\x42\x53\x45\x6e\x74\x69\x74\x69\x65\x73\x4f\x6e\x4d\x61\x70'](), _0x43b5bd = _0x43b5bd['\x66\x69\x6c\x74\x65\x72'](function (_0x156434) {
-                var _0x406bb3 = _0x2b07;
-                return _0x406bb3(0x14e) === _0x406bb3(0x16c) ? 0x3e8 : _0x5f1ce4[_0x406bb3(0x185)](_0x156434);
-            }), this[_0x4b48ec(0x152)](_0x5f1ce4, _0x291002, _0x43b5bd);
-        } catch (_0x5d94f9) {
-            return _0x4b48ec(0x125) === _0x4b48ec(0x13d) ? _0x474210[_0x4b48ec(0x185)](_0x3e5957) : (_0x2168b4 = _0x5d94f9, AA['\x77'](_0x2168b4), []);
-        }
-    }, _0x34fd06[_0x47ca83(0x152)] = function (_0x5f32f0, _0x38666e, _0x2fb152) {
-        var _0x2d63bc = _0x47ca83;
-        if (_0x2d63bc(0x15e) === _0x2d63bc(0x16a))
-            for (_0x2fdc15 = 0x0, _0x5c6866 = _0xbd979f[_0x2d63bc(0x14b)]; _0x49698a < _0x38f605; _0x57ffd6++) {
-                _0xe45080 = _0x26c109[_0x56df9a], _0x3e0569['\x69\x73\x4d\x79\x45\x6e\x65\x6d\x79'](_0x42133a['\x41\x41\x45\x6e\x74\x69\x74\x79']()) && _0xd09b[_0x2d63bc(0x14d)](_0x409f89);
-            }
-        else {
-            var _0x220228, _0x1ef829, _0x1dad07, _0x11e7ee, _0x275f8c;
-            _0x275f8c = [];
-            try {
-                for (_0x1dad07 = 0x0, _0x11e7ee = _0x2fb152[_0x2d63bc(0x14b)]; _0x1dad07 < _0x11e7ee; _0x1dad07++) {
-                    if (_0x2d63bc(0x134) === _0x2d63bc(0x134)) {
-                        _0x220228 = _0x2fb152[_0x1dad07];
-                        if (this[_0x2d63bc(0x18a)](_0x5f32f0, _0x38666e, _0x220228)) {
-                            if ('\x55\x61\x63\x69\x61' === _0x2d63bc(0x165))
-                                _0x275f8c[_0x2d63bc(0x14d)](_0x220228);
-                            else
-                                return [];
-                        }
-                    } else
-                        return _0x81cadf[_0x2d63bc(0x12f)]()[_0x2d63bc(0x183)]();
-                }
-            } catch (_0x111df5) {
-                _0x1ef829 = _0x111df5, AA['\x77'](_0x1ef829);
-            }
-            return _0x275f8c;
-        }
-    }, _0x34fd06['\x69\x73\x43\x68\x61\x72\x45\x78\x74\x49\x6e\x52\x61\x64\x69\x75\x73'] = function (_0x12b9b8, _0x290e20, _0x5b277a) {
-        var _0x1e85fb = _0x47ca83, _0x2cdaa1, _0x5cf6cd, _0x2bd10f, _0x2846ad, _0x5bfd64;
-        try {
-            if (_0x1e85fb(0x138) === _0x1e85fb(0x173)) {
-                var _0x27f92b, _0x3c39a6, _0x20ac65, _0x371e50, _0x598590;
-                _0x3c39a6 = [];
-                try {
-                    for (_0x20ac65 = 0x0, _0x371e50 = _0xa81e98['\x6c\x65\x6e\x67\x74\x68']; _0x20ac65 < _0x371e50; _0x20ac65++) {
-                        _0x598590 = _0x1d1c85[_0x20ac65], _0x3c39a6[_0x1e85fb(0x14d)](..._0x221e88[_0x1e85fb(0x188)](_0x598590['\x78'], _0x598590['\x79']));
-                    }
-                } catch (_0x4d6702) {
-                    _0x27f92b = _0x4d6702, _0x1cd596['\x77'](_0x27f92b);
-                }
-                return _0x3c39a6;
-            } else {
-                _0x5bfd64 = $gameMap[_0x1e85fb(0x124)](_0x5b277a);
-                for (_0x5cf6cd = 0x0, _0x2bd10f = _0x5bfd64[_0x1e85fb(0x14b)]; _0x5cf6cd < _0x2bd10f; _0x5cf6cd++) {
-                    _0x2846ad = _0x5bfd64[_0x5cf6cd];
-                    if ($gameMap['\x64\x69\x73\x74\x61\x6e\x63\x65'](_0x12b9b8['\x78'], _0x12b9b8['\x79'], _0x2846ad['\x78'], _0x2846ad['\x79']) <= _0x290e20)
-                        return '\x76\x50\x78\x6a\x69' !== '\x74\x62\x51\x49\x63' ? !![] : (_0x4bc350 = _0x1513ee, _0x404ea8['\x77'](_0x498ac2), 0x3e8);
-                }
-            }
-        } catch (_0x19d62c) {
-            if (_0x1e85fb(0x16e) !== _0x1e85fb(0x16e))
-                return [];
-            else
-                _0x2cdaa1 = _0x19d62c, AA['\x77'](_0x2cdaa1);
-        }
-        return ![];
-    }, _0x34fd06[_0x47ca83(0x18b)] = function (_0xcb6bdb, _0x44af7c, _0x17f464, _0x2d342a) {
-        var _0x2822ac = _0x47ca83, _0x4c6d16, _0x516836, _0x48d164, _0x5403d0, _0xc214b9, _0x835092, _0x2abcef, _0xd5a420, _0x553653, _0x65be64;
-        try {
-            if (_0xcb6bdb == null) {
-                if (_0x2822ac(0x135) === '\x57\x69\x4e\x7a\x54') {
-                    var _0xb05921;
-                    return _0xb05921 = [_0x2d7793], _0xb05921[_0x2822ac(0x14d)](..._0x2d09e8[_0x2822ac(0x175)]()), _0x4371dd[_0x2822ac(0x12a)][_0x2822ac(0x182)]() && _0xb05921[_0x2822ac(0x14d)](..._0x1a3520[_0x2822ac(0x161)]()), _0xb05921[_0x2822ac(0x13c)](this[_0x2822ac(0x136)]);
-                } else
-                    return 0x3e8;
-            }
-            if (_0xcb6bdb[_0x2822ac(0x133)]()) {
-                _0x2abcef = _0xcb6bdb['\x73\x63\x72\x65\x65\x6e\x58\x45\x78\x74'](), _0xd5a420 = _0xcb6bdb['\x73\x63\x72\x65\x65\x6e\x59\x45\x78\x74'](), _0x4c6d16 = [];
-                for (_0x48d164 = 0x0, _0xc214b9 = _0x2abcef['\x6c\x65\x6e\x67\x74\x68']; _0x48d164 < _0xc214b9; _0x48d164++) {
-                    _0x553653 = _0x2abcef[_0x48d164];
-                    for (_0x5403d0 = 0x0, _0x835092 = _0xd5a420[_0x2822ac(0x14b)]; _0x5403d0 < _0x835092; _0x5403d0++) {
-                        if (_0x2822ac(0x184) !== '\x45\x61\x70\x61\x72')
-                            _0x65be64 = _0xd5a420[_0x5403d0], _0x4c6d16[_0x2822ac(0x14d)](AA[_0x2822ac(0x14f)][_0x2822ac(0x131)]['\x67\x65\x74\x58\x59\x44\x69\x73\x74\x61\x6e\x63\x65'](_0x553653, _0x65be64 - _0x44af7c, _0x17f464, _0x2d342a));
-                        else
-                            return !![];
-                    }
-                }
-                return _0x4c6d16[_0x2822ac(0x179)]();
-            } else
-                return AA[_0x2822ac(0x14f)][_0x2822ac(0x131)][_0x2822ac(0x158)](_0xcb6bdb[_0x2822ac(0x13a)](), _0xcb6bdb[_0x2822ac(0x141)]() - _0x44af7c, _0x17f464, _0x2d342a);
-        } catch (_0x5d2231) {
-            return _0x516836 = _0x5d2231, AA['\x77'](_0x516836), 0x3e8;
-        }
-    }, _0x34fd06['\x69\x73\x56\x61\x6c\x69\x64\x54\x61\x72\x67\x65\x74'] = function (_0x24cbcf) {
-        var _0x4fa9e2 = _0x47ca83;
-        return _0x24cbcf != null && _0x24cbcf['\x69\x73\x41\x63\x74\x69\x76\x65']() && _0x24cbcf[_0x4fa9e2(0x12c)]()[_0x4fa9e2(0x150)]();
-    }, _0x34fd06['\x69\x73\x49\x6e\x53\x6b\x69\x6c\x6c\x52\x61\x6e\x67\x65'] = function (_0x3c3d96, _0x2a1267, _0x52ccda) {
-        var _0x3ed161 = _0x47ca83, _0x1f062a, _0x117b46, _0x2ca4d4, _0x4022cf;
-        try {
-            if (_0x3ed161(0x17c) !== _0x3ed161(0x128))
-                return _0x117b46 = _0x3c3d96[_0x3ed161(0x166)](_0x52ccda), _0x1f062a = AA[_0x3ed161(0x14f)][_0x3ed161(0x18c)](_0x2a1267), _0x4022cf = _0x1f062a[_0x3ed161(0x170)], _0x117b46 <= _0x4022cf['\x72\x61\x6e\x67\x65'];
-            else
-                _0x40fcaf = _0x44cc1d[_0x42e2b6], _0x463dd3[_0x3ed161(0x185)](_0x25089d['\x41\x41\x45\x6e\x74\x69\x74\x79']()) && _0x2e8514[_0x3ed161(0x14d)](_0x263027);
-        } catch (_0x25d195) {
-            return _0x2ca4d4 = _0x25d195, AA['\x77'](_0x2ca4d4), ![];
-        }
-    }, _0x34fd06[_0x47ca83(0x164)] = function () {
-        var _0x929120 = _0x47ca83;
-        return $gameMap[_0x929120(0x175)]()[_0x929120(0x13c)](function (_0x1dd667) {
-            var _0x1f1330 = _0x929120;
-            if ('\x61\x61\x72\x66\x55' === _0x1f1330(0x148))
-                for (_0x128de1 = 0x0, _0x4e425b = _0x4f7fe1[_0x1f1330(0x14b)]; _0x80b988 < _0x5c6121; _0xdd889c++) {
-                    _0x41f74d = _0x38512e[_0x3a2647], !_0x5ab1f5[_0x1f1330(0x185)](_0x2e52b9[_0x1f1330(0x12f)]()) && _0x14c7e3[_0x1f1330(0x14d)](_0x218d2b);
-                }
-            else
-                return _0x1dd667[_0x1f1330(0x12f)]()[_0x1f1330(0x183)]();
+        return dist.min();
+      } else {
+        return AA.Utils.Math.getXYDistance(char.screenX(), char.screenY() - offsetY, x2, y2);
+      }
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return 1000;
+    }
+  };
+  // * Цель подходящая (проверки, см. BattleManagerABS.isValidTarget)
+  //TODO: isValidTarget
+  _.isValidTarget = function(targetChar) {
+    return (targetChar != null) && targetChar.isActive() && targetChar.AABattler().isAlive();
+  };
+  // * Находится ли точка (цель) в области дейтсвия навыка (range)
+  _.isInSkillRange = function(char, skillId, targetPoint) {
+    var dataObj, dist, e, skill;
+    try {
+      //TODO: ПОка просто
+      dist = char.distToCol(targetPoint);
+      dataObj = AA.Utils.getAASkillObject(skillId);
+      skill = dataObj.AASkill;
+      //console.log("D " + dist)
+      //console.log("R " + skill.range)
+      return dist <= skill.range;
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return false;
+    }
+  };
+  // * Получить всех ботов, которые имеют игрока своей целью
+  //TODO: TeamID учёт
+  // * На данный момент не проверяется кто именно цель, так как нету сопартийцев и teamId
+  _.getAllWhoHavePlayerAsTarget = function() {
+    return $gameMap.eventsAA().filter(function(e) {
+      return e.AAEntity().isHasTarget();
+    });
+  };
+  // * Получить всех "врагов", которые имеют целью игрока с учётом радиуса
+  _.getAllWhoHavePlayerAsTargetInRange = function(range) {
+    var candidates;
+    candidates = this.getAllWhoHavePlayerAsTarget();
+    if (candidates.length > 0) {
+      candidates = AATargetsManager.getFilteredInRadius($gamePlayer, range, candidates);
+    }
+    return candidates;
+  };
+  // * Применить параметры targetLimit и targetLimitType для навыка
+  _.applySkillTargetsLimit = function(char, targets, absSkill) {
+    var e, targetLimit, targetType;
+    try {
+      targetLimit = absSkill.getETargetLimit();
+      if (targetLimit <= 0) {
+        // * Если нет лимита, то все цели и возвращаем
+        return targets;
+      }
+      targetType = absSkill.getETargetLimitType();
+      if (targetType > 0 && (char != null) && (char.x != null) && (char.y != null)) {
+        // * Сортировка по возрастанию расстояния
+        targets.sort(function(a, b) {
+          var distA, distB, x, y;
+          ({x, y} = char);
+          distA = AA.Utils.Math.getXYDistance(a.x, a.y, x, y);
+          distB = AA.Utils.Math.getXYDistance(b.x, b.y, x, y);
+          //distA = $gameMap.distance(a.x, a.y, x, y)
+          //distB = $gameMap.distance(b.x, b.y, x, y)
+          return distA - distB;
         });
-    }, _0x34fd06[_0x47ca83(0x146)] = function (_0x1c7ccd) {
-        var _0x3e801e = _0x47ca83;
-        if (_0x3e801e(0x17a) !== _0x3e801e(0x16b)) {
-            var _0x367ac1;
-            _0x367ac1 = this[_0x3e801e(0x164)]();
-            if (_0x367ac1[_0x3e801e(0x14b)] > 0x0) {
-                if (_0x3e801e(0x177) !== _0x3e801e(0x177)) {
-                    var _0x586c5b;
-                    try {
-                        return _0x2100a2;
-                    } catch (_0x4ae2bd) {
-                        return _0x586c5b = _0x4ae2bd, _0x2f25ff['\x77'](_0x586c5b), [_0x7d0ed5[0x0]];
-                    }
-                } else
-                    _0x367ac1 = AATargetsManager[_0x3e801e(0x152)]($gamePlayer, _0x1c7ccd, _0x367ac1);
-            }
-            return _0x367ac1;
-        } else
-            _0x3db610 = this[_0x3e801e(0x145)](_0x4e7aa4, _0x3bf8b9);
-    }, _0x34fd06[_0x47ca83(0x12b)] = function (_0x3a761a, _0x31a61b) {
-        var _0x4ef5de = _0x47ca83;
-        if (_0x4ef5de(0x151) !== _0x4ef5de(0x13f)) {
-            var _0x37736b;
-            try {
-                if (_0x4ef5de(0x123) !== _0x4ef5de(0x16d))
-                    return _0x3a761a;
-                else
-                    _0x1d9cb2 = _0x21841a, _0x5b0419['\x77'](_0x41315f);
-            } catch (_0x41ca25) {
-                return _0x37736b = _0x41ca25, AA['\x77'](_0x37736b), [_0x3a761a[0x0]];
-            }
-        } else
-            return _0x1d85b1 = _0x17c031, _0x42e766['\x77'](_0x15f3e4), [];
-    };
-}()));
+        // * Если надо дальнюю, то перевернём массив, так как выбираются первые цели
+        if (targetType > 1) { // * far
+          targets = targets.reverse();
+        }
+      } else {
+        targets.shuffle();
+      }
+      return targets.slice(0, targetLimit);
+    } catch (error) {
+      e = error;
+      AA.w(e);
+      return [targets[0]];
+    }
+  };
+})();
+
+// ■ END IMPLEMENTATION.coffee
+//---------------------------------------------------------------------------
+
 
 // Generated by CoffeeScript 2.6.1
 // * Основной класс менеджер интерфейса (API)
@@ -13968,9 +14809,12 @@ AA.UI = function() {};
   var _;
   //@[DEFINES]
   _ = AA.UI;
+  // * Методы пред подготовки (возможно uiSet ещё даже не задан)
+  _.init = function() {
+    return this._subscribeForEvents();
+  };
   _.setUI = function(uiSet) {
     this.uiSet = uiSet;
-    return this._subscribeForEvents();
   };
   _.isValid = function() {
     return this.uiSet != null;
@@ -15469,7 +16313,7 @@ FWindow_SkillSelect = class FWindow_SkillSelect extends KDCore.FloatingWindow {
     ALIAS__initMembers.call(this);
     this.initAASkills();
     //TODO: Возможно это скинется при загрузке игры
-    AA.EV.subscribeFor("PauseABS", this.gev_onABSPaused.bind(this));
+    AA.EV.subscribeForX(this, "PauseABS", this.gev_onABSPaused.bind(this));
   };
   //@[ALIAS]
   ALIAS__canUse = _.canUse;
@@ -15521,8 +16365,14 @@ FWindow_SkillSelect = class FWindow_SkillSelect extends KDCore.FloatingWindow {
   //@[ALIAS]
   ALIAS__eraseState = _.eraseState;
   _.eraseState = function(stateId) {
+    var ref;
     ALIAS__eraseState.call(this, stateId);
     if (!this.isStateAffected(stateId)) {
+      if (stateId === 1) { // * Death
+        if ((ref = this.AACharacter()) != null) {
+          ref.aaOnRevive();
+        }
+      }
       if (AA.Utils.isAAState(stateId)) {
         return this.eraseStateABS(stateId);
       }
@@ -15647,16 +16497,6 @@ _.attackSkillId = ->
 //---------------------------------------------------------------------------
 (function() {
   var _;
-  //TODO:
-  // 0 - Register AA State (when aa new state)
-  // 1 - Action End States Remove
-  // 2 - Turn End States Remove
-  // 3 - ABS turnOff states Remove
-
-  // - call onStateStart SA
-  // - call onStateTick SA
-  // - call onStateEnd SA
-
   //@[DEFINES]
   _ = Game_BattlerBase.prototype;
   //TODO: подписаться на событие по остановке ABS
@@ -15771,23 +16611,11 @@ _.attackSkillId = ->
       return this.turnTowardCharacter(TouchInput.toMapPoint());
     };
   })();
-  (function() {    
-    // -----------------------------------------------------------------------
-
-    // * Методы ABS (Бой и состояния)
-    // -----------------------------------------------------------------------
-    // * Когда какое-либо действие было выполненно на мне
-    _.aaOnActionOnMe = function(action) {};
-    // * Когда персонаж повержен
-    // * Отличается от aaOnDeath так как тут надо давать бонусы победившему
-    _.aaOnDefeat = function() {};
-    // * Когда надо сменить состояние персонажа на Dead (вывести из АБС системы)
-    return _.aaOnDeath = function() {};
-  })();
 })();
 
 // ■ END Game_Character.coffee
 //---------------------------------------------------------------------------
+
 // -----------------------------------------------------------------------
 
 
@@ -15926,7 +16754,7 @@ _.attackSkillId = ->
 //---------------------------------------------------------------------------
 //@[EXTENSION]
 AA.extend(function() {
-  var ALIAS__createNewAnimaXForCharacter, _;
+  var ALIAS___createXAnimaSetsForState, ALIAS__createNewAnimaXForCharacter, _;
   // * Методы ниже даже не учитываются, если плагин не подключён
   if (Imported.PKD_AnimaX !== true) {
     return;
@@ -15935,10 +16763,14 @@ AA.extend(function() {
   _ = Game_Character.prototype;
   // * Логика состояний анимации (бой, смерть) (всегда работает)
   _.aaUpdateABSAnimaX = function() {
+    var ref;
     if (!this.isAnimX()) {
       return;
     }
-    return this.aaUpdateABSAnimaXInBattleState();
+    if (!((ref = this.AABattler()) != null ? ref.isAlive() : void 0)) {
+      return;
+    }
+    this.aaUpdateABSAnimaXInBattleState();
   };
   _.aaUpdateABSAnimaXInBattleState = function() {
     if (this._aaIsInBattleAnimaXState()) {
@@ -15977,6 +16809,15 @@ AA.extend(function() {
     ALIAS__createNewAnimaXForCharacter.call(this, animaXProfile);
     this.refreshAnimaXABSStates(animaXProfile);
   };
+  // * Добавляем специальный флаг для Dead, чтобы не было Loop и заканчивался на последнем кадре (и с него воспроизводился снова)
+  //@[ALIAS]
+  ALIAS___createXAnimaSetsForState = _._createXAnimaSetsForState;
+  _._createXAnimaSetsForState = function(state, moveSet, idleSet, dashSet) {
+    ALIAS___createXAnimaSetsForState.call(this, ...arguments);
+    if ((idleSet != null) && state === "dead") {
+      idleSet.aaNoRepeatFlag = true;
+    }
+  };
   // * Загрузка состояний анимации
   _.refreshAnimaXABSStates = function(animaXProfile) {
     var animaXStateBattle, animaXStateDead;
@@ -15985,6 +16826,23 @@ AA.extend(function() {
     animaXStateDead = XAnimaTools.getXAnimaParamsForState('dead', animaXProfile);
     if (animaXStateDead != null) {
       this.registerAnimaXState('dead', animaXStateDead);
+    }
+  };
+  _._aaOnGoInDeadAnimaXState = function() {
+    var e;
+    try {
+      if (!this.isHaveAnimaXState('dead')) {
+        return;
+      }
+      if (this._axState !== "dead") {
+        this.switchToXAnimaState('dead');
+      }
+      if (AA.Network.isNetworkGame() && this === $gamePlayer) {
+        AANetworkManager.animaXChangeState('dead', this);
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
     }
   };
 });
@@ -16199,7 +17057,7 @@ AA.extend(function() {
         return this.aaUpdateForNetwork();
       }
     };
-    return _.aaUpdateForNetwork = function() {
+    _.aaUpdateForNetwork = function() {
       var ref;
       if (!ANGameManager.isMapMaster()) {
         return;
@@ -16210,6 +17068,24 @@ AA.extend(function() {
         ref.updateDataObserver();
       }
     };
+    // * Специальный идентификатор персонажа на карте (0 - игрок, Х - номер события)
+    return _.aaCharId = function() {
+      return -1;
+    };
+  })();
+  (function() {    // -----------------------------------------------------------------------
+
+    // * Методы ABS (Бой и состояния)
+    // -----------------------------------------------------------------------
+    // * Когда какое-либо действие было выполненно на мне
+    _.aaOnActionOnMe = function(action) {};
+    // * Когда персонаж повержен
+    // * Отличается от aaOnDeath так как тут надо давать бонусы победившему
+    _.aaOnDefeat = function() {};
+    // * Когда надо сменить состояние персонажа на Dead (вывести из АБС системы)
+    _.aaOnDeath = function() {};
+    // * Когда выходит из состояние смерти
+    return _.aaOnRevive = function() {};
   })();
   (function() {    // -----------------------------------------------------------------------
 
@@ -16240,8 +17116,20 @@ AA.extend(function() {
       this._aaShatterEffectData = [true, [], true, dx, dy];
       AANetworkManager.requestCharacterShatterEffect(this, dx, dy);
     };
-    return _.aaOnShatterEffectCreated = function() {
+    _.aaOnShatterEffectCreated = function() {
       return this._aaShatterEffectData[0] = false;
+    };
+    _.aaIsSupportMotion = function() {
+      return false;
+    };
+    _.aaIsMotionRequested = function() {
+      return this.aaMotionType != null;
+    };
+    _.aaClearMotion = function() {
+      return this.aaMotionType = null;
+    };
+    return _.aaRequestMotion = function(aaMotionType) {
+      this.aaMotionType = aaMotionType;
     };
   })();
   // -----------------------------------------------------------------------
@@ -16870,6 +17758,9 @@ AA.extend(function() {
     // * Основная логика АБС
     // -----------------------------------------------------------------------
     var ALIAS__aaOnActionOnMe, ALIAS__aaOnDeath, ALIAS__aaOnDefeat, ALIAS__aaOnShatterEffectCreated, ALIAS__clearABS, ALIAS__erase, ALIAS__initABS, ALIAS__isActive, ALIAS_aaUpdateABS;
+    _.aaCharId = function() {
+      return this.eventId();
+    };
     // * Этот метод выполняется из отдельного потока для логики АИ
     //$[OUTER]
     _.aaUpdateAILogic = function() {
@@ -16891,7 +17782,7 @@ AA.extend(function() {
     ALIAS__initABS = _.initABS;
     _.initABS = function() {
       ALIAS__initABS.call(this);
-      AA.EV.subscribeFor("PauseABS", this.gev_onABSPaused.bind(this));
+      AA.EV.subscribeForX(this, "PauseABS", this.gev_onABSPaused.bind(this));
       this.aaStoreMoveData();
       this._aaLastMovingActionDelay = 0;
       $gameTemp.aaRegisterAILogicThread(this.eventId());
@@ -17426,6 +18317,14 @@ AA.extend(function() {
   _.aaIsHaveSpawnBlockFlag = function() {
     return this._aaBlockSpawnRadius > 0;
   };
+  // * Является ли событие точкой спавна
+  _.aaIsHaveSpawnPointId = function() {
+    return this._aaSpawnPointId != null;
+  };
+  // * Есть ли локатор у данного события
+  _.aaIsHaveLocator = function() {
+    return this._aaLocatorConfig != null;
+  };
   // * Инициализация расширенных параметров события
   _.aaInitExtraParams = function() {
     this._aaMapSkillVectorBlockList = null;
@@ -17434,6 +18333,10 @@ AA.extend(function() {
     this._aaExtendedHitBox = null;
     this._aaNoVisionPass = false;
     this._aaBlockSpawnRadius = 0;
+    this._aaSpawnPointId = null;
+    this._aaSpawnPointStep = 0;
+    this._aaSpawnPointSpawnedCount = 0;
+    this._aaLocatorConfig = null;
   };
   // * Проверка дополнительных параметров, которые могут касаться не только АА но и всех событий
   _.aaCheckExtraParams = function() {
@@ -17447,6 +18350,8 @@ AA.extend(function() {
     this._aaExtractExtendedHitBoxes();
     this._aaExtractNoVisionPass();
     this._aaExtractBlockSpawn();
+    this._aaExtractSpawnPoint();
+    this._aaExtractLocator();
   };
   // * Извлекает параметр смщенеия вектора для данного события
   // * Т.е. смещение начала графики, когда данное событие "выпускает" вектор из себя
@@ -17590,6 +18495,56 @@ AA.extend(function() {
       e = error;
       AA.w(e);
       this._aaBlockSpawnRadius = 0;
+    }
+  };
+  // * Точка спавна, определяется только ID, а настройки берутся из параметров плагина
+  // * <absSpawnPoint:ID>
+  _._aaExtractSpawnPoint = function() {
+    var e, id, value;
+    try {
+      value = KDCore.Utils.getEventCommentValue("absSpawnPoint", this.list());
+      if (value == null) {
+        return;
+      }
+      value = AA.Utils.Parser.extractABSParameterAny(value);
+      id = value[1];
+      // * Если заданы настройки точки спавна
+      if (AA.PP.getSpawnPointSettings(id) != null) {
+        this._aaSpawnPointId = id;
+        // * Для оптимизации
+        $gameTemp.aaSpawnPointExistsOnMap = true;
+      } else {
+        AA.w("You trying use spawn point " + id + ", but not define setting in Plugin Parameters");
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      this._aaSpawnPointId = null;
+    }
+  };
+  // * Локатор. Ищет персонажа в радиусе и активирует действие
+  // * <absLocator:RADIUS, SERACH_EVENT_TYPE, CE_ID, LOOP>
+  // * SERACH_EVENT_TYPE:
+  // * 0 - player
+  // * X - teamId
+  // * -1 - my team Id (only for AA events) OR any ABS event
+  // * -2 - any NOT ABS event
+  // * -3 - any event (not abs || abs)
+  // * -4 - all (any event + player)
+  _._aaExtractLocator = function() {
+    var e, value;
+    try {
+      value = KDCore.Utils.getEventCommentValue("absLocator", this.list());
+      if (value == null) {
+        return;
+      }
+      value = AA.Utils.Parser.extractABSParameterAny(value);
+      this._aaLocatorConfig = AA.Utils.Parser.convertArrayFromParameter(value[1]);
+      return $gameTemp.aaLocatorEventExistsOnMap = this.aaIsHaveLocator();
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return this._aaLocatorConfig = null;
     }
   };
 })();
@@ -17816,8 +18771,7 @@ AA.extend(function() {
   };
   // * Инициализация временных данных, когда переход на новую карту
   _.aaOnNewMapLoaded = function() {
-    // * Ссылка на последнее событие, которое было динамически создано
-    $gameTemp.aaLastSpawnedEvent = null;
+    AA.System.onNewMapLoaded();
     // * Для производительности, флаг что существует хоть один Spawn Block
     this._aaIsAnySpawnBlockEvent = false;
     // * Кэш точек карты для конкретного региона (для оптимизации)
@@ -17855,6 +18809,17 @@ AA.extend(function() {
   _.eventsAA = function() {
     return this.events().filter(function(e) {
       return e.isABS();
+    });
+  };
+  // * Все события (не обязательно АБС), которые имеют точку спавна
+  _.eventsWithSpawnPoints = function() {
+    return this.events().filter(function(e) {
+      return e.aaIsHaveSpawnPointId();
+    });
+  };
+  _.eventsWithLocators = function() {
+    return this.events().filter(function(e) {
+      return e.aaIsHaveLocator();
     });
   };
   // * ABS события в указанной точке
@@ -18289,6 +19254,16 @@ AA.extend(function() {
   var _;
   //@[DEFINES]
   _ = Game_Party.prototype;
+  _.aaCheckDeath = function() {
+    // * Пока что такая проверка, так как АБС не поддерживает больше 1 члена партии
+    if (!this.isAllDead()) {
+      return;
+    }
+    // * Пока только игрок
+    //TODO: Если будет партия по типу переключения (Genshin mode), то можно переключать
+    // персонажа на живого (опция)
+    $gamePlayer.aaOnDefeat();
+  };
   //TODO: POP UP!
 
   // * Дать опыт всей группе (с учётом опций (разделение, для всех))
@@ -18416,9 +19391,6 @@ AA.extend(function() {
   ALIAS__initMembers = _.initMembers;
   _.initMembers = function() {
     ALIAS__initMembers.call(this);
-    //TODO: Возможно это скинется при загрузке игры
-    AA.EV.subscribeFor("PauseABS", this.gev_onABSPaused.bind(this));
-    AA.EV.subscribeFor("ABSPartyLeaderReady", this.initABS.bind(this));
     return this._initMembersABS();
   };
   // ======================================================================
@@ -18442,7 +19414,10 @@ AA.extend(function() {
   _.update = function(sceneActive) {
     ALIAS__update.call(this, sceneActive);
     if (AA.isABSActive()) {
-      return this._aaUpdatePlayerABS(sceneActive);
+      this._aaUpdatePlayerABS(sceneActive);
+    }
+    if (sceneActive === true) {
+      this._aaUpdatePlayerABSCommon();
     }
   };
   //@[ALIAS]
@@ -18513,8 +19488,17 @@ AA.extend(function() {
   };
   // * Когда сцена карты останавливается (сменяется другой)
   _.aaOnMapSceneEnd = function() {
+    var ref;
+    // * Выходим из цикла проверти Dead Timer, если разработчик забыл удалить состояние Death
+    if ($gameTemp.aaDeathCEExecuted === true) {
+      $gameTemp.aaDeathCEExecuted = null;
+      if ((ref = this.AABattler()) != null) {
+        ref.removeState(1);
+      }
+      this.aaClearMotion();
+    }
     if (this.isInSkillTargetingState()) {
-      return this.onSkillTargetCancel();
+      this.onSkillTargetCancel();
     }
   };
   // * Можно ли управлять? (АБС элементы: навыки, атака и всё в этом роде)
@@ -18563,6 +19547,26 @@ AA.extend(function() {
     myEnemies = AATargetsManager.getAllWhoHavePlayerAsTargetInRange(5);
     return myEnemies.length > 0;
   };
+  // * Обработка общей логики (вне зависимости Active ABS или нет)
+  _._aaUpdatePlayerABSCommon = function() {
+    if (this._aaOnDeathTimer != null) {
+      this._aaUpdateDeathTimer();
+    }
+    //TODO: Можно убрать, но пока оставлю
+    if (this.aaIsMotionRequested() && $gameParty.leader().isAlive()) {
+      this.aaClearMotion();
+    }
+  };
+  _._aaUpdateDeathTimer = function() {
+    if (this._aaOnDeathTimer > 0) {
+      this._aaOnDeathTimer--;
+    } else {
+      this.aaOnDeath();
+    }
+  };
+  _.subscribeForGEvents = function() {
+    return AA.EV.subscribeForX(this, "PauseABS", this.gev_onABSPaused.bind(this));
+  };
   //@[EVENT]
   _.gev_onABSPaused = function() {
     var e;
@@ -18586,6 +19590,10 @@ AA.extend(function() {
     //_.isActive = ->
     //    ALIAS__isActive.call(@) && !@isInVehicle()
 
+    // * 0 - Игрок
+    _.aaCharId = function() {
+      return 0;
+    };
     //@[ALIAS]
     ALIAS__initABS = _.initABS;
     _.initABS = function() {
@@ -18636,6 +19644,9 @@ AA.extend(function() {
           break;
       }
     };
+    _.aaIsSupportMotion = function() {
+      return AA.PP.getShowDeadMotionOnDeathType() > 0;
+    };
   })();
   (function() {    // -----------------------------------------------------------------------
 
@@ -18645,11 +19656,70 @@ AA.extend(function() {
     // * Когда какое-либо действие было выполненно на мне
     //@[ALIAS]
     ALIAS__aaOnActionOnMe = _.aaOnActionOnMe;
-    return _.aaOnActionOnMe = function(action) {
+    _.aaOnActionOnMe = function(action) {
       ALIAS__aaOnActionOnMe.call(this, action);
       //TODO: На будущее: тут можно определить кто именно атаковал, так как action имеет packedSubject
       // * Сброс камеры (если есть опция)
       $gameTemp.aaResetMapScrollOnAction();
+    };
+    _.aaOnDefeat = function() {
+      var motionShowType;
+      if (this._aaOnDeathTimer != null) {
+        return;
+      }
+      // * Если не включён Force dead motion (и подключён AnimaX)
+      if (Imported.PKD_AnimaX && AA.PP.getShowDeadMotionOnDeathType() !== 1) {
+        if (this.isAnimX()) {
+          // * см. Game_Character_AnimaX.coffee
+          this._aaOnGoInDeadAnimaXState();
+        }
+      }
+      motionShowType = AA.PP.getShowDeadMotionOnDeathType();
+      // * Показать Dead Motion
+      if (Imported.PKD_AnimaX) {
+        if (motionShowType === 1 || (motionShowType === 2 && !this.isHaveAnimaXState('dead'))) {
+          this.aaRequestMotion('dead');
+        }
+      } else {
+        if (motionShowType > 0) {
+          this.aaRequestMotion('dead');
+        }
+      }
+      if (AA.PP.getCommonEventOnPlayerDeath() > 0) {
+        this._aaOnDeathTimer = 90;
+      } else {
+        this._aaOnDeathTimer = 10;
+      }
+    };
+    _.aaOnDeath = function() {
+      var ce;
+      // * Сбрасываем таймер
+      this._aaOnDeathTimer = null;
+      if ($gameTemp.aaDeathCEExecuted === true) {
+        return;
+      }
+      // * Если живой, то ничего, мало ли, вдруг воскресили
+      if (this.AABattler().isAlive()) {
+        return;
+      }
+      ce = AA.PP.getCommonEventOnPlayerDeath();
+      // * Если задано общее событие, то выполнить его
+      if (AA.Utils.isValidCE(ce)) {
+        AA.Utils.startCE(ce);
+        $gameTemp.aaDeathCEExecuted = true; // * Иначе Game Over Screen
+      } else {
+        SceneManager.goto(Scene_Gameover);
+      }
+    };
+    //TODO: А что делать при анимации XAnima??? Надо возвращать из Dead при Revive potion
+    //TODO: Сам на себе игрок не может использовать предмет Stimulant, поэтому пока пропуск
+    return _.aaOnRevive = function() {
+      this.aaClearMotion();
+      $gameTemp.aaDeathCEExecuted = false;
+      if (Imported.PKD_AnimaX) {
+        this._aaAnimaXDeathPlayedFlag = false;
+        this.aaUpdateABSAnimaX();
+      }
     };
   })();
   // * Переопределяем
@@ -19174,6 +20244,9 @@ AA.Utils.Guard = function() {};
   _.loadAnimaX = function(filename) {
     return this.loadBitmap('img/charactersAA/', filename);
   };
+  _.loadAAWeaponMotion = function(filename) {
+    return this.loadBitmap('img/weaponsAA/', filename);
+  };
 })();
 
 // ■ END ImageManager.coffee
@@ -19502,6 +20575,17 @@ AA.Utils.Math = function() {};
       return this.getParam("isShakeScreenWhenPlayerGetDamage", true);
     }
 
+    // * Общее событие, когда игрок погибает
+    getCommonEventOnPlayerDeath() {
+      return this.getParam("commonEventOnPlayerDeath", 0);
+    }
+
+    // * Режим Dead Motion, когда игрок погибает
+    // * 0 - none, 1 - always, 2 - ifNoAnimaX
+    getShowDeadMotionOnDeathType() {
+      return this.getParam("characterDeadMotionType", 2);
+    }
+
     // * Враги
     // -----------------------------------------------------------------------
     getSpawnMapId() {
@@ -19514,6 +20598,14 @@ AA.Utils.Math = function() {};
 
     isSpawnRegionCacheAllowed() {
       return this.getParam("enemies_spawn_cacheAllowed", true);
+    }
+
+    getSpawnPointSettings(id) {
+      return this.getSpawnPoints().getById(id);
+    }
+
+    getSpawnPoints() {
+      return this.getParam("spawn_points", []);
     }
 
     //getMapEncounterSpawnMode: -> #TODO:
@@ -19711,720 +20803,508 @@ AA.Utils.Math = function() {};
 //---------------------------------------------------------------------------
 
 
-function _0x431c() {
-    var _0x64b7b6 = [
-        '\x23\x66\x61\x66\x64\x65\x63',
-        '\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x65\x6e\x65\x6d\x79\x4d\x69\x6e\x69\x48\x70',
-        '\x41\x41\x42\x53\x5f\x31',
-        '\x23\x65\x64\x65\x61\x64\x38',
-        '\x50\x6c\x61\x79\x65\x72\x5f\x54\x50\x47\x61\x75\x67\x65\x4c\x61\x62\x65\x6c',
-        '\x39\x78\x56\x79\x68\x74\x53',
-        '\x6c\x65\x66\x74',
-        '\x23\x64\x36\x31\x61\x31\x61',
-        '\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x65\x6e\x65\x6d\x79\x49\x6e\x66\x6f',
-        '\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x61\x63\x74\x6f\x72\x42\x75\x66\x66\x49\x63\x6f\x6e',
-        '\x50\x6c\x61\x79\x65\x72\x5f\x54\x50\x47\x61\x75\x67\x65',
-        '\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x68\x70\x47\x61\x75\x67\x65',
-        '\x33\x30\x35\x32\x39\x6c\x43\x4f\x6d\x72\x4a',
-        '\x31\x32\x32\x37\x33\x33\x31\x72\x5a\x71\x50\x7a\x5a',
-        '\x23\x30\x30\x30\x30\x30\x30',
-        '\x70\x72\x6f\x74\x6f\x74\x79\x70\x65',
-        '\x23\x65\x30\x63\x66\x62\x66',
-        '\x25\x31\x20\x2f\x20\x25\x32',
-        '\x45\x6e\x65\x6d\x79\x5f\x42\x61\x74\x74\x6c\x65\x53\x74\x61\x74\x65\x5f\x46\x72\x65\x65',
-        '\x23\x64\x30\x35\x38\x31\x36',
-        '\x32\x77\x6a\x41\x41\x6c\x4e',
-        '\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x74\x70\x47\x61\x75\x67\x65',
-        '\x67\x5a\x66\x6a\x67',
-        '\x74\x6f\x43\x73\x73',
-        '\x45\x76\x65\x6e\x74\x5f\x48\x50\x47\x61\x75\x67\x65\x32',
-        '\x50\x6c\x61\x79\x65\x72\x5f\x4d\x50\x47\x61\x75\x67\x65\x4c\x61\x62\x65\x6c',
-        '\x33\x36\x37\x36\x53\x77\x49\x69\x47\x50',
-        '\x31\x31\x31\x35\x57\x64\x71\x47\x67\x56',
-        '\x4c\x76\x2e\x20\x25\x31',
-        '\x36\x36\x36\x39\x35\x30\x4b\x5a\x73\x59\x44\x4e',
-        '\x35\x31\x31\x34\x36\x34\x56\x54\x5a\x56\x7a\x62',
-        '\x41\x41\x42\x53\x5f\x32',
-        '\x31\x31\x30\x36\x36\x31\x6b\x63\x59\x6e\x53\x62',
-        '\x23\x32\x31\x62\x35\x33\x63',
-        '\x45\x6e\x65\x6d\x79\x5f\x42\x61\x63\x6b\x67\x72\x6f\x75\x6e\x64',
-        '\x4f\x44\x4c\x73\x58',
-        '\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x61\x63\x74\x6f\x72\x53\x74\x61\x74\x65\x49\x63\x6f\x6e',
-        '\x70\x4b\x58\x61\x4e',
-        '\x31\x39\x35\x37\x34\x33\x34\x64\x4a\x63\x4e\x4f\x66',
-        '\x72\x69\x67\x68\x74',
-        '\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x73\x6b\x69\x6c\x6c\x53\x6c\x6f\x74',
-        '\x41\x3a\x25\x31',
-        '\x41\x41\x42\x53\x5f\x30',
-        '\x54\x71\x69\x64\x61',
-        '\x23\x65\x64\x65\x62\x36\x61'
-    ];
-    _0x431c = function () {
-        return _0x64b7b6;
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ ParamsManager.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+//$[ENCODE]
+(function() {
+  var _;
+  // * Базовые настройки элементов интерфейса
+  // * Эти настройки используется BASIC версия плагина
+
+  //@[DEFINES]
+  _ = AA.ParamsManager.prototype;
+  // * HP
+  _._getDefaultVisualFor_hpGauge = function() {
+    return {
+      visible: true,
+      position: {
+        x: 304,
+        y: 560
+      },
+      label: "Player_HPGaugeLabel",
+      labelMargins: {
+        x: -33,
+        y: 5
+      },
+      isCanBeEdited: true,
+      isHideWithMessage: true,
+      text: {
+        visible: true,
+        size: {
+          w: 100,
+          h: 20
+        },
+        alignment: "left",
+        font: {
+          face: "AABS_0",
+          size: 13,
+          italic: false
+        },
+        margins: {
+          x: 10,
+          y: 0
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#edead8".toCss()
+      },
+      gauge: {
+        visible: true,
+        fill: "Player_HPGauge",
+        foreground: "",
+        mask: "",
+        backColor: "#000000".toCss(),
+        backOpacity: 160,
+        vertical: false
+      }
     };
-    return _0x431c();
-}
-function _0x34ae(_0x10ec7c, _0x48b64b) {
-    var _0x431cf4 = _0x431c();
-    return _0x34ae = function (_0x34aeef, _0x2b4634) {
-        _0x34aeef = _0x34aeef - 0x168;
-        var _0x1f99e8 = _0x431cf4[_0x34aeef];
-        return _0x1f99e8;
-    }, _0x34ae(_0x10ec7c, _0x48b64b);
-}
-(function (_0x4754d2, _0xb7fafb) {
-    var _0x117530 = _0x34ae, _0x473076 = _0x4754d2();
-    while (!![]) {
-        try {
-            var _0x17c4ac = parseInt(_0x117530(0x17f)) / 0x1 * (parseInt(_0x117530(0x187)) / 0x2) + -parseInt(_0x117530(0x193)) / 0x3 + -parseInt(_0x117530(0x18d)) / 0x4 * (-parseInt(_0x117530(0x18e)) / 0x5) + -parseInt(_0x117530(0x16c)) / 0x6 + parseInt(_0x117530(0x180)) / 0x7 + parseInt(_0x117530(0x191)) / 0x8 + -parseInt(_0x117530(0x178)) / 0x9 * (-parseInt(_0x117530(0x190)) / 0xa);
-            if (_0x17c4ac === _0xb7fafb)
-                break;
-            else
-                _0x473076['push'](_0x473076['shift']());
-        } catch (_0x57bd7d) {
-            _0x473076['push'](_0x473076['shift']());
+  };
+  // * MP
+  _._getDefaultVisualFor_mpGauge = function() {
+    return {
+      visible: true,
+      position: {
+        x: 454,
+        y: 560
+      },
+      label: "Player_MPGaugeLabel",
+      labelMargins: {
+        x: -37,
+        y: 5
+      },
+      isCanBeEdited: true,
+      isHideWithMessage: true,
+      text: {
+        visible: true,
+        size: {
+          w: 100,
+          h: 20
+        },
+        alignment: "left",
+        font: {
+          face: "AABS_0",
+          size: 13,
+          italic: false
+        },
+        margins: {
+          x: 10,
+          y: 0
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#edead8".toCss()
+      },
+      gauge: {
+        visible: true,
+        fill: "Player_MPGauge",
+        foreground: "",
+        mask: "",
+        backColor: "#000000".toCss(),
+        backOpacity: 160,
+        vertical: false
+      }
+    };
+  };
+  // * TP
+  _._getDefaultVisualFor_tpGauge = function() {
+    return {
+      visible: false,
+      position: {
+        x: 454,
+        y: 560
+      },
+      label: "Player_TPGaugeLabel",
+      labelMargins: {
+        x: -37,
+        y: 5
+      },
+      isCanBeEdited: true,
+      isHideWithMessage: true,
+      text: {
+        visible: true,
+        size: {
+          w: 100,
+          h: 20
+        },
+        alignment: "left",
+        font: {
+          face: "AABS_0",
+          size: 13,
+          italic: false
+        },
+        margins: {
+          x: 10,
+          y: 0
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#edead8".toCss()
+      },
+      gauge: {
+        visible: true,
+        fill: "Player_TPGauge",
+        foreground: "",
+        mask: "",
+        backColor: "#000000".toCss(),
+        backOpacity: 160,
+        vertical: false
+      }
+    };
+  };
+  // * ENEMY MINI HP
+  _._getDefaultVisualFor_enemyMiniHp = function() {
+    return {
+      visible: true,
+      position: {
+        x: -19,
+        y: -56
+      },
+      label: null,
+      labelMargins: {
+        x: 0,
+        y: 0
+      },
+      // * TEXT не используется в этой реализации
+      text: {
+        visible: false,
+        size: {
+          w: 100,
+          h: 20
+        },
+        alignment: "left",
+        font: {
+          face: "AABS_0",
+          size: 13,
+          italic: false
+        },
+        margins: {
+          x: 10,
+          y: 0
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#edead8".toCss()
+      },
+      gauge: {
+        visible: true,
+        fill: "Event_HPGauge2",
+        foreground: "",
+        mask: "",
+        backColor: "#000000".toCss(),
+        backOpacity: 160,
+        vertical: false
+      }
+    };
+  };
+  // * Иконка для бафов
+  _._getDefaultVisualFor_actorBuffIcon = function() {
+    return {
+      visible: true,
+      position: {
+        x: 0,
+        y: 0
+      },
+      isCanBeEdited: true,
+      textFormat: "%1", //%1 меняется на количество секунд
+      textFormatA: "A:%1", //%1 меняется на количество действия до завершения состояния
+      text: {
+        visible: true,
+        size: {
+          w: 38,
+          h: 14
+        },
+        alignment: "right",
+        font: {
+          face: "AABS_1",
+          size: 16,
+          italic: false
+        },
+        margins: {
+          x: -2,
+          y: -4
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#fafdec".toCss()
+      },
+      icon: {
+        visible: true,
+        index: 0,
+        size: 32
+      }
+    };
+  };
+  // * Иконка для состояний (настройки аналогичные)
+  _._getDefaultVisualFor_actorStateIcon = function() {
+    return {
+      visible: true,
+      position: {
+        x: 0,
+        y: 0
+      },
+      isCanBeEdited: true,
+      textFormat: "%1", //%1 меняется на количество секунд
+      textFormatA: "A:%1", //%1 меняется на количество действия до завершения состояния
+      text: {
+        visible: true,
+        size: {
+          w: 38,
+          h: 14
+        },
+        alignment: "right",
+        font: {
+          face: "AABS_1",
+          size: 16,
+          italic: false
+        },
+        margins: {
+          x: -2,
+          y: -4
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#fafdec".toCss()
+      },
+      icon: {
+        visible: true,
+        index: 0,
+        size: 32
+      }
+    };
+  };
+  // * Слот навыка
+  _._getDefaultVisualFor_skillSlot = function() {
+    return {
+      visible: true,
+      isCanBeEdited: true,
+      isHideWithMessage: true,
+      outlineMargins: {
+        x: -2,
+        y: -2
+      },
+      iconMargins: {
+        x: 2,
+        y: 2
+      },
+      outlinePulseSpeed: 40,
+      selectedOutlineColor: "#fcba03",
+      clickedOutlineColor: "#0b03fc",
+      readyOutlineColor: "#21b53c",
+      badOutlineColor: "#d61a1a",
+      icon: {
+        visible: true,
+        size: 32,
+        index: 0
+      },
+      symbolText: {
+        visible: true,
+        size: {
+          w: 20,
+          h: 20
+        },
+        alignment: "right",
+        font: {
+          face: "AABS_1",
+          size: 14,
+          italic: false
+        },
+        margins: {
+          x: 18,
+          y: 22
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#e0cfbf".toCss()
+      },
+      timeText: {
+        visible: true,
+        size: {
+          w: 32,
+          h: 32
+        },
+        alignment: "center",
+        font: {
+          face: "AABS_1",
+          size: 12,
+          italic: false
+        },
+        margins: {
+          x: 2,
+          y: 2
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#fcba03".toCss()
+      },
+      countText: {
+        visible: true,
+        size: {
+          w: 32,
+          h: 32
+        },
+        alignment: "right",
+        font: {
+          face: "AABS_1",
+          size: 12,
+          italic: false
+        },
+        margins: {
+          x: 0,
+          y: -6
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#eb852d".toCss()
+      }
+    };
+  };
+  _._getDefaultVisualFor_enemyInfo = function() {
+    return {
+      visible: true,
+      position: {
+        x: 640,
+        y: 66
+      },
+      image: "Enemy_Background",
+      isCanBeEdited: true,
+      isHideWithMessage: true,
+      nameFormat: "%1",
+      levelFormat: "Lv. %1",
+      hpTextFormat: "%1 / %2", // * %3 - Для процента, %1 - текущее, %2 - максимум
+      nameText: {
+        visible: true,
+        size: {
+          w: 100,
+          h: 20
+        },
+        alignment: "left",
+        font: {
+          face: "AABS_2",
+          size: 16,
+          italic: false
+        },
+        margins: {
+          x: 10,
+          y: 6
+        },
+        outline: {
+          color: null,
+          width: 3
+        },
+        textColor: "#d05816".toCss()
+      },
+      hpText: {
+        visible: true,
+        size: {
+          w: 100,
+          h: 20
+        },
+        alignment: "left",
+        font: {
+          face: "AABS_0",
+          size: 13,
+          italic: false
+        },
+        margins: {
+          x: 12,
+          y: 28
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#edead8".toCss()
+      },
+      levelText: {
+        visible: true,
+        size: {
+          w: 100,
+          h: 20
+        },
+        alignment: "right",
+        font: {
+          face: "AABS_1",
+          size: 12,
+          italic: false
+        },
+        margins: {
+          x: 60,
+          y: 4
+        },
+        outline: {
+          color: null,
+          width: 2
+        },
+        textColor: "#edeb6a".toCss()
+      },
+      gauge: {
+        visible: true,
+        fill: "Player_HPGauge",
+        foreground: "",
+        mask: "",
+        backColor: "#000000".toCss(),
+        backOpacity: 160,
+        vertical: false
+      },
+      gaugeMargins: {
+        x: 6,
+        y: 28
+      },
+      face: {
+        visible: true,
+        faceName: "",
+        faceIndex: 0,
+        mirror: false,
+        size: 74,
+        margins: {
+          x: 92,
+          y: 10
         }
-    }
-}(_0x431c, 0x2b87d), (function () {
-    var _0x1a39b4 = _0x34ae, _0x391fb8;
-    _0x391fb8 = AA['\x50\x61\x72\x61\x6d\x73\x4d\x61\x6e\x61\x67\x65\x72'][_0x1a39b4(0x182)], _0x391fb8[_0x1a39b4(0x17e)] = function () {
-        var _0x6fbc77 = _0x1a39b4;
-        return {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': 0x130,
-                '\x79': 0x230
-            },
-            '\x6c\x61\x62\x65\x6c': '\x50\x6c\x61\x79\x65\x72\x5f\x48\x50\x47\x61\x75\x67\x65\x4c\x61\x62\x65\x6c',
-            '\x6c\x61\x62\x65\x6c\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': -0x21,
-                '\x79': 0x5
-            },
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x69\x73\x48\x69\x64\x65\x57\x69\x74\x68\x4d\x65\x73\x73\x61\x67\x65': !![],
-            '\x74\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x6fbc77(0x179),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x6fbc77(0x170),
-                    '\x73\x69\x7a\x65': 0xd,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xa,
-                    '\x79': 0x0
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x6fbc77(0x176)[_0x6fbc77(0x18a)]()
-            },
-            '\x67\x61\x75\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x69\x6c\x6c': '\x50\x6c\x61\x79\x65\x72\x5f\x48\x50\x47\x61\x75\x67\x65',
-                '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64': '',
-                '\x6d\x61\x73\x6b': '',
-                '\x62\x61\x63\x6b\x43\x6f\x6c\x6f\x72': _0x6fbc77(0x181)['\x74\x6f\x43\x73\x73'](),
-                '\x62\x61\x63\x6b\x4f\x70\x61\x63\x69\x74\x79': 0xa0,
-                '\x76\x65\x72\x74\x69\x63\x61\x6c': ![]
-            }
-        };
-    }, _0x391fb8['\x5f\x67\x65\x74\x44\x65\x66\x61\x75\x6c\x74\x56\x69\x73\x75\x61\x6c\x46\x6f\x72\x5f\x6d\x70\x47\x61\x75\x67\x65'] = function () {
-        var _0x11cbb0 = _0x1a39b4;
-        return {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': 0x1c6,
-                '\x79': 0x230
-            },
-            '\x6c\x61\x62\x65\x6c': _0x11cbb0(0x18c),
-            '\x6c\x61\x62\x65\x6c\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': -0x25,
-                '\x79': 0x5
-            },
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x69\x73\x48\x69\x64\x65\x57\x69\x74\x68\x4d\x65\x73\x73\x61\x67\x65': !![],
-            '\x74\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x11cbb0(0x179),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': '\x41\x41\x42\x53\x5f\x30',
-                    '\x73\x69\x7a\x65': 0xd,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xa,
-                    '\x79': 0x0
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': '\x23\x65\x64\x65\x61\x64\x38'[_0x11cbb0(0x18a)]()
-            },
-            '\x67\x61\x75\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x69\x6c\x6c': '\x50\x6c\x61\x79\x65\x72\x5f\x4d\x50\x47\x61\x75\x67\x65',
-                '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64': '',
-                '\x6d\x61\x73\x6b': '',
-                '\x62\x61\x63\x6b\x43\x6f\x6c\x6f\x72': '\x23\x30\x30\x30\x30\x30\x30'[_0x11cbb0(0x18a)](),
-                '\x62\x61\x63\x6b\x4f\x70\x61\x63\x69\x74\x79': 0xa0,
-                '\x76\x65\x72\x74\x69\x63\x61\x6c': ![]
-            }
-        };
-    }, _0x391fb8[_0x1a39b4(0x188)] = function () {
-        var _0x12f9a1 = _0x1a39b4;
-        return _0x12f9a1(0x171) === _0x12f9a1(0x16b) ? {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': -0x13,
-                '\x79': -0x38
-            },
-            '\x6c\x61\x62\x65\x6c': null,
-            '\x6c\x61\x62\x65\x6c\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': 0x0,
-                '\x79': 0x0
-            },
-            '\x74\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': ![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': '\x6c\x65\x66\x74',
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': '\x41\x41\x42\x53\x5f\x30',
-                    '\x73\x69\x7a\x65': 0xd,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xa,
-                    '\x79': 0x0
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x12f9a1(0x176)[_0x12f9a1(0x18a)]()
-            },
-            '\x67\x61\x75\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x69\x6c\x6c': _0x12f9a1(0x18b),
-                '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64': '',
-                '\x6d\x61\x73\x6b': '',
-                '\x62\x61\x63\x6b\x43\x6f\x6c\x6f\x72': _0x12f9a1(0x181)[_0x12f9a1(0x18a)](),
-                '\x62\x61\x63\x6b\x4f\x70\x61\x63\x69\x74\x79': 0xa0,
-                '\x76\x65\x72\x74\x69\x63\x61\x6c': ![]
-            }
-        } : {
-            '\x76\x69\x73\x69\x62\x6c\x65': ![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': 0x1c6,
-                '\x79': 0x230
-            },
-            '\x6c\x61\x62\x65\x6c': _0x12f9a1(0x177),
-            '\x6c\x61\x62\x65\x6c\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': -0x25,
-                '\x79': 0x5
-            },
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x69\x73\x48\x69\x64\x65\x57\x69\x74\x68\x4d\x65\x73\x73\x61\x67\x65': !![],
-            '\x74\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x12f9a1(0x179),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x12f9a1(0x170),
-                    '\x73\x69\x7a\x65': 0xd,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xa,
-                    '\x79': 0x0
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x12f9a1(0x176)['\x74\x6f\x43\x73\x73']()
-            },
-            '\x67\x61\x75\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x69\x6c\x6c': _0x12f9a1(0x17d),
-                '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64': '',
-                '\x6d\x61\x73\x6b': '',
-                '\x62\x61\x63\x6b\x43\x6f\x6c\x6f\x72': _0x12f9a1(0x181)['\x74\x6f\x43\x73\x73'](),
-                '\x62\x61\x63\x6b\x4f\x70\x61\x63\x69\x74\x79': 0xa0,
-                '\x76\x65\x72\x74\x69\x63\x61\x6c': ![]
-            }
-        };
-    }, _0x391fb8[_0x1a39b4(0x174)] = function () {
-        var _0xb1de4a = _0x1a39b4;
-        return {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': -0x13,
-                '\x79': -0x38
-            },
-            '\x6c\x61\x62\x65\x6c': null,
-            '\x6c\x61\x62\x65\x6c\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': 0x0,
-                '\x79': 0x0
-            },
-            '\x74\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': ![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0xb1de4a(0x179),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0xb1de4a(0x170),
-                    '\x73\x69\x7a\x65': 0xd,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xa,
-                    '\x79': 0x0
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0xb1de4a(0x176)[_0xb1de4a(0x18a)]()
-            },
-            '\x67\x61\x75\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x69\x6c\x6c': _0xb1de4a(0x18b),
-                '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64': '',
-                '\x6d\x61\x73\x6b': '',
-                '\x62\x61\x63\x6b\x43\x6f\x6c\x6f\x72': '\x23\x30\x30\x30\x30\x30\x30'[_0xb1de4a(0x18a)](),
-                '\x62\x61\x63\x6b\x4f\x70\x61\x63\x69\x74\x79': 0xa0,
-                '\x76\x65\x72\x74\x69\x63\x61\x6c': ![]
-            }
-        };
-    }, _0x391fb8[_0x1a39b4(0x17c)] = function () {
-        var _0x53acca = _0x1a39b4;
-        return _0x53acca(0x189) !== _0x53acca(0x169) ? {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': 0x0,
-                '\x79': 0x0
-            },
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x74\x65\x78\x74\x46\x6f\x72\x6d\x61\x74': '\x25\x31',
-            '\x74\x65\x78\x74\x46\x6f\x72\x6d\x61\x74\x41': _0x53acca(0x16f),
-            '\x74\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x26,
-                    '\x68': 0xe
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x53acca(0x16d),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': '\x41\x41\x42\x53\x5f\x31',
-                    '\x73\x69\x7a\x65': 0x10,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': -0x2,
-                    '\x79': -0x4
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x53acca(0x173)[_0x53acca(0x18a)]()
-            },
-            '\x69\x63\x6f\x6e': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x69\x6e\x64\x65\x78': 0x0,
-                '\x73\x69\x7a\x65': 0x20
-            }
-        } : {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': 0x280,
-                '\x79': 0x42
-            },
-            '\x69\x6d\x61\x67\x65': _0x53acca(0x168),
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x69\x73\x48\x69\x64\x65\x57\x69\x74\x68\x4d\x65\x73\x73\x61\x67\x65': !![],
-            '\x6e\x61\x6d\x65\x46\x6f\x72\x6d\x61\x74': '\x25\x31',
-            '\x6c\x65\x76\x65\x6c\x46\x6f\x72\x6d\x61\x74': _0x53acca(0x18f),
-            '\x68\x70\x54\x65\x78\x74\x46\x6f\x72\x6d\x61\x74': _0x53acca(0x184),
-            '\x6e\x61\x6d\x65\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x53acca(0x179),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': '\x41\x41\x42\x53\x5f\x32',
-                    '\x73\x69\x7a\x65': 0x10,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xa,
-                    '\x79': 0x6
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x3
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x53acca(0x186)['\x74\x6f\x43\x73\x73']()
-            },
-            '\x68\x70\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x53acca(0x179),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x53acca(0x170),
-                    '\x73\x69\x7a\x65': 0xd,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xc,
-                    '\x79': 0x1c
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x53acca(0x176)[_0x53acca(0x18a)]()
-            },
-            '\x6c\x65\x76\x65\x6c\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x53acca(0x16d),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x53acca(0x175),
-                    '\x73\x69\x7a\x65': 0xc,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x3c,
-                    '\x79': 0x4
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x53acca(0x172)[_0x53acca(0x18a)]()
-            },
-            '\x67\x61\x75\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x69\x6c\x6c': '\x50\x6c\x61\x79\x65\x72\x5f\x48\x50\x47\x61\x75\x67\x65',
-                '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64': '',
-                '\x6d\x61\x73\x6b': '',
-                '\x62\x61\x63\x6b\x43\x6f\x6c\x6f\x72': _0x53acca(0x181)[_0x53acca(0x18a)](),
-                '\x62\x61\x63\x6b\x4f\x70\x61\x63\x69\x74\x79': 0xa0,
-                '\x76\x65\x72\x74\x69\x63\x61\x6c': ![]
-            },
-            '\x67\x61\x75\x67\x65\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': 0x6,
-                '\x79': 0x1c
-            },
-            '\x66\x61\x63\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x61\x63\x65\x4e\x61\x6d\x65': '',
-                '\x66\x61\x63\x65\x49\x6e\x64\x65\x78': 0x0,
-                '\x6d\x69\x72\x72\x6f\x72': ![],
-                '\x73\x69\x7a\x65': 0x4a,
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x5c,
-                    '\x79': 0xa
-                }
-            },
-            '\x62\x61\x74\x74\x6c\x65\x53\x74\x61\x74\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x69\x6d\x61\x67\x65': _0x53acca(0x185),
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x8e,
-                    '\x79': 0x3c
-                }
-            },
-            '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64\x49\x6d\x61\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': ![],
-                '\x69\x6d\x61\x67\x65': '',
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x0,
-                    '\x79': 0x0
-                }
-            }
-        };
-    }, _0x391fb8[_0x1a39b4(0x16a)] = function () {
-        var _0x1a2b3a = _0x1a39b4;
-        return {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': 0x0,
-                '\x79': 0x0
-            },
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x74\x65\x78\x74\x46\x6f\x72\x6d\x61\x74': '\x25\x31',
-            '\x74\x65\x78\x74\x46\x6f\x72\x6d\x61\x74\x41': '\x41\x3a\x25\x31',
-            '\x74\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x26,
-                    '\x68': 0xe
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': '\x72\x69\x67\x68\x74',
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': '\x41\x41\x42\x53\x5f\x31',
-                    '\x73\x69\x7a\x65': 0x10,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': -0x2,
-                    '\x79': -0x4
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x1a2b3a(0x173)[_0x1a2b3a(0x18a)]()
-            },
-            '\x69\x63\x6f\x6e': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x69\x6e\x64\x65\x78': 0x0,
-                '\x73\x69\x7a\x65': 0x20
-            }
-        };
-    }, _0x391fb8[_0x1a39b4(0x16e)] = function () {
-        var _0x4183f8 = _0x1a39b4;
-        return {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x69\x73\x48\x69\x64\x65\x57\x69\x74\x68\x4d\x65\x73\x73\x61\x67\x65': !![],
-            '\x6f\x75\x74\x6c\x69\x6e\x65\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': -0x2,
-                '\x79': -0x2
-            },
-            '\x69\x63\x6f\x6e\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': 0x2,
-                '\x79': 0x2
-            },
-            '\x6f\x75\x74\x6c\x69\x6e\x65\x50\x75\x6c\x73\x65\x53\x70\x65\x65\x64': 0x28,
-            '\x73\x65\x6c\x65\x63\x74\x65\x64\x4f\x75\x74\x6c\x69\x6e\x65\x43\x6f\x6c\x6f\x72': '\x23\x66\x63\x62\x61\x30\x33',
-            '\x63\x6c\x69\x63\x6b\x65\x64\x4f\x75\x74\x6c\x69\x6e\x65\x43\x6f\x6c\x6f\x72': '\x23\x30\x62\x30\x33\x66\x63',
-            '\x72\x65\x61\x64\x79\x4f\x75\x74\x6c\x69\x6e\x65\x43\x6f\x6c\x6f\x72': _0x4183f8(0x194),
-            '\x62\x61\x64\x4f\x75\x74\x6c\x69\x6e\x65\x43\x6f\x6c\x6f\x72': _0x4183f8(0x17a),
-            '\x69\x63\x6f\x6e': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': 0x20,
-                '\x69\x6e\x64\x65\x78': 0x0
-            },
-            '\x73\x79\x6d\x62\x6f\x6c\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x14,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x4183f8(0x16d),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': '\x41\x41\x42\x53\x5f\x31',
-                    '\x73\x69\x7a\x65': 0xe,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x12,
-                    '\x79': 0x16
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x4183f8(0x183)[_0x4183f8(0x18a)]()
-            },
-            '\x74\x69\x6d\x65\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x20,
-                    '\x68': 0x20
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': '\x63\x65\x6e\x74\x65\x72',
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x4183f8(0x175),
-                    '\x73\x69\x7a\x65': 0xc,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x2,
-                    '\x79': 0x2
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': '\x23\x66\x63\x62\x61\x30\x33'[_0x4183f8(0x18a)]()
-            },
-            '\x63\x6f\x75\x6e\x74\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x20,
-                    '\x68': 0x20
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': _0x4183f8(0x16d),
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x4183f8(0x175),
-                    '\x73\x69\x7a\x65': 0xc,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x0,
-                    '\x79': -0x6
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': '\x23\x65\x62\x38\x35\x32\x64'[_0x4183f8(0x18a)]()
-            }
-        };
-    }, _0x391fb8[_0x1a39b4(0x17b)] = function () {
-        var _0x37a83b = _0x1a39b4;
-        return {
-            '\x76\x69\x73\x69\x62\x6c\x65': !![],
-            '\x70\x6f\x73\x69\x74\x69\x6f\x6e': {
-                '\x78': 0x280,
-                '\x79': 0x42
-            },
-            '\x69\x6d\x61\x67\x65': _0x37a83b(0x168),
-            '\x69\x73\x43\x61\x6e\x42\x65\x45\x64\x69\x74\x65\x64': !![],
-            '\x69\x73\x48\x69\x64\x65\x57\x69\x74\x68\x4d\x65\x73\x73\x61\x67\x65': !![],
-            '\x6e\x61\x6d\x65\x46\x6f\x72\x6d\x61\x74': '\x25\x31',
-            '\x6c\x65\x76\x65\x6c\x46\x6f\x72\x6d\x61\x74': '\x4c\x76\x2e\x20\x25\x31',
-            '\x68\x70\x54\x65\x78\x74\x46\x6f\x72\x6d\x61\x74': _0x37a83b(0x184),
-            '\x6e\x61\x6d\x65\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': '\x6c\x65\x66\x74',
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x37a83b(0x192),
-                    '\x73\x69\x7a\x65': 0x10,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xa,
-                    '\x79': 0x6
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x3
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x37a83b(0x186)[_0x37a83b(0x18a)]()
-            },
-            '\x68\x70\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': '\x6c\x65\x66\x74',
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': '\x41\x41\x42\x53\x5f\x30',
-                    '\x73\x69\x7a\x65': 0xd,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0xc,
-                    '\x79': 0x1c
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x37a83b(0x176)[_0x37a83b(0x18a)]()
-            },
-            '\x6c\x65\x76\x65\x6c\x54\x65\x78\x74': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x73\x69\x7a\x65': {
-                    '\x77': 0x64,
-                    '\x68': 0x14
-                },
-                '\x61\x6c\x69\x67\x6e\x6d\x65\x6e\x74': '\x72\x69\x67\x68\x74',
-                '\x66\x6f\x6e\x74': {
-                    '\x66\x61\x63\x65': _0x37a83b(0x175),
-                    '\x73\x69\x7a\x65': 0xc,
-                    '\x69\x74\x61\x6c\x69\x63': ![]
-                },
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x3c,
-                    '\x79': 0x4
-                },
-                '\x6f\x75\x74\x6c\x69\x6e\x65': {
-                    '\x63\x6f\x6c\x6f\x72': null,
-                    '\x77\x69\x64\x74\x68': 0x2
-                },
-                '\x74\x65\x78\x74\x43\x6f\x6c\x6f\x72': _0x37a83b(0x172)['\x74\x6f\x43\x73\x73']()
-            },
-            '\x67\x61\x75\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x69\x6c\x6c': '\x50\x6c\x61\x79\x65\x72\x5f\x48\x50\x47\x61\x75\x67\x65',
-                '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64': '',
-                '\x6d\x61\x73\x6b': '',
-                '\x62\x61\x63\x6b\x43\x6f\x6c\x6f\x72': _0x37a83b(0x181)[_0x37a83b(0x18a)](),
-                '\x62\x61\x63\x6b\x4f\x70\x61\x63\x69\x74\x79': 0xa0,
-                '\x76\x65\x72\x74\x69\x63\x61\x6c': ![]
-            },
-            '\x67\x61\x75\x67\x65\x4d\x61\x72\x67\x69\x6e\x73': {
-                '\x78': 0x6,
-                '\x79': 0x1c
-            },
-            '\x66\x61\x63\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x66\x61\x63\x65\x4e\x61\x6d\x65': '',
-                '\x66\x61\x63\x65\x49\x6e\x64\x65\x78': 0x0,
-                '\x6d\x69\x72\x72\x6f\x72': ![],
-                '\x73\x69\x7a\x65': 0x4a,
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x5c,
-                    '\x79': 0xa
-                }
-            },
-            '\x62\x61\x74\x74\x6c\x65\x53\x74\x61\x74\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': !![],
-                '\x69\x6d\x61\x67\x65': _0x37a83b(0x185),
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x8e,
-                    '\x79': 0x3c
-                }
-            },
-            '\x66\x6f\x72\x65\x67\x72\x6f\x75\x6e\x64\x49\x6d\x61\x67\x65': {
-                '\x76\x69\x73\x69\x62\x6c\x65': ![],
-                '\x69\x6d\x61\x67\x65': '',
-                '\x6d\x61\x72\x67\x69\x6e\x73': {
-                    '\x78': 0x0,
-                    '\x79': 0x0
-                }
-            }
-        };
+      },
+      battleState: {
+        visible: true,
+        image: "Enemy_BattleState_Free",
+        margins: {
+          x: 142,
+          y: 60
+        }
+      },
+      foregroundImage: {
+        visible: false,
+        image: "",
+        margins: {
+          x: 0,
+          y: 0
+        }
+      }
     };
-}()));
+  };
+})();
+
+// ■ END ParamsManager.coffee
+//---------------------------------------------------------------------------
+
 
 // Generated by CoffeeScript 2.6.1
 //╒═════════════════════════════════════════════════════════════════════════╛
@@ -20760,7 +21640,7 @@ AA.Utils.Parser = function() {};
 //╒═════════════════════════════════════════════════════════════════════════╛
 //---------------------------------------------------------------------------
 (function() {
-  var ALIAS__create, ALIAS__createSpriteset, ALIAS__onMapLoaded, ALIAS__onMapTouch, ALIAS__stop, ALIAS__update, ALIAS__updateCallMenu, _;
+  var ALIAS__checkGameover, ALIAS__create, ALIAS__createSpriteset, ALIAS__onMapLoaded, ALIAS__onMapTouch, ALIAS__stop, ALIAS__update, ALIAS__updateCallMenu, _;
   //@[DEFINES]
   _ = Scene_Map.prototype;
   
@@ -20768,7 +21648,7 @@ AA.Utils.Parser = function() {};
   ALIAS__create = _.create;
   _.create = function() {
     ALIAS__create.call(this);
-    AA.EV.subscribeFor("ABSPartyLeaderReady", this.addABSUI.bind(this));
+    AA.EV.subscribeFor("ABSPartyLeaderReady", this.gev_onABSPartyLeaderReady.bind(this));
     AA.EV.subscribeFor("ABSPartyLeaderNone", this.removeABSUI.bind(this));
   };
   //@[ALIAS]
@@ -20778,6 +21658,7 @@ AA.Utils.Parser = function() {};
     AA.System.onMapSceneLoaded();
     this.aaCreateMouseDetectionThread();
     this.aaInitMapScrollSystem();
+    this.aaInitExtraControllers();
     // * Небольшая задержка на приём визуальных эффектов от сервера
     AA.Utils.callDelayed(function() {
       return $gameTemp._aaCanReceiveVisualFromServer = true;
@@ -20833,6 +21714,39 @@ AA.Utils.Parser = function() {};
     //TODO: Меню не вызывается если isMoving, также сделать если игрок в действии (анимация, удар)
     // * Если действие выполненно, то не надо вызывать меню
     return ALIAS__updateCallMenu.call(this);
+  };
+  //@[ALIAS]
+  //$[OVER]
+  ALIAS__checkGameover = _.checkGameover;
+  _.checkGameover = function() {
+    return $gameParty.aaCheckDeath(); // * Другой метод
+  };
+})();
+
+// ■ END Scene_Map.coffee
+//---------------------------------------------------------------------------
+//ALIAS__checkGameover.call(@, ...arguments)
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ Scene_Map.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = Scene_Map.prototype;
+  _.aaInitExtraControllers = function() {
+    this.aaSpawnPointsController = new AASpawnPointsController();
+    return this.aaLocatorsController = new AAEventLocatorController();
+  };
+  _.aaUpdateExtraControllers = function() {
+    if (AA.Network.isNetworkGame() && !ANGameManager.isMapMaster()) {
+      return;
+    }
+    this.aaSpawnPointsController.update();
+    return this.aaLocatorsController.update();
   };
 })();
 
@@ -21173,18 +22087,33 @@ AA.Utils.Parser = function() {};
   //@[DEFINES]
   _ = Scene_Map.prototype;
   _.addABSUI = function() {
-    this.removeABSUI();
+    if (this._aaUI != null) {
+      return;
+    }
     this._aaUI = new AA.Spriteset_UI();
     this._aaUILayer.addChild(this._aaUI);
   };
   _.removeABSUI = function() {
     if (this._aaUI != null) {
-      return this._aaUILayer.removeChild(this._aaUI);
+      this._aaUILayer.removeChild(this._aaUI);
     }
+    this._aaUI = null;
   };
   _.updateABS = function() {
     this.aaUpdateMouseDetection();
     this.aaUpdateMapScrlByMouse();
+    this.aaUpdateExtraControllers();
+  };
+  //@[EVENT]
+  _.gev_onABSPartyLeaderReady = function() {
+    var e;
+    try {
+      this.addABSUI();
+      return $gamePlayer.initABS();
+    } catch (error) {
+      e = error;
+      return AA.w(e);
+    }
   };
 })();
 
@@ -21210,6 +22139,376 @@ AA.Utils.Parser = function() {};
 })();
 
 // ■ END Scene_Title.coffee
+//---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
+// * Сцена игрового визуального редактора интерфейса
+(function() {
+  var Scene_UIEditor;
+  Scene_UIEditor = class Scene_UIEditor extends Scene_Base {
+    constructor() {
+      super();
+      this.elementUnderMouse = null;
+      this.isDrag = false;
+      this.preEditElementsStates = [];
+      return;
+    }
+
+    create() {
+      super.create();
+      // * Запоминаем состояние АБС, так как надо его ставить на паузу
+      $gameTemp._needRestoreABSSystemAfterUIEdit = AA.isABSActive();
+      AA.System.pauseABS();
+      this.createMain(); //# -> 0
+      //TODO: Добавить опцию (Показывать ли скрытые в редактре...)
+      this.showNotVisibleElements();
+      //TODO: Добавить опцию (параметр  Показывать ли..)
+      return this.showNotEditableElements();
+    }
+
+    // * Элементы, которые нельзя редактировать, мы отмечаем (блюр)
+    showNotEditableElements() {
+      var e, i, len, ref;
+      ref = this.elements();
+      for (i = 0, len = ref.length; i < len; i++) {
+        e = ref[i];
+        if (!e.isCanBeEdited()) {
+          this.deactivateElement(e);
+        }
+      }
+    }
+
+    // * Элемнты, которые скрыты, мы показываем прозрачными
+    showNotVisibleElements() {
+      var e, i, len, ref;
+      ref = this.elements();
+      for (i = 0, len = ref.length; i < len; i++) {
+        e = ref[i];
+        if (!e.visible) {
+          // * Тут проверяется по флагу visible, а не isActive
+          this.transparentElement(e);
+        }
+      }
+    }
+
+    deactivateElement(element) {
+      // * Сохраняем значения перед редактированием
+      this.preEditElementsStates.push([element, element.visible, element.opacity]);
+      element.opacity = 150;
+      element.desaturate();
+    }
+
+    transparentElement(element) {
+      this.preEditElementsStates.push([element, element.visible, element.opacity]);
+      element.visible = true;
+      element.opacity = 120;
+    }
+
+    // * Сбросить значения по умолчанию
+    resetElement(element) {
+      var user;
+      element.reset("position");
+      user = $gameSystem.aaGetUserUISettings();
+      return user.set(element.tag, "resetPosition");
+    }
+
+    // * Сохранить позицию элемента
+    saveElementPosition(element) {
+      var user, x, y;
+      user = $gameSystem.aaGetUserUISettings();
+      ({x, y} = element);
+      user.set(element.tag, "setPosition", [x, y]);
+    }
+
+    elements() {
+      return this.uiSpriteset.elements;
+    }
+
+    //TODO: Добавить кнопка H - скрыть\показать или скрыть \ показать последний (если не на элементе курсор)
+    // Например стоит опция не показывать скрытые
+
+      //TODO: Параметр плагина - OFF, Всегда, Только в режиме разработки
+
+      //TODO: Кнопка - Сбросить до последний позиции???
+    update() {
+      super.update();
+      this.updateMain(); //# -> Mouse
+      this.updateExit();
+      if (!this.isDrag) {
+        // * Обновляем пользовательское управление (если не Drag)
+        return this.updateInput();
+      }
+    }
+
+    updateExit() {
+      if (Input.isCancel()) {
+        return this.popScene();
+      }
+    }
+
+    updateInput() {
+      // * Сброс позиции по умолчанию
+      if (Input.isTriggered('r')) {
+        if (this.elementUnderMouse != null) {
+          this.resetElement(this.elementUnderMouse);
+        }
+      }
+    }
+
+    stop() {
+      var elementData, i, len, ref;
+      super.stop();
+      if ($gameTemp._needRestoreABSSystemAfterUIEdit === true) {
+        AA.System.resumeABS();
+      }
+      ref = this.preEditElementsStates;
+      // * Восстанавливаем прозрачность и видимость которые были перед редактированием
+      for (i = 0, len = ref.length; i < len; i++) {
+        elementData = ref[i];
+        elementData[0].visible = elementData[1];
+        elementData[0].opacity = elementData[2];
+      }
+    }
+
+  };
+  AA.link(Scene_UIEditor);
+})();
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ Scene_UIEditor.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = AA.Scene_UIEditor.prototype;
+  _.createMain = function() {
+    this.createBackground();
+    // * Показать что в редакторе находимся
+    this.createEditorMark();
+    // * Сетки
+    this.createGrids();
+    this.createUI();
+    this.createXYHelpText();
+    return this.createTagHelpText();
+  };
+  // * За заднем плане карта
+  _.createBackground = function() {
+    this._backgroundSprite = new Sprite(SceneManager.backgroundBitmap());
+    this.addChild(this._backgroundSprite);
+    return this._backgroundSprite.opacity = 250;
+  };
+  _.createEditorMark = function() {
+    var eLayer, eText, p;
+    eLayer = KDCore.Sprite.FromBitmap(Graphics.width, Graphics.height);
+    eLayer.fillAll("#C0C0C0".toCss());
+    eLayer.opacity = 75;
+    p = KDCore.UI.Sprite_UIText.prototype.defaultParams();
+    p.size = {
+      w: Graphics.width,
+      h: 200
+    };
+    p.font.size = 72;
+    eText = new KDCore.UI.Sprite_UIText(p);
+    eText.drawText('UI Editor');
+    eText.y = Graphics.height / 2 - 100;
+    eLayer.addChild(eText);
+    return this.addChild(eLayer);
+  };
+  // * Сетка для визуальной привязки (для шага 10)
+  _.createGrids = function() {
+    this.xGrid = this.createGridSprite(10);
+    return this.addChild(this.xGrid);
+  };
+  _.createGridSprite = function(size) {
+    var drawLineHor, drawLineVert, grid, i, j, k, l, ref, ref1;
+    grid = KDCore.Sprite.FromBitmap(Graphics.width, Graphics.height);
+    drawLineVert = function(b, i) {
+      return b.fillRect(0, i * size, b.width, 1, 'rgba(0, 0, 0, 1)');
+    };
+    drawLineHor = function(b, i) {
+      return b.fillRect(i * size, 0, 1, b.height, 'rgba(0, 0, 0, 1)');
+    };
+    for (i = k = 0, ref = grid.b().height / size; (0 <= ref ? k < ref : k > ref); i = 0 <= ref ? ++k : --k) {
+      drawLineVert(grid.bitmap, i);
+    }
+    for (j = l = 0, ref1 = grid.b().width / size; (0 <= ref1 ? l < ref1 : l > ref1); j = 0 <= ref1 ? ++l : --l) {
+      drawLineHor(grid.bitmap, j);
+    }
+    grid.visible = false;
+    grid.opacity = 75;
+    return grid;
+  };
+  // * В этом методе создаётся AA UI (не обновляемый)
+  _.createUI = function() {
+    this.uiSpriteset = new AA.Spriteset_UI();
+    this.uiSpriteset.show(); // * Всегда видимый в редакторе
+    this.addChild(this.uiSpriteset);
+  };
+  _.createXYHelpText = function() {
+    var p;
+    p = KDCore.UI.Sprite_UITextWithBack.prototype.defaultParams();
+    p.text.size.w = 80;
+    p.rect.size.w = 80;
+    p.rect.borderColor = "";
+    p.text.textColor = "#FFFFFF".toCss();
+    this.xyText = new KDCore.UI.Sprite_UITextWithBack(p);
+    this.xyText.fill("#C0C0C0".toCss());
+    return this.addChild(this.xyText);
+  };
+  _.createTagHelpText = function() {
+    var p;
+    p = KDCore.UI.Sprite_UITextWithBack.prototype.defaultParams();
+    p.text.size.w = 120;
+    p.rect.size.w = 120;
+    p.rect.borderColor = "";
+    p.text.textColor = "#FFFFFF".toCss();
+    this.tagText = new KDCore.UI.Sprite_UITextWithBack(p);
+    this.tagText.fill("#808080".toCss());
+    return this.addChild(this.tagText);
+  };
+})();
+
+// ■ END Scene_UIEditor.coffee
+//---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ Scene_UIEditor.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = AA.Scene_UIEditor.prototype;
+  _.updateMain = function() {
+    this.updateMouse();
+    return this.updateXYText();
+  };
+  _.updateMouse = function() {
+    this.xGrid.visible = false;
+    if (this.isDrag === true) {
+      this.updateDragEnd();
+      return this.updateMouseDrag();
+    } else {
+      this.updateMouseHover();
+      return this.updateDragStart();
+    }
+  };
+  _.updateMouseHover = function() {
+    var underMouse;
+    this.elementUnderMouse = null;
+    underMouse = this.elements().filter(function(e) {
+      return e.isUnderMouse();
+    });
+    if (underMouse.isEmpty()) {
+      return;
+    }
+    return this.elementUnderMouse = underMouse.last();
+  };
+  _.updateDragStart = function() {
+    if (this.elementUnderMouse == null) {
+      return;
+    }
+    if (!this.elementUnderMouse.isCanBeEdited()) {
+      return;
+    }
+    if (TouchInput.isPressed()) {
+      this.isDrag = true;
+      this._lastElementPosition = this.elementUnderMouse.toPoint();
+      // * Разница в координатах курсора и объекта, чтобы убрать эффект "прыжка"
+      this._deltaXY = this.getDeltaXY();
+    }
+  };
+  _.getDeltaXY = function() {
+    var dx, dy, x, y;
+    ({x, y} = this.elementUnderMouse);
+    dx = TouchInput.x - x;
+    dy = TouchInput.y - y;
+    return new KDCore.Point(dx, dy);
+  };
+  _.updateMouseDrag = function() {
+    // * Проверка, есть ли элемент
+    this.elementUnderMouse.move(TouchInput.x - this._deltaXY.x, TouchInput.y - this._deltaXY.y);
+    if (Input.isPressed('shift')) {
+      this.applyMargin(2);
+    } else if (Input.isPressed('control')) {
+      this.applyMargin(10);
+      this.xGrid.visible = true;
+    }
+    if (TouchInput.isCancelled()) {
+      this.resetAfterDrag();
+    }
+  };
+  // * Применить "привязывание" к координатам
+  _.applyMargin = function(delta) {
+    var x, y;
+    ({x, y} = this.elementUnderMouse);
+    while (x % delta !== 0) {
+      x += 1;
+    }
+    while (y % delta !== 0) {
+      y += 1;
+    }
+    return this.elementUnderMouse.move(x, y);
+  };
+  _.resetAfterDrag = function() {
+    this.isDrag = false;
+    TouchInput.clear();
+    return this.elementUnderMouse.move(this._lastElementPosition);
+  };
+  _.updateDragEnd = function() {
+    if (TouchInput.isReleased()) {
+      this.isDrag = false;
+      this.saveElementPosition(this.elementUnderMouse); //# -> @
+    }
+  };
+  _.updateXYText = function() {
+    var fillColor, t;
+    fillColor = "#C0C0C0".toCss();
+    this.tagText.visible = false;
+    if (this.elementUnderMouse != null) {
+      // * Показываем координаты элемента
+      t = this.getXYTextFormat(this.elementUnderMouse);
+      if (this.isDrag === true) {
+        fillColor = "#008040".toCss();
+      } else {
+        if (this.elementUnderMouse.isCanBeEdited()) {
+          fillColor = "#008080".toCss();
+        } else {
+          fillColor = "#FF8080".toCss();
+        }
+        this.tagText.draw(this.elementUnderMouse.tag);
+        this.tagText.visible = true;
+      }
+    } else {
+      t = this.getXYTextFormat(TouchInput);
+    }
+    this.xyText.fill(fillColor);
+    this.xyText.draw(t);
+    return this.moveXYTextHelp();
+  };
+  _.moveXYTextHelp = function() {
+    this.xyText.move(TouchInput.x + 16, TouchInput.y + 16);
+    this.tagText.move(this.xyText.x - 20, this.xyText.y + this.xyText.realHeight());
+    // * Если слишком низки (за экран выходит)
+    if (this.tagText.y + this.tagText.realHeight() > Graphics.height) {
+      this.xyText.y = TouchInput.y - 16 - this.xyText.realHeight();
+      this.tagText.y = this.xyText.y + this.xyText.realHeight();
+    }
+  };
+  _.getXYTextFormat = function(point) {
+    var x, y;
+    ({x, y} = point);
+    return "X:" + x + " ; Y:" + y;
+  };
+})();
+
+// ■ END Scene_UIEditor.coffee
 //---------------------------------------------------------------------------
 
 
@@ -21630,15 +22929,12 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
     this.bitmap = ImageManager.loadPicture(this.skill.image());
   };
   _._setupAnimatedImg = function() {
-    var frames;
+    var data;
     this._curFrame = 0;
     this._frameTimer = 0;
-    frames = this.skill.image().match(/\((.*)\)/i);
-    if (frames != null) {
-      frames = frames[1].split(',');
-      this._frames = Number(frames[0]);
-      this._frameSpeed = Number(frames[1]);
-    }
+    data = AA.Utils.getFramesAndSpeed(this.skill.image());
+    this._frames = data.f;
+    this._frameSpeed = data.s;
   };
   _._setupDirection = function() {
     var eX, eY, sX, sY, yo;
@@ -21983,22 +23279,33 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
   };
   //@_lastIconIndex = iconIndex
   _._drawBuffText = function(text) {
-    var time;
-    //return if @_lastTextValue == text
-    if ((text != null) && isFinite(text)) {
-      time = KDCore.Utils.convertTimeShort(text);
-      return this.drawText(this.params.textFormat.replace("%1", time));
-    } else {
-      return this.drawText(text);
+    var e, time;
+    try {
+      //return if @_lastTextValue == text
+      if ((text != null) && isFinite(text)) {
+        time = KDCore.Utils.convertTimeShort(text);
+        return this.drawText(this.params.textFormat.replace("%1", time));
+      } else {
+        return this.drawText(text);
+      }
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
     }
   };
   //@_lastTextValue = text
   _._drawStateActText = function(text) {
-    //return if @_lastTextValueA == text
-    if ((text != null) && isFinite(text)) {
-      return this.drawText(this.params.textFormatA.replace("%1", text));
-    } else {
-      return this.drawText(text);
+    var e;
+    try {
+      //return if @_lastTextValueA == text
+      if ((text != null) && isFinite(text)) {
+        return this.drawText(this.params.textFormatA.replace("%1", text));
+      } else {
+        return this.drawText(text);
+      }
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
     }
   };
 })();
@@ -22014,7 +23321,7 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
 //╒═════════════════════════════════════════════════════════════════════════╛
 //---------------------------------------------------------------------------
 (function() {
-  var ALIAS__initMembers, ALIAS__update, _;
+  var ALIAS__initMembers, ALIAS__setCharacter, ALIAS__update, _;
   //@[DEFINES]
   _ = Sprite_Character.prototype;
   //@[ALIAS]
@@ -22022,9 +23329,15 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
   _.initMembers = function() {
     ALIAS__initMembers.call(this);
     AA.EV.subscribeFor("PlayerSkillSelector", this.gev_onPlayerSkillSelector.bind(this));
-    return AA.EV.subscribeFor("UnderMouseEventChanged", this.gev_onUnderMouseEventChanged.bind(this));
+    AA.EV.subscribeFor("UnderMouseEventChanged", this.gev_onUnderMouseEventChanged.bind(this));
   };
   
+  //@[ALIAS]
+  ALIAS__setCharacter = _.setCharacter;
+  _.setCharacter = function() {
+    ALIAS__setCharacter.call(this, ...arguments);
+    this._aaPrepareMotion();
+  };
   //@[ALIAS]
   ALIAS__update = _.update;
   _.update = function() {
@@ -22050,7 +23363,15 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
   // * Создать дополнительные спрайты для ABS системы
   _.initABS = function() {
     this._aaSetupExtraInfo();
-    return this._aaSetupWeaponMotionSprite();
+    this._aaSetupWeaponMotionSprite();
+    this._aaSetupStateOverlaySprite();
+  };
+  _._aaSetupStateOverlaySprite = function() {
+    this._aaStateOverlaySprite = new Sprite_StateOverlay();
+    this._aaStateOverlaySprite.scale.set(0.8);
+    this._aaStateOverlaySprite.z = 1;
+    this._aaStateOverlaySprite.setup(this._character.AABattler());
+    return this.parent.addChild(this._aaStateOverlaySprite);
   };
   _.isPlayer = function() {
     return this._character === $gamePlayer;
@@ -22069,6 +23390,8 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
     this._aaUpdateDamagePopUps();
     this._aaUpdateSpriteEffects();
     this._aaUpdateWeaponMotion();
+    this._aaUpdateStateOverlay();
+    this._aaUpdateMotion();
   };
   _._aaUpdateDamagePopUps = function() {
     var b, data;
@@ -22087,6 +23410,12 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
     this._aaRefreshExtraInfoOnDamage();
     b.clearDamagePopup();
     b.clearResult();
+  };
+  _._aaUpdateStateOverlay = function() {
+    if (this._aaStateOverlaySprite == null) {
+      return;
+    }
+    return this._aaStateOverlaySprite.move(this.x, this.y);
   };
   // * Если спрайт в зоне навыка, то подсвечивать его
   //?DYNAMIC
@@ -22144,6 +23473,111 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
 
 // ■ END Sprite_Character.coffee
 //---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ Sprite_Character.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = Sprite_Character.prototype;
+  _._aaPrepareMotion = function() {
+    if ((this._character != null) && this._character.aaIsSupportMotion()) {
+      return this._aaUpdateMotion = this._aaUpdateMotionBody;
+    } else {
+      return this._aaUpdateMotion = function() {}; // * EMPTY
+    }
+  };
+  
+  //?DYNAMIC
+  _._aaUpdateMotion = function() {};
+  _._aaUpdateMotionBody = function() {
+    var motion;
+    if (!this.isABSEntity()) {
+      return;
+    }
+    if (this._character.aaIsMotionRequested()) {
+      motion = Sprite_Actor.MOTIONS[this._character.aaMotionType];
+      if (motion !== this._aaCurrentMotionType) {
+        if (this._aaMotionSprite != null) {
+          this._aaClearMotion();
+        }
+        this._aaSetupMotion(motion);
+      }
+    } else {
+      if (this._aaMotionSprite != null) {
+        this._aaClearMotion();
+      }
+    }
+    if (this._aaMotionSprite != null) {
+      this._aaUpdateMotionAnimation();
+    }
+  };
+  _._aaSetupMotion = function(motion) {
+    var e;
+    if (motion == null) {
+      return;
+    }
+    if (this._aaCurrentMotionType === motion) {
+      return;
+    }
+    try {
+      // * Sprite creation
+      this._aaMotionSprite = new Sprite();
+      this._aaMotionSprite.x = 0.5;
+      this._aaMotionSprite.y = 1;
+      this._aaMotionSprite.bitmap = ImageManager.loadSvActor(this._character.AABattler().battlerName());
+      this._aaMotionSprite.scale.set(0.8);
+      // * По стандарту, спрайт смотрит влево, перевернём его, если  персонаж смотрел вправо
+      if (this._character.direction() === 6) {
+        this._aaMotionSprite.scale.x *= -1;
+        // * Нужно добавить также сдвиг самого спрайта
+        this._aaMotionDX = this.patternWidth();
+      } else {
+        this._aaMotionDX = 0;
+      }
+      this.parent.addChild(this._aaMotionSprite);
+      // * Motion setup
+      this._aaCurrentMotionType = motion;
+      this._aaMotionCount = 0;
+      this._aaMotionPattern = 0;
+      this._character.setTransparent(true);
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      this._aaMotionSprite = null;
+      this._character.aaClearMotion();
+    }
+  };
+  _._aaClearMotion = function() {
+    this._aaCurrentMotionType = null;
+    this._aaMotionSprite.visible = false;
+    this._aaMotionSprite = null;
+    this._character.setTransparent(false);
+  };
+  _._aaUpdateMotionAnimation = function() {
+    var b, ch, cw, cx, cy, motionIndex;
+    b = this._aaMotionSprite.bitmap;
+    motionIndex = this._aaCurrentMotionType.index;
+    cw = b.width / 9;
+    ch = b.height / 6;
+    cx = Math.floor(motionIndex / 6) * 3 + this._aaMotionPattern;
+    cy = motionIndex % 6;
+    this._aaMotionSprite.setFrame(cx * cw, cy * ch, cw, ch);
+    this._aaMotionSprite.x = this._character.screenX() + this._aaMotionDX - this.patternWidth() / 2;
+    this._aaMotionSprite.y = this._character.screenY() - this.patternHeight();
+  };
+})();
+
+// ■ END Sprite_Character.coffee
+//---------------------------------------------------------------------------
+//TODO: animation with delay
+//@_aaMotionPattern++
+//@_aaMotionPattern = 1 if @_aaMotionPattern > 3
+//console.log(@_aaMotionPattern)
 
 
 // Generated by CoffeeScript 2.6.1
@@ -22287,7 +23721,8 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
   _ = Sprite_Character.prototype;
   _._aaSetupWeaponMotionSprite = function() {
     this._aaSprWeapMotionHolder = new Sprite();
-    this._aaSprWeapon = new Sprite_Weapon();
+    // * Новый класс используется, он внутри себя содержит и старую и новую реализацию
+    this._aaSprWeapon = new AA.Sprite_WeaponMotionSelector();
     this._aaSprWeapMotionHolder.addChild(this._aaSprWeapon);
   };
   _._aaUpdateWeaponMotion = function() {
@@ -22308,6 +23743,7 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
     }
     try {
       this._aaSprWeapon.setup(b.weaponImageId());
+      //@_aaSprWeapon.setup("Motion_Sword(3,12)")
       direction = this._character.direction();
       this._aaSprWeapon.aaSetDirection(direction);
       if (direction === 8) { // * UP
@@ -22319,7 +23755,7 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
       }
     } catch (error) {
       e = error;
-      AA.w;
+      AA.w(e);
     } finally {
       b.clearWeaponAnimation();
     }
@@ -22569,30 +24005,56 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
 
     // * Value: level
     drawLevelWithFormat(value) {
-      var ref;
-      return (ref = this.levelText) != null ? ref.draw(this.params.levelFormat.replace("%1", value)) : void 0;
+      var e, ref, ref1;
+      try {
+        if (this.params.levelFormat == null) {
+          return (ref = this.levelText) != null ? ref.draw(value) : void 0;
+        } else {
+          return (ref1 = this.levelText) != null ? ref1.draw(this.params.levelFormat.replace("%1", value)) : void 0;
+        }
+      } catch (error) {
+        e = error;
+        return KDCore.warning(e);
+      }
     }
 
     // * Values: current, max, rate
     drawHpWithFormat(value1, value2, value3) {
-      var text;
+      var e, text;
       if (this.hpText == null) {
         return;
       }
-      text = this.params.hpTextFormat.replace("%1", value1);
-      if (value2 != null) {
-        text = text.replace("%2", value2);
+      try {
+        if (this.params.hpTextFormat == null) {
+          this.params.hpTextFormat = "%1";
+        }
+        text = this.params.hpTextFormat.replace("%1", value1);
+        if (value2 != null) {
+          text = text.replace("%2", value2);
+        }
+        if (value3 != null) {
+          text = text.replace("%3", value3);
+        }
+        return this.hpText.draw(text);
+      } catch (error) {
+        e = error;
+        return KDCore.warning(e);
       }
-      if (value3 != null) {
-        text = text.replace("%3", value3);
-      }
-      return this.hpText.draw(text);
     }
 
     // * Value: name
     drawNameWithFormat(value) {
-      var ref;
-      return (ref = this.nameText) != null ? ref.draw(this.params.nameFormat.replace("%1", value)) : void 0;
+      var e, ref, ref1;
+      try {
+        if (this.params.levelFormat == null) {
+          return (ref = this.nameText) != null ? ref.draw(value) : void 0;
+        } else {
+          return (ref1 = this.nameText) != null ? ref1.draw(this.params.nameFormat.replace("%1", value)) : void 0;
+        }
+      } catch (error) {
+        e = error;
+        return KDCore.warning(e);
+      }
     }
 
     drawFace(faceName, faceIndex) {
@@ -23142,6 +24604,11 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
   // * Настройки анимации оружия для ABS карты
   //TODO: settings to user for each type (scale, dx, dy)
   _.aaSetDirection = function(direction) {
+    this._aaApplyScaleAndDir(direction);
+    // * Начало в прозрачности (небольшой эффект)
+    this._aaPlayOpChanger();
+  };
+  _._aaApplyScaleAndDir = function(direction) {
     this.scale.x = 0.7;
     this.scale.y = this.scale.x;
     this.x = this.y = 0;
@@ -23159,7 +24626,8 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
       default:
         this.y = -10;
     }
-    // * Начало в прозрачности (небольшой эффект)
+  };
+  _._aaPlayOpChanger = function() {
     //TODO: тоже опция
     this._aaOpChanger = new KDCore.Changer(this);
     this._aaOpChanger.change('opacity').from(60).to(255).step(20).speed(1);
@@ -23170,6 +24638,177 @@ Sprite_AAMapSkill2Projectile = class Sprite_AAMapSkill2Projectile extends Sprite
 })();
 
 // ■ END Sprite_Weapon.coffee
+//---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
+// * Новый класс для воспроизведения анимации взмаха оружием, показывает
+// * оригинальный Sprite_Weapon или новый Sprite_WeaponMotion в зависимости от типа
+(function() {
+  var Sprite_WeaponMotionSelector;
+  Sprite_WeaponMotionSelector = class Sprite_WeaponMotionSelector extends Sprite {
+    constructor() {
+      super();
+      this._lastMotionSpr = null; // * ссылка на класс, который будет использован
+      this._originalSprWeapon = new Sprite_Weapon();
+      this.addChild(this._originalSprWeapon);
+      this._newSprWeapon = new AA.Sprite_WeaponMotion();
+      this.addChild(this._newSprWeapon);
+      return;
+    }
+
+    setup(motionNameOrWeaponId) {
+      // * скрыть предыдущие
+      this._newSprWeapon.setup(null);
+      this._originalSprWeapon.setup(0);
+      // * задать новый класс
+      if (!KDCore.SDK.isString(motionNameOrWeaponId)) {
+        this._lastMotionSpr = this._originalSprWeapon;
+      } else {
+        this._lastMotionSpr = this._newSprWeapon;
+      }
+      this._lastMotionSpr.setup(motionNameOrWeaponId);
+    }
+
+    aaSetDirection(d) {
+      if (this._lastMotionSpr == null) {
+        return;
+      }
+      this._lastMotionSpr.aaSetDirection(d);
+    }
+
+  };
+  AA.link(Sprite_WeaponMotionSelector);
+})();
+
+(function() {
+  var Sprite_WeaponMotion;
+  //TODO: Tut ostanovilsia, sm class Sprite_Weapon и менять методы чтобы со своим работать
+
+    // * Новый класс для отдельных файлов анимации оружия
+  Sprite_WeaponMotion = class Sprite_WeaponMotion extends Sprite {
+    constructor() {
+      super();
+      this.initMembers();
+    }
+
+    initMembers() {
+      this._animationWaitTime = 12;
+      this._weaponImage = null;
+      this._animationCount = 0;
+      this._pattern = 0;
+      this.anchor.x = 0.5;
+      this.anchor.y = 1;
+    }
+
+    update() {
+      super.update();
+      if (!this.isValid()) {
+        return;
+      }
+      this._animationCount++;
+      if (this._animationCount >= this.animationWait()) {
+        this.updatePattern();
+        this.updateFrame();
+        this._animationCount = 0;
+      }
+    }
+
+    isValid() {
+      return this._bitmapLoaded === true && this._direction !== -1;
+    }
+
+    // * Главный метод
+    //%[PREPARE]
+    setup(_weaponImage) {
+      this._weaponImage = _weaponImage;
+      this._animationCount = 0;
+      this._bitmapLoaded = false;
+      this._direction = -1;
+      this._pattern = 0;
+      this.loadBitmap();
+      this.updateFrame();
+    }
+
+    //%[START]
+    // * Данный метод запускает саму анимацию
+    aaSetDirection(d) {
+      switch (d) {
+        case 8:
+          this._direction = 3;
+          break;
+        case 2:
+          this._direction = 0;
+          break;
+        case 4:
+          this._direction = 1;
+          break;
+        case 6:
+          this._direction = 2;
+      }
+      this.updateFrame();
+    }
+
+    animationWait() {
+      return this._animationWaitTime || 12;
+    }
+
+    isPlaying() {
+      return this._weaponImage != null;
+    }
+
+    loadBitmap() {
+      var frameData;
+      if (String.any(this._weaponImage)) {
+        frameData = AA.Utils.getFramesAndSpeed(this._weaponImage);
+        this._maxPatternFrames = frameData.f;
+        this._animationWaitTime = frameData.s;
+        this.bitmap = ImageManager.loadAAWeaponMotion(this._weaponImage);
+        this.bitmap.addLoadListener(() => {
+          this._wFrameWidth = this.bitmap.width / this._maxPatternFrames;
+          this._wFrameHeight = this.bitmap.height / 4;
+          return this._bitmapLoaded = true;
+        });
+      } else {
+        this.bitmap = ImageManager.loadSystem("");
+      }
+    }
+
+    updatePattern() {
+      this._pattern++;
+      if (this._pattern >= this._maxPatternFrames) {
+        this._weaponImage = null;
+        this._direction = -1;
+      }
+    }
+
+    updateFrame() {
+      var h, sx, sy, w;
+      if (this.isValid()) {
+        w = this._wFrameWidth;
+        h = this._wFrameHeight;
+        sx = this._wFrameWidth * this._pattern;
+        sy = h * this._direction;
+        return this.setFrame(sx, sy, w, h);
+      } else {
+        return this.setFrame(0, 0, 0, 0);
+      }
+    }
+
+  };
+  AA.link(Sprite_WeaponMotion);
+})();
+
+(function() {  //╒═════════════════════════════════════════════════════════════════════════╛
+  // ■ Sprite_WeaponMotion.coffee
+  //╒═════════════════════════════════════════════════════════════════════════╛
+  //---------------------------------------------------------------------------
+  var _;
+  //@[DEFINES]
+  _ = AA.Sprite_WeaponMotion.prototype;
+})();
+
+// ■ END Sprite_WeaponMotion.coffee
 //---------------------------------------------------------------------------
 
 
@@ -24028,8 +25667,6 @@ uAPI = function() {};
   //╒═════════════════════════════════════════════════════════════════════════╛
   //---------------------------------------------------------------------------
   var _;
-  //TODO: Execute SAction (global)
-
   //@[DEFINES]
   _ = uAPI;
   (function() {    // * Панель навыков
@@ -24110,13 +25747,49 @@ uAPI = function() {};
       }), 1);
     };
   })();
-  (function() {    // * Система АБС
+  (function() {    // * Система АБС (Общее)
     // -----------------------------------------------------------------------
     _.pauseABS = function() {
       return AA.System.pauseABS();
     };
-    return _.resumeABS = function() {
+    _.resumeABS = function() {
       return AA.System.resumeABS();
+    };
+    // * Вызвать Script Action
+    _.scriptAction = function(scriptAction, char = null, delay = 0) {
+      var e;
+      try {
+        if (!String.any(scriptAction)) {
+          return;
+        }
+        // * Это будет вызываться из событий скорее всего, поэтому преобразуем в Event
+        // * Преобразуем наперёд, чтобы delayed можно было вызвать
+        if (char instanceof Game_Interpreter) {
+          if (char.eventId() > 0) {
+            char = $gameMap.event(char.eventId());
+          } else {
+            char = null;
+          }
+        }
+        if (delay <= 0) {
+          return AA.SAaction.execute(scriptAction, char);
+        } else {
+          return AA.Utils.callDelayed(function() {
+            return AA.SAaction.execute(scriptAction, char);
+          }, delay);
+        }
+      } catch (error) {
+        e = error;
+        return KDCore.warning(e);
+      }
+    };
+    // * Последний Game_Character, которого нашёл локатор
+    _.lastLocatorTarget = function() {
+      return $gameTemp.aaLastLocatorTarget;
+    };
+    // * Последнее событие локатор, которое было активированно
+    return _.lastActivatedLocator = function() {
+      return $gameTemp.aaLastActivatedLocator;
     };
   })();
   (function() {    // * Интерфейс АБС
@@ -24365,9 +26038,47 @@ uAPI = function() {};
         return KDCore.warning(e);
       }
     };
-    return _.spawnEnemyAroundForced = function() {
+    _.spawnEnemyAroundForced = function() {
       $gameTemp.aaIsForceSpawn = true;
       uAPI.spawnEnemyAround(...arguments);
+    };
+    // * Вернуть всех отспавненных врагов (объекты)
+    _.getSpawnPointSpawnedEnemies = function(spawnPointId) {
+      var e;
+      try {
+        return $gameMap.eventsAA().filter(function(ev) {
+          return ev instanceof Game_AASpawnedEvent && ev._aaSpawnPointRelativeId === spawnPointId;
+        });
+      } catch (error) {
+        e = error;
+        KDCore.warning(e);
+        return [];
+      }
+    };
+    // * Вернуть число (общее) отспавненных врагов точкой спавна
+    _.getSpawnPointSpawnedTotal = function(spawnPointId) {
+      var e;
+      try {
+        return $gameMap.event(spawnPointId)._aaSpawnPointSpawnedCount;
+      } catch (error) {
+        e = error;
+        KDCore.warning(e);
+        return 0;
+      }
+    };
+    // * Вернуть число (общее) живых на данных момент отспавленных врагов точкой спавна
+    return _.getSpawnPointSpawnedAlive = function(spawnPointId) {
+      var e, spawnedAlive;
+      try {
+        spawnedAlive = this.getSpawnPointSpawnedEnemies(spawnPointId).filter(function(ev) {
+          return ev.AABattler().isAlive();
+        });
+        return spawnedAlive.length;
+      } catch (error) {
+        e = error;
+        KDCore.warning(e);
+        return 0;
+      }
     };
   })();
   (function() {    
@@ -24411,7 +26122,7 @@ uAPI = function() {};
         AA.w(e);
       }
     };
-    return _.executeAASkillOnChar = function(ownerId, teamId, skillId, charId) {
+    _.executeAASkillOnChar = function(ownerId, teamId, skillId, charId) {
       var char, e;
       try {
         charId = KDCore.Utils.getEValue(charId);
@@ -24428,6 +26139,36 @@ uAPI = function() {};
         e = error;
         AA.w(e);
       }
+    };
+    // * Последний использованный навык
+    _.lastUsedSkill = function() {
+      var e;
+      try {
+        if ($gameTemp.aaLastUsedAction != null) {
+          return $gameTemp.aaLastUsedAction.item();
+        }
+      } catch (error) {
+        e = error;
+        KDCore.warning(e);
+      }
+      return null;
+    };
+    // * Последняя цель на который был использован навык
+    _.lastUsedSkillTarget = function() {
+      return $gameTemp.aaLastUsedActionTarget;
+    };
+    // * Кто использовал последний навык
+    return _.lastSkillUser = function() {
+      var e, ref;
+      try {
+        if ($gameTemp.aaLastUsedAction != null) {
+          return (ref = $gameTemp.aaLastUsedAction.subject()) != null ? ref.AACharacter() : void 0;
+        }
+      } catch (error) {
+        e = error;
+        KDCore.warning(e);
+      }
+      return null;
     };
   })();
 })();
@@ -25657,4 +27398,76 @@ Window_SkillSelectorList = class Window_SkillSelectorList extends Window_Selecta
 // ■ END Window_SkillSelectorList.coffee
 //---------------------------------------------------------------------------
 
-//Plugin Alpha_ABSZ builded by PKD PluginBuilder 2.1 - 25.04.2022
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ ParamsManager.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+
+// * Реализация загрузки настроек визуальных компонентов из параметров
+(function() {
+  var ALIAS___getDefaultActorBuffIcon, ALIAS___getDefaultActorStateIcon, ALIAS___getDefaultVisualFor_enemyInfo, ALIAS___getDefaultVisualFor_enemyMiniHp, ALIAS___getDefaultVisualFor_hpGauge, ALIAS___getDefaultVisualFor_mpGauge, ALIAS___getDefaultVisualFor_skillSlot, ALIAS___getDefaultVisualFor_tpGauge, _;
+  //@[DEFINES]
+  _ = AA.ParamsManager.prototype;
+  //@[ALIAS]
+  ALIAS___getDefaultVisualFor_hpGauge = _._getDefaultVisualFor_hpGauge;
+  _._getDefaultVisualFor_hpGauge = function() {
+    return this.getParam("playerHpGaugeVisualSettings", ALIAS___getDefaultVisualFor_hpGauge.call(this));
+  };
+  //@[ALIAS]
+  ALIAS___getDefaultVisualFor_mpGauge = _._getDefaultVisualFor_mpGauge;
+  _._getDefaultVisualFor_mpGauge = function() {
+    return this.getParam("playerMpGaugeVisualSettings", ALIAS___getDefaultVisualFor_mpGauge.call(this));
+  };
+  //@[ALIAS]
+  ALIAS___getDefaultVisualFor_tpGauge = _._getDefaultVisualFor_tpGauge;
+  _._getDefaultVisualFor_tpGauge = function() {
+    return this.getParam("playerTpGaugeVisualSettings", ALIAS___getDefaultVisualFor_tpGauge.call(this));
+  };
+  // * Враги имееют параметр miniHpGaugeStyle, поэтому поддерживается выбор из массива настроек
+  //@[ALIAS]
+  ALIAS___getDefaultVisualFor_enemyMiniHp = _._getDefaultVisualFor_enemyMiniHp;
+  _._getDefaultVisualFor_enemyMiniHp = function(styleId) {
+    var data, item;
+    if ((styleId != null) && String.any(styleId)) {
+      data = this.getParam("enemyMiniHpGaugesCustoms", []);
+      item = data.getById(styleId);
+      if (item != null) {
+        return item.gauge; // * Стандартный
+      } else {
+        AA.w("Enemy Mini HP gauge style ID " + styleId + " not defined in Plugin Parameters");
+        return this._getDefaultVisualFor_enemyMiniHp(null);
+      }
+    } else {
+      // * Стандартная настройка
+      return this.getParam("enemyMiniHpGaugeSettings", ALIAS___getDefaultVisualFor_enemyMiniHp.call(this));
+    }
+  };
+  
+  //@[ALIAS]
+  ALIAS___getDefaultActorBuffIcon = _._getDefaultVisualFor_actorBuffIcon;
+  _._getDefaultVisualFor_actorBuffIcon = function() {
+    return this.getParam("buffIconSettings", ALIAS___getDefaultActorBuffIcon.call(this));
+  };
+  //@[ALIAS]
+  ALIAS___getDefaultActorStateIcon = _._getDefaultVisualFor_actorStateIcon;
+  _._getDefaultVisualFor_actorStateIcon = function() {
+    return this.getParam("statsIconSettings", ALIAS___getDefaultActorStateIcon.call(this));
+  };
+  //@[ALIAS]
+  ALIAS___getDefaultVisualFor_skillSlot = _._getDefaultVisualFor_skillSlot;
+  _._getDefaultVisualFor_skillSlot = function() {
+    return this.getParam("skillSlotVisualSettings", ALIAS___getDefaultVisualFor_skillSlot.call(this));
+  };
+  //@[ALIAS]
+  ALIAS___getDefaultVisualFor_enemyInfo = _._getDefaultVisualFor_enemyInfo;
+  _._getDefaultVisualFor_enemyInfo = function() {
+    return this.getParam("enemyInfoVisualSettings", ALIAS___getDefaultVisualFor_enemyInfo.call(this));
+  };
+})();
+
+// ■ END ParamsManager.coffee
+//---------------------------------------------------------------------------
+
+//Plugin Alpha_ABSZ builded by PKD PluginBuilder 2.1 - 24.07.2022
