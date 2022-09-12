@@ -5,174 +5,315 @@
 
 * License: Creative Commons 4.0 Attribution, Share Alike, Commercial
 
+* You can use plugin in commercial projects on the sole
+* condition that this plugin has been legally acquired
+* (through purchase from
+*    https://ko-fi.com/pheonixkagedesu/shop or
+*    https://boosty.to/kagedesu).
+
  */
 
 /*:
- * @plugindesc (v.1.0)[PRO] Simple fishing mini-game
+ * @plugindesc (v.1.0)[PRO] Alternative Shop
  * @author Pheonix KageDesu
  * @target MZ MV
- * @url http://kdworkshop.net/plugins/simple-fishing
+ * @url http://kdworkshop.net/plugins/shop
  *
  * @help
- * ---------------------------------------------------------------------------
- *   !!! Plugin require parameters configuration !!!
  *
- *  First setup next Plugin Parameters:
- *      - Game Events
- *      - Variables
- *      - Fishing Regions
- *
- * ----------------------------------------------------------------------------
- *  How start fishing mini-game
- * 
- *  1) Player should stay on any Fishing Region (map region) (70 by default)
- *  2) You should set current player Bait ID and Rod ID
-        in the appropriate variables ID's (Variables Plugin Parameter)
-    3) Call script: InitFishingGame(); - mini-game UI will appear
-    4) In fishin game common event "On Inited" (Game Events Plugin Parameters)
-        call script: StartFishingGame();
-        (before call you can make any preparations)
-
-    ! For better understanding check Demo Project !
- *
- * ---------------------------------------------------------------------------
- * Available script calls:
- *
- * 1) InitFishingGame(); - preapare system, mini-game UI will appear
- * 2) StartFishingGame(); - start mini-game process, call ONLY AFTER 1
- * 3) PauseFishingGame(); - pause mini-game process
- * 4) StopFishingGame(); - stop and exit from fishing mini-game
- * 5) IsInFishingGame(); - return true if fishing mini-game is STARTED (2)
- *
- * ----------------------------------------------------------------------------
- * Set image for Fish Items
- *
- * Add to Item's Note section <fishIcon:NAME> fow show fish image on UI
- *   where: NAME -  image name from img/pSimpleFishing/
- *
- * ---------------------------------------------------------------------------
- * 
- * ---------------------------------------------------------------------------
- * Contains resources designed and drawn
- * by Ekaterina N. Stadnikova (MOSCOW RUSSIA)
- * https://stadnikova-ekaterina.itch.io/
+ * SPECIAL THANKS TO RAFFLE ! 
+ * (Raffle is one who gave the idea and commission this plugin)
  * ===========================================================================
+ * ! Warning. Map Inventory >=2.0* BASIC or PRO REQUIRED!
+ * Download for free here: https://kdworkshop.net/plugins/map-inventory/
+ *      * items description (on hover) will works only if you have MI 2.3+ version
+ * ===========================================================================
+ * Help content: (below)
+ * 1. How create custom Shop
+ * 2. How add stuff to created Shop
+ * 3. Item's special Note's
+ * 4. Script calls
+ * 5. Plugin Commands
+ * ===========================================================================
+ * 1. How create custom Shop
+ *
+ * Copy (or Add) new Shop in Plugin Parameters -> All Shops
+ * Set unique ID to your Shop for use them in Script call for open exact shop.
+ * Setup all other parameters or leave default ones (if you copied)
+ * All parameters have descriptions.
+ *
+ * I recommended copy first configurated Shop and then change properties
+ * and parameters what you need
+ *
+ * Add Items\Weapons\Armors to Shop in Default Goods Parameter [Optional]
+ *
+ * ---------------------------------------------------------------------------
+ * 2. How add stuff to created Shop
+ *
+ * You can add Item\Weapon|Armor to Shop via Note's
+ *
+ * If you added Item to shop this way (not via Default Goods parameter), you
+ * can made hidden items, unhide or remove item during game
+ *
+ * Add line <pShopConfig:SHOP_ID, CAT_ID, SELL, BUY [,hidden] [,noSale]> to any Item for add this Item to certain Shop
+ * (it's notetag, so no any quotes)
+ * 
+ * Flag hidden - optional, item will be hidden in Shop at start,
+ * you should use script call to unhide it (see Section 4 -> PSHOP_Unlock)
+ *
+ * Flag noSale - optional, player CANNOT sell this item to this Shop, shop only sell
+ * this item to Player
+ *
+ * !Warning. One item CAN have multiple <pShopConfig...> notes for different Shops.
+ *
+ *  Example: <pShopConfig:testShop, cat1, 300, 150, hidden, noSale>
+ *
+ * Check Demo Project for better understanding, it's easy than it looks
+ *
+ * ---------------------------------------------------------------------------
+ * 3. Item's special Note's
+ *
+ * <pNotForSale> - Item\Armor\Weapon with this Notetag cannot be sold to ANY shop.
+ *
+ * ---------------------------------------------------------------------------
+ * 4. Script calls
+ * 
+ *  - PSHOP_Open(SHOP_ID) - open shop with SHOP_ID from Plugin Parameter (All Shops).
+ *      Example: PSHOP_Open("testShop")
+ *
+ *  - PSHOP_IsOpen() - return TRUE if any Shop is opened right now
+ *
+ * ==== Next Script Calls (below) only for PRO version of plugin ====
+ *
+ *  - PSHOP_Unlock(TYPE, ITEM_ID, SHOP_ID) - unlock item for selling
+ *      Where: TYPE can be: "weapon", "armor", "item"
+ *       Example: PSHOP_Unlock("armor", 2, "testShop")
+ *
+ *  - PSHOP_Remove(TYPE, ITEM_ID, SHOP_ID) - remove item from selling
+ *      (!!!not works with items from Default Goods parameter!!!)
+ *
+ *
+ *  Items sold or bought statistic:
+ *  - PSHOP_HowManyBought(TYPE, ITEM_ID)
+ *  - PSHOP_HowManySell(TYPE, ITEM_ID)
+ *
+ *      Example: PSHOP_HowManySell("item", 22); // returns some number or 0
+ *
+ *  You can change sell or buy price for any item in Shop via next script calls:
+ *  - PSHOP_SetSellPrice(TYPE, ITEM_ID, NEW_PRICE, SHOP_ID)
+ *  - PSHOP_SetBuyPrice(TYPE, ITEM_ID, NEW_PRICE, SHOP_ID)
+ *
+ *      Example: PSHOP_SetBuyPrice("item", 7, 300, "testShop")
+ *
+ * ---------------------------------------------------------------------------
+ * 5. Plugin Commands
+ *
+ *      Plugin NOT have plugin commands.
+ *
+ * ===========================================================================
+  *
+ * ---------------------------------------------------------------------------
  * If you like my Plugins, want more and offten updates,
- * please support me on Boosty or Patreon!
+ * please support me on Boosty!
  * 
  * Boosty Page:
  *      https://boosty.to/kagedesu
- * Patreon Page:
- *      https://www.patreon.com/KageDesu
  * YouTube Channel:
  *      https://www.youtube.com/channel/UCA3R61ojF5vp5tGwJ1YqdgQ?
  *
- * You can use this plugin in your game thanks to all my Patrons!
+ * You can use this plugin in your game thanks to all who support me!
  *
- * 
+ * ---------------------------------------------------------------------------
+ *
 
 * License: Creative Commons 4.0 Attribution, Share Alike, Commercial
 
+* You can use plugin in commercial projects on the sole
+* condition that this plugin has been legally acquired
+* (through purchase from
+*    https://ko-fi.com/pheonixkagedesu/shop or
+*    https://boosty.to/kagedesu).
+
  *
- *  @param gameEventsData:s
- *  @text Game Events
- *  @type struct<EventsData> 
- *  @desc Game process events handlers
- *  @default {"onGameInitedCommonEventId:i":"1","onGameStartedCommonEventId:i":"2","onGameEndCommonEventId:i":"3","onPlayerClickGood:i":"4","onPlayerCatchFish:i":"5","onPlayerClickBad:i":"6","onPlayerLoseFish:i":"7"}
+ * @param PKD_SHOP
+ * @text Main Settings
  * 
- * @param visualSettings:s
- * @text Visual Settings
- * @type struct<VisualSettings> 
- * @desc Game UI settings
- * @default {"gameBarPosition:s":"{\"x:e\":\"Graphics.width / 2 - 162\",\"y:e\":\"60\"}","gameBarSettings:s":"{\"redZoneFillOpacity:i\":\"125\",\"redZoneFillColor:str\":\"#ad189a\",\"redZoneMinWidthBeforeBadEnd:i\":\"6\"}","rodIconPosition:s":"{\"x:e\":\"Graphics.width / 2 - 38 - 50\",\"y:e\":\"110\"}","baitIconPosition:s":"{\"x:e\":\"Graphics.width / 2 - 38 + 50\",\"y:e\":\"110\"}","fishIconPosition:s":"{\"x:e\":\"Graphics.width / 2 - 62\",\"y:e\":\"Graphics.height - 224\"}","progressBarPosition:s":"{\"x:e\":\"Graphics.width / 2 - 162\",\"y:e\":\"Graphics.height - 100\"}","progressBarSettings:s":"{\"visible:bool\":\"true\",\"vertical:bool\":\"false\",\"fill\":\"progressBarFill\",\"foreground\":\"progressBarFore\",\"mask\":\"\",\"backColor:css\":\"#CCCCCC\",\"backOpacity:int\":\"125\"}"}
+ * @param ms_isDraggable:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is Draggable?
+ * @default true
+ * @desc Is Shop window can be dragged by mouse?
  * 
- * @param variablesData:s
- * @text Variables
- * @type struct<Variables> 
- * @desc Player variables
- * @default {"baitVariableId:i":"1","rodVariableId:i":"2"} 
+ * @param ms_isCloseButton:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is Close Button?
+ * @default true
+ * @desc Is Shop window have close button? [X]
  * 
- * @param rodsData:structA
- * @text Rods
- * @type struct<RodSettings>[]
- * @desc
- * @default ["{\"id:i\":\"1\",\"iconName:str\":\"rod1\",\"progressBarTimerMod:i\":\"1.0\",\"redBarShrinkSpeed:i\":\"10\",\"gameZoneFillSpeed:i\":\"1\",\"redBarMinWidth:i\":\"60\",\"redBarMaxWidth:i\":\"120\",\"whiteCursorMoveSpeed:i\":\"3\",\"badClickProgressPenalty:i\":\"20\",\"goodClickProgressAdd:i\":\"0\"}"]
+ * @param ms_helpWindowActionText
+ * @parent PKD_SHOP
+ * @text Hint action text
+ * @default Buy
+ * @desc Action text in description window when hover any item in shop
  * 
- * @param baitsData:structA
- * @text Baits
- * @type struct<BaitData>[]
- * @desc 
- * @default ["{\"id:i\":\"1\",\"iconName:str\":\"worm\"}"]
+ * @param ms_isRealPrice:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is Real price?
+ * @on Real price
+ * @off Shop price
+ * @default false
+ * @desc Show real item price in description window? False - show same sell price that in Shop
  * 
- * @param regionsData:structA
- * @text Fishing Regions
- * @type struct<RegionData>[]
- * @desc Fishing regions settings
- * @default ["{\"region:i\":\"70\",\"fishes:structA\":\"[\\\"{\\\\\\\"id:i\\\\\\\":\\\\\\\"34\\\\\\\",\\\\\\\"appearChance:i\\\\\\\":\\\\\\\"20\\\\\\\",\\\\\\\"progressBarFillSpeed:i\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"goodClickProgressAdd:i\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"baits:structA\\\\\\\":\\\\\\\"[\\\\\\\\\\\\\\\"{\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"id:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"1\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"addToChance:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"40\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"}\\\\\\\\\\\\\\\"]\\\\\\\"}\\\",\\\"{\\\\\\\"id:i\\\\\\\":\\\\\\\"35\\\\\\\",\\\\\\\"appearChance:i\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"progressBarFillSpeed:i\\\\\\\":\\\\\\\"40\\\\\\\",\\\\\\\"goodClickProgressAdd:i\\\\\\\":\\\\\\\"12\\\\\\\",\\\\\\\"baits:structA\\\\\\\":\\\\\\\"[\\\\\\\\\\\\\\\"{\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"id:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"1\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"addToChance:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"10\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"}\\\\\\\\\\\\\\\"]\\\\\\\"}\\\"]\"}"]
+ * @param ms_isPlayerMove:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is can Move?
+ * @on Can move
+ * @off No
+ * @default false
+ * @desc Is Player can move when Shop Window is open?
+ * 
+ * @param ms_defaultPriceMod:int
+ * @parent PKD_SHOP
+ * @text Sell Price Mod
+ * @type number
+ * @decimals 2
+ * @default 0.5
+ * @desc Default rate of selling price for items. 0.5 - 50% of item cost.
+ * 
+ * @param shops:structA
+ * @text All Shops
+ * @type struct<Shop>[]
+ * @default ["{\"id\":\"testShop\",\"mainGroup\":\"\",\"size:s\":\"{\\\"w:int\\\":\\\"380\\\",\\\"h:int\\\":\\\"400\\\"}\",\"image:s\":\"{\\\"image:str\\\":\\\"shopIcon2\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"-20\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"-30\\\\\\\"}\\\"}\",\"sounds:s\":\"{\\\"onSellSE:str\\\":\\\"Shop1\\\",\\\"onBuySE:str\\\":\\\"Shop1\\\"}\",\"titleText:str\":\"    JOHN DOE SHOP\",\"titleSettings:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"360\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"52\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"Arial\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"28\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#FFFFFF\\\"}\",\"titlePosition:s\":\"{\\\"x:int\\\":\\\"0\\\",\\\"y:int\\\":\\\"0\\\"}\",\"extraGraphic:structA\":\"[\\\"{\\\\\\\"image:str\\\\\\\":\\\\\\\"categoriesBackground\\\\\\\",\\\\\\\"margins:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"2\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"0\\\\\\\\\\\\\\\"}\\\\\\\"}\\\",\\\"{\\\\\\\"image:str\\\\\\\":\\\\\\\"itemsBackground\\\\\\\",\\\\\\\"margins:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"76\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"42\\\\\\\\\\\\\\\"}\\\\\\\"}\\\"]\",\"cells:structA\":\"[\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"62\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\",\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"122\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\",\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"182\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\",\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"242\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\"]\",\"cellSize:i\":\"44\",\"cellSellPriceTextPosition:s\":\"{\\\"x:int\\\":\\\"-1\\\",\\\"y:int\\\":\\\"36\\\"}\",\"cellSellPriceText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"38\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"18\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"14\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"1\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#baab25\\\"}\",\"buttons\":\"\",\"sell:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"sell_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"sell_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"sell_03\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"8\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"294\\\\\\\"}\\\",\\\"sellInfoPosition:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"76\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"42\\\\\\\"}\\\"}\",\"buttonBack:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"back_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"back_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"120\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"260\\\\\\\"}\\\"}\",\"buttonBuy:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"buy_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"buy_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"180\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"260\\\\\\\"}\\\"}\",\"buttonSell:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"buttonSell_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"buttonSell_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"180\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"260\\\\\\\"}\\\"}\",\"buttonAdd:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"Add_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"Add_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"238\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"92\\\\\\\"}\\\"}\",\"buttonRemove:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"Rem_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"Rem_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"238\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"128\\\\\\\"}\\\"}\",\"itemBuyGroup\":\"\",\"itemBuyNameText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"280\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"32\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"24\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#FFFFFF\\\"}\",\"itemBuyNameTextPosition:s\":\"{\\\"x:int\\\":\\\"80\\\",\\\"y:int\\\":\\\"50\\\"}\",\"itemBuyCountText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"80\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"24\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"22\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#1d9fbf\\\"}\",\"itemBuyCountTextPosition:s\":\"{\\\"x:int\\\":\\\"176\\\",\\\"y:int\\\":\\\"160\\\"}\",\"itemBuyCountFormat:str\":\"x%1\",\"itemBuyMoneyTotalText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"180\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"30\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"right\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"Consolas\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"26\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"1\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#baab25\\\"}\",\"itemBuyMoneyTotalTextPosition:s\":\"{\\\"x:int\\\":\\\"140\\\",\\\"y:int\\\":\\\"200\\\"}\",\"moneyTotalBadColor:str\":\"#a83632\",\"moneyTotalImagePosition:s\":\"{\\\"x:int\\\":\\\"100\\\",\\\"y:int\\\":\\\"190\\\"}\",\"itemBuyIconSize:i\":\"48\",\"itemBuyIconPosition:s\":\"{\\\"x:int\\\":\\\"200\\\",\\\"y:int\\\":\\\"120\\\"}\",\"categories:structA\":\"[\\\"{\\\\\\\"id:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"title:str\\\\\\\":\\\\\\\"Items\\\\\\\",\\\\\\\"images:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"main:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat0_00\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"hover:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat0_01\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"disabled:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat0_03\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"20\\\\\\\\\\\\\\\"}\\\\\\\"}\\\",\\\"{\\\\\\\"id:str\\\\\\\":\\\\\\\"cat1\\\\\\\",\\\\\\\"title:str\\\\\\\":\\\\\\\"Weapons\\\\\\\",\\\\\\\"images:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"main:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat1_00\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"hover:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat1_01\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"disabled:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat1_03\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"78\\\\\\\\\\\\\\\"}\\\\\\\"}\\\",\\\"{\\\\\\\"id:str\\\\\\\":\\\\\\\"cat2\\\\\\\",\\\\\\\"title:str\\\\\\\":\\\\\\\"Armors\\\\\\\",\\\\\\\"images:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"main:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat2_00\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"hover:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat2_01\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"disabled:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat2_03\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"136\\\\\\\\\\\\\\\"}\\\\\\\"}\\\"]\",\"categoryTitleTextSetting:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"300\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"26\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"Tahoma\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"20\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#FFFFFF\\\"}\",\"categoryTitleTextPosition:s\":\"{\\\"x:int\\\":\\\"60\\\",\\\"y:int\\\":\\\"8\\\"}\",\"defaultGoods:structA\":\"[\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"7\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"8\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"9\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat1\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"7\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat2\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"2\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\"]\"}"]
+ * @desc Define different shops for your game
  * 
  * @param spacer|endHolder @text‏‏‎ ‎@desc ===============================================
  * 
+ * @command EMPTY_HOLDER
+ * @text ‏
+ * @desc
+ * @default
  */
-
 /*:ru
- * @plugindesc (v.1.0)[PRO] Мини-игра рыбалка
+ * @plugindesc (v.1.0)[PRO] Альтернативный магазин
  * @author Pheonix KageDesu
  * @target MZ MV
- * @url http://kdworkshop.net/plugins/simple-fishing
+ * @url http://kdworkshop.net/plugins/shop
  *
  * @help
- * ---------------------------------------------------------------------------
- *   !!! Плагин требует настройки параметров !!!
  *
- *  Настройке в первую очередь данные Параметры плагина:
- *      - События
- *      - Переменные
- *      - Регионы
- *
- * ----------------------------------------------------------------------------
- *  Как начать мини-игру рыбалка:
- * 
- *  1) Игрок должен стоять на клетке с регионом рыбалки
-        (настроенного в параметрах плагина Регионы)
- *  2) Надо установить номер удочки и наживки в переменные
-        (указанные в Переменные параметре плагина)
-    3) Вызвать скрипт: InitFishingGame(); - появится интерфейс игры
-    4) В игровом событии "On Inited" (см. События параметр плагина)
-        вызвать скрипт: StartFishingGame();
-
-    ! Для лучшего понимания сперва поиграйте в демку !
- *
- * ---------------------------------------------------------------------------
- * Вызовы скриптов
- *
- * 1) InitFishingGame(); - подготовка системы, появится интерфейс игры
- * 2) StartFishingGame(); - начать игру, вызывать ПОСЛЕ 1
- * 3) PauseFishingGame(); - приостановить игру
- * 4) StopFishingGame(); - закончить игру (полностью)
- * 5) IsInFishingGame(); - вернёт TRUE (истинну), если игра уже начата (2)
- *
- * ----------------------------------------------------------------------------
- * Установка изображения для Рыбы
- *
- * Добавьте для предмета - рыбы следующую заметку <fishIcon:ИМЯ>
- *   где: ИМЯ -  имя файла картинки из папки img/pSimpleFishing/
- *
- * ---------------------------------------------------------------------------
- * 
- * ---------------------------------------------------------------------------
- * Плагин содержит изображения от:
- * Екатерина Стадникова
- * https://boosty.to/little_piggy
+ * ЗА ИДЕЮ И СПОНСИРОВАНИЕ СПАСИБО RAFFLE ! 
  * ===========================================================================
- * Поддержите меня на Boosty и получите доступ к PRO версии данного плагина
- *  и многим другим моим плагинам
- * 
- * https://boosty.to/kagedesu
+ * ! Требуется плагин Map Inventory >=2.0* БАЗОВАЯ или ПРО версия
+ * Скачать можно тут: https://kdworkshop.net/plugins/map-inventory/
+ *      * окно с описанием предмета будет работать только если версия
+ *          Map Inventory 2.3+
+ * ===========================================================================
+ * СОДЕРЖАНИЕ:
+ * 1. Как создать магазин
+ * 2. Как добавить предметы на продажу в магазин
+ * 3. Специальные заметки для предметов
+ * 4. Вызовы скриптов
+ * 5. Команды плагина
+ * ===========================================================================
+ * 1. Как создать магазин
  *
+ * Скопируйте стандартный (или добавьте новый) магазин в Параметры Плагина -> Магазины
+ * Задайте уникальный ID, чтобы через вызов скрипта открывать именно этот магазин
+ * Измение другие параметры по Вашему усмотрению
+ * Все параметры имеют описание что они значат
+ *
+ * Я рекомендую скопировать стандартный магазин и уже изменять его настройки
+ *
+ * Стандартный набор предметов на продажу можно 
+ * добавить в параметре Default Goods [Опционально]
+ *
+ * ---------------------------------------------------------------------------
+ * 2. Как добавить предметы на продажу в магазин
+ *
+ * Чтобы добавить предмет на продажу, нужно добавить ему спец. заметку
+ * Данный способ позволяет скрыть предмет или удалить его из магазина по ходу
+ * игры.
+ *
+ * Тут и далее под "предмет" подразумеваются и предметы и оружие и броня.
+ *
+ * Добавить след. строку в заметку предмета:
+ * <pShopConfig:SHOP_ID, CAT_ID, SELL, BUY [,hidden] [,noSale]>
+ * 
+ * Флаг hidden - опциональный, предмет будет скрыт из продажи
+ * Во время игры можно его открыть, исп. спец. вызов скрипта (см. секцию 4)
+ *
+ * Флаг noSale - опциональный, игрок не может продать этот предмет обратно в магазин
+ *
+ * !ВНИМАНИЕ. Один предмет может содержать несколько строк <pShopConfig...>
+ *  с конфигурацией под разные магазины
+ *
+ *  Пример: <pShopConfig:testShop, cat1, 300, 150, hidden, noSale>
+ *
+ * Посмотрите демо проект для лучшего понимания как это работает
+ *
+ * ---------------------------------------------------------------------------
+ * 3. Специальные заметки для предметов
+ *
+ * <pNotForSale> - Если добавить эту строчку, то данный предмет НЕЛЬЗЯ продавать
+ *
+ * ---------------------------------------------------------------------------
+ * 4. Вызовы скриптов
+ * 
+ *  - PSHOP_Open(SHOP_ID) - открыть магазин по ID из параметра (Магазины).
+ *      Пример: PSHOP_Open("testShop")
+ *
+ *  - PSHOP_IsOpen() - возвращает TRUE, если любой магазин открыт в данный момент
+ *
+ * ==== Ниже только для PRO версии ====
+ *
+ *  - PSHOP_Unlock(TYPE, ITEM_ID, SHOP_ID) - разблокировать (показать)
+ *      предмет, который был скрытый
+ *
+ *      Где: TYPE может быть: "weapon", "armor", "item" \ оружие, броня, предмет
+ *       Пример: PSHOP_Unlock("armor", 2, "testShop")
+ *
+ *  - PSHOP_Remove(TYPE, ITEM_ID, SHOP_ID) - удалить предмет из продажи
+ *      (!!!работает только с предметами, добавленными через заметку pShopConfig!!!)
+ *
+ *
+ *  Статистика купленных и проданных предметов (кол-во):
+ *  - PSHOP_HowManyBought(TYPE, ITEM_ID)
+ *  - PSHOP_HowManySell(TYPE, ITEM_ID)
+ *
+ *      Пример: PSHOP_HowManySell("item", 22); // вернёт кол-во, сколько
+ *          игрок продал в магазин предмета с номером 22
+ *
+ *  Изменение цены продажи и покупки предмета в магазине:
+ *  - PSHOP_SetSellPrice(TYPE, ITEM_ID, NEW_PRICE, SHOP_ID)
+ *  - PSHOP_SetBuyPrice(TYPE, ITEM_ID, NEW_PRICE, SHOP_ID)
+ *
+ * Где:
+ *      ITEM_ID - номер предмета
+ *      NEW_PRICE - новая цена
+ *      SHOP_ID - ID магазина для которого меняем данные
+ *
+ *      Пример: PSHOP_SetBuyPrice("item", 7, 300, "testShop")
+ *
+ * ---------------------------------------------------------------------------
+ * 5. Команды плагина
+ *
+ *      Отсутствуют.
+ *
+ * ===========================================================================
+  *
+ * ---------------------------------------------------------------------------
+ * Если Вам нравятся мои плагины, поддержите меня на Boosty!
+ * 
+ * Boosty:
+ *      https://boosty.to/kagedesu
  * YouTube:
  *      https://www.youtube.com/channel/UCA3R61ojF5vp5tGwJ1YqdgQ?
  *
- * 
+ *
 
 * Лицензия: Creative Commons 4.0 Attribution, Share Alike, Commercial
 
@@ -181,784 +322,690 @@
 * (через покупку на сайте https://boosty.to/kagedesu).
 
  *
- *  @param gameEventsData:s
- *  @text События
- *  @type struct<EventsData> 
- *  @desc Обработка событий игрового процесса
- *  @default {"onGameInitedCommonEventId:i":"1","onGameStartedCommonEventId:i":"2","onGameEndCommonEventId:i":"3","onPlayerClickGood:i":"4","onPlayerCatchFish:i":"5","onPlayerClickBad:i":"6","onPlayerLoseFish:i":"7"}
+ * @param PKD_SHOP
+ * @text Основные настройки
  * 
- * @param visualSettings:s
- * @text Интерфейс
- * @type struct<VisualSettings> 
- * @desc Настройки UI интрфейса игры
- * @default {"gameBarPosition:s":"{\"x:e\":\"Graphics.width / 2 - 162\",\"y:e\":\"60\"}","gameBarSettings:s":"{\"redZoneFillOpacity:i\":\"125\",\"redZoneFillColor:str\":\"#ad189a\",\"redZoneMinWidthBeforeBadEnd:i\":\"6\"}","rodIconPosition:s":"{\"x:e\":\"Graphics.width / 2 - 38 - 50\",\"y:e\":\"110\"}","baitIconPosition:s":"{\"x:e\":\"Graphics.width / 2 - 38 + 50\",\"y:e\":\"110\"}","fishIconPosition:s":"{\"x:e\":\"Graphics.width / 2 - 62\",\"y:e\":\"Graphics.height - 224\"}","progressBarPosition:s":"{\"x:e\":\"Graphics.width / 2 - 162\",\"y:e\":\"Graphics.height - 100\"}","progressBarSettings:s":"{\"visible:bool\":\"true\",\"vertical:bool\":\"false\",\"fill\":\"progressBarFill\",\"foreground\":\"progressBarFore\",\"mask\":\"\",\"backColor:css\":\"#CCCCCC\",\"backOpacity:int\":\"125\"}"}
+ * @param ms_isDraggable:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is Draggable?
+ * @default true
+ * @desc Можно ли перемещать окно при помощи мышки?
  * 
- * @param variablesData:s
- * @text Переменные
- * @type struct<Variables> 
- * @desc Переменные с данными игрока
- * @default {"baitVariableId:i":"1","rodVariableId:i":"2"} 
+ * @param ms_isCloseButton:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is Close Button?
+ * @default true
+ * @desc Окно магазина имеет кнопку закрыть ? [X]
  * 
- * @param rodsData:structA
- * @text Удочки
- * @type struct<RodSettings>[]
- * @desc
- * @default ["{\"id:i\":\"1\",\"iconName:str\":\"rod1\",\"progressBarTimerMod:i\":\"1.0\",\"redBarShrinkSpeed:i\":\"10\",\"gameZoneFillSpeed:i\":\"1\",\"redBarMinWidth:i\":\"60\",\"redBarMaxWidth:i\":\"120\",\"whiteCursorMoveSpeed:i\":\"3\",\"badClickProgressPenalty:i\":\"20\",\"goodClickProgressAdd:i\":\"0\"}"]
+ * @param ms_helpWindowActionText
+ * @parent PKD_SHOP
+ * @text Hint action text
+ * @default Купить
+ * @desc Подсказка действия при нажатии на предмет в окне описания предмета
  * 
- * @param baitsData:structA
- * @text Наживки
- * @type struct<BaitData>[]
- * @desc 
- * @default ["{\"id:i\":\"1\",\"iconName:str\":\"worm\"}"]
+ * @param ms_isRealPrice:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is Real price?
+ * @on Цена из БД
+ * @off Цена магазина
+ * @default false
+ * @desc Показывать цену предмета из БД в окне описания? ВЫКЛ - цена магазина
  * 
- * @param regionsData:structA
- * @text Регионы
- * @type struct<RegionData>[]
- * @desc Настройки регионов для рыбалка
- * @default ["{\"region:i\":\"70\",\"fishes:structA\":\"[\\\"{\\\\\\\"id:i\\\\\\\":\\\\\\\"34\\\\\\\",\\\\\\\"appearChance:i\\\\\\\":\\\\\\\"20\\\\\\\",\\\\\\\"progressBarFillSpeed:i\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"goodClickProgressAdd:i\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"baits:structA\\\\\\\":\\\\\\\"[\\\\\\\\\\\\\\\"{\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"id:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"1\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"addToChance:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"40\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"}\\\\\\\\\\\\\\\"]\\\\\\\"}\\\",\\\"{\\\\\\\"id:i\\\\\\\":\\\\\\\"35\\\\\\\",\\\\\\\"appearChance:i\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"progressBarFillSpeed:i\\\\\\\":\\\\\\\"40\\\\\\\",\\\\\\\"goodClickProgressAdd:i\\\\\\\":\\\\\\\"12\\\\\\\",\\\\\\\"baits:structA\\\\\\\":\\\\\\\"[\\\\\\\\\\\\\\\"{\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"id:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"1\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"addToChance:i\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"10\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"}\\\\\\\\\\\\\\\"]\\\\\\\"}\\\"]\"}"]
+ * @param ms_isPlayerMove:bool
+ * @parent PKD_SHOP
+ * @type boolean
+ * @text Is can Move?
+ * @on Можно ходить
+ * @off Нет
+ * @default false
+ * @desc Может ли игрок ходить когда открыто окно магазина?
+ * 
+ * @param ms_defaultPriceMod:int
+ * @parent PKD_SHOP
+ * @text Sell Price Mod
+ * @type number
+ * @decimals 2
+ * @default 0.5
+ * @desc Модификатор цены продажи предмета игроком магазину. 0.5 - 50% цены.
+ * 
+ * @param shops:structA
+ * @text Магазины
+ * @type struct<Shop>[]
+ * @default ["{\"id\":\"testShop\",\"mainGroup\":\"\",\"size:s\":\"{\\\"w:int\\\":\\\"380\\\",\\\"h:int\\\":\\\"400\\\"}\",\"image:s\":\"{\\\"image:str\\\":\\\"shopIcon2\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"-20\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"-30\\\\\\\"}\\\"}\",\"sounds:s\":\"{\\\"onSellSE:str\\\":\\\"Shop1\\\",\\\"onBuySE:str\\\":\\\"Shop1\\\"}\",\"titleText:str\":\"    JOHN DOE SHOP\",\"titleSettings:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"360\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"52\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"Arial\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"28\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#FFFFFF\\\"}\",\"titlePosition:s\":\"{\\\"x:int\\\":\\\"0\\\",\\\"y:int\\\":\\\"0\\\"}\",\"extraGraphic:structA\":\"[\\\"{\\\\\\\"image:str\\\\\\\":\\\\\\\"categoriesBackground\\\\\\\",\\\\\\\"margins:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"2\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"0\\\\\\\\\\\\\\\"}\\\\\\\"}\\\",\\\"{\\\\\\\"image:str\\\\\\\":\\\\\\\"itemsBackground\\\\\\\",\\\\\\\"margins:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"76\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"42\\\\\\\\\\\\\\\"}\\\\\\\"}\\\"]\",\"cells:structA\":\"[\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"62\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\",\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"122\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\",\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"182\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\",\\\"{\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"100\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"242\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"spaceBetween:i\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"direction:str\\\\\\\":\\\\\\\"horizontal\\\\\\\",\\\\\\\"count:i\\\\\\\":\\\\\\\"5\\\\\\\"}\\\"]\",\"cellSize:i\":\"44\",\"cellSellPriceTextPosition:s\":\"{\\\"x:int\\\":\\\"-1\\\",\\\"y:int\\\":\\\"36\\\"}\",\"cellSellPriceText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"38\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"18\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"14\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"1\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#baab25\\\"}\",\"buttons\":\"\",\"sell:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"sell_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"sell_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"sell_03\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"8\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"294\\\\\\\"}\\\",\\\"sellInfoPosition:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"76\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"42\\\\\\\"}\\\"}\",\"buttonBack:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"back_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"back_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"120\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"260\\\\\\\"}\\\"}\",\"buttonBuy:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"buy_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"buy_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"180\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"260\\\\\\\"}\\\"}\",\"buttonSell:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"buttonSell_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"buttonSell_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"180\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"260\\\\\\\"}\\\"}\",\"buttonAdd:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"Add_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"Add_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"238\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"92\\\\\\\"}\\\"}\",\"buttonRemove:s\":\"{\\\"images:s\\\":\\\"{\\\\\\\"main:str\\\\\\\":\\\\\\\"Rem_00\\\\\\\",\\\\\\\"hover:str\\\\\\\":\\\\\\\"Rem_01\\\\\\\",\\\\\\\"disabled:str\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"position:s\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"238\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"128\\\\\\\"}\\\"}\",\"itemBuyGroup\":\"\",\"itemBuyNameText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"280\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"32\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"24\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#FFFFFF\\\"}\",\"itemBuyNameTextPosition:s\":\"{\\\"x:int\\\":\\\"80\\\",\\\"y:int\\\":\\\"50\\\"}\",\"itemBuyCountText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"80\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"24\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"22\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#1d9fbf\\\"}\",\"itemBuyCountTextPosition:s\":\"{\\\"x:int\\\":\\\"176\\\",\\\"y:int\\\":\\\"160\\\"}\",\"itemBuyCountFormat:str\":\"x%1\",\"itemBuyMoneyTotalText:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"180\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"30\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"right\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"Consolas\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"26\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"1\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#baab25\\\"}\",\"itemBuyMoneyTotalTextPosition:s\":\"{\\\"x:int\\\":\\\"140\\\",\\\"y:int\\\":\\\"200\\\"}\",\"moneyTotalBadColor:str\":\"#a83632\",\"moneyTotalImagePosition:s\":\"{\\\"x:int\\\":\\\"100\\\",\\\"y:int\\\":\\\"190\\\"}\",\"itemBuyIconSize:i\":\"48\",\"itemBuyIconPosition:s\":\"{\\\"x:int\\\":\\\"200\\\",\\\"y:int\\\":\\\"120\\\"}\",\"categories:structA\":\"[\\\"{\\\\\\\"id:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"title:str\\\\\\\":\\\\\\\"Items\\\\\\\",\\\\\\\"images:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"main:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat0_00\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"hover:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat0_01\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"disabled:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat0_03\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"20\\\\\\\\\\\\\\\"}\\\\\\\"}\\\",\\\"{\\\\\\\"id:str\\\\\\\":\\\\\\\"cat1\\\\\\\",\\\\\\\"title:str\\\\\\\":\\\\\\\"Weapons\\\\\\\",\\\\\\\"images:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"main:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat1_00\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"hover:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat1_01\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"disabled:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat1_03\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"78\\\\\\\\\\\\\\\"}\\\\\\\"}\\\",\\\"{\\\\\\\"id:str\\\\\\\":\\\\\\\"cat2\\\\\\\",\\\\\\\"title:str\\\\\\\":\\\\\\\"Armors\\\\\\\",\\\\\\\"images:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"main:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat2_00\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"hover:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat2_01\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"disabled:str\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"cat2_03\\\\\\\\\\\\\\\"}\\\\\\\",\\\\\\\"position:s\\\\\\\":\\\\\\\"{\\\\\\\\\\\\\\\"x:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"y:int\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"136\\\\\\\\\\\\\\\"}\\\\\\\"}\\\"]\",\"categoryTitleTextSetting:s\":\"{\\\"visible:bool\\\":\\\"true\\\",\\\"size:struct\\\":\\\"{\\\\\\\"w:int\\\\\\\":\\\\\\\"300\\\\\\\",\\\\\\\"h:int\\\\\\\":\\\\\\\"26\\\\\\\"}\\\",\\\"alignment:str\\\":\\\"center\\\",\\\"font:struct\\\":\\\"{\\\\\\\"face:str\\\\\\\":\\\\\\\"Tahoma\\\\\\\",\\\\\\\"size:int\\\\\\\":\\\\\\\"20\\\\\\\",\\\\\\\"italic:bool\\\\\\\":\\\\\\\"false\\\\\\\"}\\\",\\\"margins:struct\\\":\\\"{\\\\\\\"x:int\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"y:int\\\\\\\":\\\\\\\"0\\\\\\\"}\\\",\\\"outline:struct\\\":\\\"{\\\\\\\"color\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"width:int\\\\\\\":\\\\\\\"2\\\\\\\"}\\\",\\\"textColor:str\\\":\\\"#FFFFFF\\\"}\",\"categoryTitleTextPosition:s\":\"{\\\"x:int\\\":\\\"60\\\",\\\"y:int\\\":\\\"8\\\"}\",\"defaultGoods:structA\":\"[\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"7\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"8\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat0\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"9\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat1\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"7\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\",\\\"{\\\\\\\"catId:str\\\\\\\":\\\\\\\"cat2\\\\\\\",\\\\\\\"itemId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"weaponId:i\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"armorId:i\\\\\\\":\\\\\\\"2\\\\\\\",\\\\\\\"sellPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\",\\\\\\\"buyPrice:i\\\\\\\":\\\\\\\"-1\\\\\\\"}\\\"]\"}"]
+ * @desc Различные магазины
  * 
  * @param spacer|endHolder @text‏‏‎ ‎@desc ===============================================
  * 
+ * @command EMPTY_HOLDER
+ * @text ‏
+ * @desc
+ * @default
  */
-/*~struct~EventsData:
-
- @param onGameInitedCommonEventId:i
- @text On Inited
- @type common_event
- @desc Called after fishing game UI is appear, but game not started yet
- @default 1 
-
-
- @param onGameStartedCommonEventId:i
- @text On Started
- @type common_event
- @desc Called after fishing game is started
- @default 2 
-
-
- @param onGameEndCommonEventId:i
- @text On End
- @type common_event
- @desc Called after fishing game is ended
- @default 3 
-
-
- @param onPlayerClickGood:i
- @text On Click Good
- @type common_event
- @desc Called when player made click in game zone
- @default 4 
-
-
- @param onPlayerCatchFish:i
- @text On Catch Fish
- @type common_event
- @desc Called when fish progress bar is filled 100%
- @default 5 
-
-
- @param onPlayerClickBad:i
- @text On Click Bad
- @type common_event
- @desc Called when player made click outer game zone (wrong)
- @default 6 
-
-
- @param onPlayerLoseFish:i
- @text On Lost Fish
- @type common_event
- @desc Callend when player lost fish (progress bar is below 0%)
- @default 7 
-
+/*~struct~str0:
+ * @param w:int
+ * @text Width
+ * @type number
+ * @default 100
+ * @min 0
+ *
+ * @param h:int
+ * @text Height
+ * @type number
+ * @default 100
+ * @min 0
 */
 
-/*~struct~EventsData:ru
+/*~struct~str1:
 
- @param onGameInitedCommonEventId:i
- @text On Inited
- @type common_event
- @desc Вызвается когда появился интерфейс мини-игры (после вызова InitFishingGame())
- @default 1 
-
-
- @param onGameStartedCommonEventId:i
- @text On Started
- @type common_event
- @desc Вызывается когда мини-игра запущена (после вызова StartFishingGame())
- @default 2 
-
-
- @param onGameEndCommonEventId:i
- @text On End
- @type common_event
- @desc Вызвается когда мини-игра закончена (после вызова StopFishingGame() или выхода из игры кнопкой)
- @default 3 
-
-
- @param onPlayerClickGood:i
- @text On Click Good
- @type common_event
- @desc Когда игрок нажал кнопку в правильной зоне
- @default 4 
-
-
- @param onPlayerCatchFish:i
- @text On Catch Fish
- @type common_event
- @desc Когда игрок поймал рыбу (прогресс заполнен на 100%)
- @default 5 
-
-
- @param onPlayerClickBad:i
- @text On Click Bad
- @type common_event
- @desc Когда игрок нажал кнопку вне зоны
- @default 6 
-
-
- @param onPlayerLoseFish:i
- @text On Lost Fish
- @type common_event
- @desc Когда игрок потерял рыбу (прогресс упал до 0%)
- @default 7 
+ * @param face:str
+ * @text Face
+ * @type string
+ * @default
+ *
+ * @param size:int
+ * @text Size
+ * @type number
+ * @default 24
+ * @min 1
+ * 
+ * @param italic:bool
+ * @text IsItalic
+ * @type boolean
+ * @default false
 
 */
+/*~struct~str2:
 
-/*~struct~Variables:
-
-    @param baitVariableId:i
-    @text Bait Variable
-    @type variable
-    @default 1
-    @desc Required! Variable where you set current player's bait ID
-
-    @param rodVariableId:i
-    @text Rod Variable
-    @type variable
-    @default 2
-    @desc Required! Variable where you set current player's rod ID
-
-*/
-
-/*~struct~Variables:ru
-
-    @param baitVariableId:i
-    @text Bait Variable
-    @type variable
-    @default 1
-    @desc Номер переменной в которой будет храниться номер текущей приманки игрока (Bait ID)
-
-    @param rodVariableId:i
-    @text Rod Variable
-    @type variable
-    @default 2
-    @desc Номер переменной в которой будет храниться номер текущей удочки игрока (Rod ID)
+ * @param x:int
+ * @text X
+ * @type number
+ * @default 0
+ * @min -1000
+ *
+ * @param y:int
+ * @text Y
+ * @type number
+ * @default 0
+ * @min -1000
 
 */
+/*~struct~str3:
 
+ * @param color
+ * @text Color
+ * @type text
+ * @default #000000
+ * @desc Outline color in HEX (#000000) or empty "" (black)
+ *
+ * @param width:int
+ * @text Width
+ * @type number
+ * @default 3
+ * @min 0
+ * @desc Outline stroke width in px
 
-/*~struct~CGauge:
+*/
+/*~struct~str4:
+
  * @param visible:bool
  * @text Is Visible?
  * @type boolean
  * @default true
- * @desc Will be this gauge visible?
- *
- * @param vertical:bool
- * @text Is Vertical?
- * @type boolean
- * @default false
- * @desc Gauge will use vertical fill?
- * 
- * @param fill
- * @text Fill Image
- * @type file
- * @dir img/pSimpleFishing/
- * @require 1
+ * @desc Will be this element visible? 
+
+
+ * @param size:struct
+ * @text Size
+ * @type struct<str0>
  * @default
- * @desc Gaguge fill image, required!
- * 
- * @param foreground
- * @text Foreground Image
- * @type file
- * @dir img/pSimpleFishing/
- * @require 1
+ * @desc Size of element
+
+
+ * @param alignment:str
+ * @text Alignment
+ * @type combo
+ * @option center
+ * @option right
+ * @option left
+ * @default center
+ * @desc Text alignment
+
+
+ * @param font:struct
+ * @type struct<str1>
+ * @text Font Settings
  * @default
- * @desc Image above gauge fill, optional
- * 
- * @param mask
- * @text Mask Image
- * @type file
- * @dir img/pSimpleFishing/
- * @require 1
+ * @desc Text font settings
+
+
+ * @param margins:struct
+ * @text Margins
+ * @type struct<str2>
  * @default
- * @desc Whole gauge image mask, optional
- * 
- * @param backColor:css
+ * @desc Position of element, relative parent
+
+
+ * @param outline:struct
+ * @text Text Outline
+ * @type struct<str3>
+ * @default
+ * @desc Text outline settings
+
+
+ * @param textColor:str
  * @type string
- * @text Background Color
- * @default #000000
+ * @text Text Color
+ * @default #FFFFFF
  * @desc Text color in HEX format (#000000)
- * 
- * @param backOpacity:int
- * @type number
- * @min 0
- * @max 255
- * @text Background Opacity
- * @default 255
- * @desc from 0 to 255, 0 - transparent, 255 - opaque
- */
-
-/*~struct~GameBarSettings:
-
- @param redZoneFillOpacity:i
- @text Opacity
- @type number 
- @min 1
- @max 255
- @desc Game zone fill opacity (from 0 (transparent) to 255 (opaque))
- @default 125 
-
- @param redZoneFillColor:str
- @text Color
- @desc Game zone fill color (in HEX format)
- @default #ad189a 
-
-
- @param redZoneMinWidthBeforeBadEnd:i
- @text Min Width
- @type number 
- @min 1
- @max 60
- @desc Game zone min width in PX (before player lost)
- @default 6 
 
 */
 
-/*~struct~GameBarSettings:ru
+/*~struct~str51:
+  @param main:str
+  @text Image
+  @type file
+  @dir img/pShop/
+  @require 1
+  @desc Button image
+  @default
 
- @param redZoneFillOpacity:i
- @text Opacity
- @type number 
- @min 1
- @max 255
- @desc Прозрачность игровой зоны (от 0 (прозрачный) до 255 (видимый))
- @default 125 
+  @param hover:str
+  @text Hovered
+  @type file
+  @dir img/pShop/
+  @require 1
+  @desc Button image when hovered by mouse
 
- @param redZoneFillColor:str
- @text Color
- @desc Цвет игровой зоны (hex)
- @default #ad189a 
-
-
- @param redZoneMinWidthBeforeBadEnd:i
- @text Min Width
- @type number 
- @min 1
- @max 60
- @desc Минимальная ширина игровой зоны в пикселях, когда нажатие уже не регестрируется (проигрыш)
- @default 6 
-
+  @param disabled:str
+  @text Disabled
+  @type file
+  @dir img/pShop/
+  @require 1
+  @desc Button image when disabled
 */
 
-/*~struct~XY2:
- * @param x:e
- * @text X
- * @type text
- * @default 0
- * @desc Number or script (example: Graphics.width / 2)
- *
- * @param y:e
- * @text Y
- * @type text
- * @default 0
- * @desc Number or script (example: $gameVariables.value(12) * 2)
- */
+/*~struct~CellsLine:
+ @param position:s
+ @text Start XY
+ @type struct<str2> 
+ @desc Cells line start point (X, Y)
+ @default {}
 
-/*~struct~VisualSettings:
+ @param spaceBetween:i
+ @text Space between
+ @type number 
+ @desc Space between cells in this line
+ @default 4
 
- @param gameBarPosition:s
- @text Game Bar Position
- @type struct<XY2> 
- @desc 
- @default {} 
+ @param direction:str
+ @text Direction
+ @type select
+ @option horizontal
+ @option vertical 
+ @desc
+ @default horizontal
 
-
- @param gameBarSettings:s
- @parent gameBarPosition:s
- @text Zone Settings
- @type struct<GameBarSettings> 
- @desc 
- @default {} 
-
-
- @param rodIconPosition:s
- @text Rod Image Position
- @type struct<XY2> 
- @desc 
- @default {} 
-
-
- @param baitIconPosition:s
- @text Bait Image Position
- @type struct<XY2> 
- @desc 
- @default {} 
-
-
- @param fishIconPosition:s
- @text Fish Image Position
- @type struct<XY2> 
- @desc 
- @default {} 
-
-
- @param progressBarPosition:s
- @text Progress Bar Position
- @type struct<XY2> 
- @desc 
- @default {} 
-
-
- @param progressBarSettings:s
- @text Visual Settings
- @parent progressBarPosition:s
- @type struct<CGauge> 
- @desc 
- @default {} 
-*/
-
-/*~struct~VisualSettings:ru
-
- @param gameBarPosition:s
- @text Game Bar Position
- @type struct<XY2> 
- @desc Позиция игровой шкалы
- @default {} 
-
-
- @param gameBarSettings:s
- @parent gameBarPosition:s
- @text Zone Settings
- @type struct<GameBarSettings> 
- @desc Настройки игровой зоны
- @default {} 
-
-
- @param rodIconPosition:s
- @text Rod Image Position
- @type struct<XY2> 
- @desc Позиция изображения удочки
- @default {} 
-
-
- @param baitIconPosition:s
- @text Bait Image Position
- @type struct<XY2> 
- @desc Позиция изображения наживки
- @default {} 
-
-
- @param fishIconPosition:s
- @text Fish Image Position
- @type struct<XY2> 
- @desc Позиция изображения рыбы
- @default {} 
-
-
- @param progressBarPosition:s
- @text Progress Bar Position
- @type struct<XY2> 
- @desc Позиция изображения шкалы прогресса
- @default {} 
-
-
- @param progressBarSettings:s
- @text Visual Settings
- @parent progressBarPosition:s
- @type struct<CGauge> 
- @desc Настройки шкалы прогресса
- @default {} 
-*/
-
-/*~struct~RodSettings:
- @param id:i
- @text Rod ID
+ @param count:i
+ @text Count
  @type number 
  @min 1
- @desc Unique Rod ID, you should set this value to Rod Variable for use this Rod
- @default 1 
+ @desc Cells count in this line
+ @default 5
+*/
 
+/*~struct~SellInfo:
 
- @param iconName:str
+ @param images:s
+ @text Images
+ @type struct<str51> 
+ @desc Sell button images
+ @default {} 
+
+ @param position:s
+ @text Button Position
+ @type struct<str2> 
+ @desc Sell button position
+ @default {} 
+
+ @param sellInfoPosition:s
+ @text Info position
+ @type struct<str2> 
+ @desc Position of Info text for pick item from inventory for sell
+ @default {} 
+
+*/
+/*~struct~Button:
+
+ @param images:s
+ @text Images
+ @type struct<str51> 
+ @desc Button images
+ @default {} 
+
+ @param position:s
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+*/
+/*~struct~TitleIcon:
+
+ @param image:str
  @text Image
  @type file
- @dir img/pSimpleFishing/
+ @dir img/pShop/
  @require 1
- @default
- @desc Rod image on game UI
+ @desc 
+ @default shopIcon2
 
- @param progressBarTimerMod:i
- @text Progress Bar Multiplayer
- @type number 
- @min 0.1
- @decimals 1
- @desc Catching fish progress bar fill speed multiplayer. Total speed will be MULT by this value. 1 - no changes.
- @default 1
 
- @param redBarShrinkSpeed:i
- @text Timer Delay
- @type number 
- @min 1
- @desc Game Zone timer delay before shrink (in frames)
- @default 10
+ @param position:s
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
 
- @param gameZoneFillSpeed:i
- @parent redBarShrinkSpeed:i
- @text Shrink step
- @type number 
- @min 1
- @desc Game Zone shrink step in PX per timer tick
- @default 1 
-
- @param redBarMinWidth:i
- @parent redBarShrinkSpeed:i
- @text Min Width
- @type number 
- @min 10
- @desc Min width of game zone in PX
- @default 60 
-
- @param redBarMaxWidth:i
- @parent redBarShrinkSpeed:i
- @text Max Width
- @type number 
- @min 20
- @desc Max width of game zone in PX
- @default 120 
-
- @param whiteCursorMoveSpeed:i
- @text Cursor Step
- @type number 
- @min 1
- @desc Cursor move step in PX for each frame. More value => faster move speed.
- @default 3 
-
- @param badClickProgressPenalty:i
- @parent whiteCursorMoveSpeed:i
- @text Penalty %
- @type number 
- @min 0
- @max 99
- @desc Penalty in % (-) to progress bar when player miss click
- @default 20 
-
- @param goodClickProgressAdd:i
- @parent whiteCursorMoveSpeed:i
- @text Bonus %
- @type number 
- @min 0
- @max 99
- @desc Bonus in % (+) to progress bar when player click in game zone
- @default 0 
 */
+/*~struct~Sound:
 
-/*~struct~RodSettings:ru
- @param id:i
- @text Rod ID
- @type number 
- @min 1
- @desc Номер удочки, должен быть уникальным. Устанавливается в соответсвующую переменную перед игрой 
- @default 1 
-
-
- @param iconName:str
- @text Image
+ @param onSellSE:str
+ @text Sell SE
  @type file
- @dir img/pSimpleFishing/
+ @dir audio/se/
  @require 1
- @default
- @desc Изображение удочки
+ @desc 
+ @default Shop1
 
- @param progressBarTimerMod:i
- @text Progress Bar Multiplayer
- @type number 
- @min 0.1
- @decimals 1
- @desc Множитель заполнения шкалы прогресса. Общая скорость заполенния будет УМНОЖЕНА на это число. 1 - без изменений.
- @default 1
 
- @param redBarShrinkSpeed:i
- @text Timer Delay
- @type number 
- @min 1
- @desc Задержка (в кадрах) перед каждым шагом сужения игровой зоны
- @default 10
-
- @param gameZoneFillSpeed:i
- @parent redBarShrinkSpeed:i
- @text Shrink step
- @type number 
- @min 1
- @desc Шаг сужения игровой зоны в пикселях
- @default 1 
-
- @param redBarMinWidth:i
- @parent redBarShrinkSpeed:i
- @text Min Width
- @type number 
- @min 10
- @desc Минимальная ширина игровой зоны в пикселях
- @default 60 
-
- @param redBarMaxWidth:i
- @parent redBarShrinkSpeed:i
- @text Max Width
- @type number 
- @min 20
- @desc Максимальная ширина игровой зоны в пикселях
- @default 120 
-
- @param whiteCursorMoveSpeed:i
- @text Cursor Step
- @type number 
- @min 1
- @desc Шаг движения курсора в пикселях. БОЛЬШЕ значение = БЫСТРЕЕ двигается курсор.
- @default 3 
-
- @param badClickProgressPenalty:i
- @parent whiteCursorMoveSpeed:i
- @text Penalty %
- @type number 
- @min 0
- @max 99
- @desc Штраф в % отнятый у шкалы програсса, если игрок НЕ попал в игровую зону
- @default 20 
-
- @param goodClickProgressAdd:i
- @parent whiteCursorMoveSpeed:i
- @text Bonus %
- @type number 
- @min 0
- @max 99
- @desc Бонус в % добавленный к шкале програссе, если игрок попал в игровую зону
- @default 0 
-*/
-
-/*~struct~BaitData:
- @param id:i
- @text Bait ID
- @type number 
- @min 1
- @desc You should set this value to variable Bait Variable for use this Bait
- @default 1 
-
- @param iconName:str
- @text Image
+ @param onBuySE:str
+ @text Buy SE
  @type file
- @dir img/pSimpleFishing/
- @require 1
- @default
- @desc Bait image on game UI
+ @dir audio/se/
+ @desc 
+ @default Shop1
+
 */
 
-/*~struct~BaitData:ru
- @param id:i
- @text Bait ID
- @type number 
- @min 1
- @desc Номер наживки (нужно его задавать в переменную перед началом игры)
- @default 1 
 
- @param iconName:str
- @text Image
- @type file
- @dir img/pSimpleFishing/
- @require 1
- @default
- @desc Изображение наживки в игре
-*/
+/*~struct~DefItem:
 
-/*~struct~FishData:
+ @param catId:str
+ @text Category
+ @type text 
+ @desc Category ID (from this Shop categories) for this Item
+ @default cat0
 
- @param id:i
- @text Fish Item
+ @param itemId:i
+ @text Item
  @type item 
- @desc Player will receive this item (x1) when caught this fish
+ @desc Select Item, Weapon or Armor. Only something one. 0 - Nothing
+ @default 0
 
- @param appearChance:i
- @text Chance %
+ @param weaponId:i
+ @text Weapon
+ @type weapon 
+ @desc Select Item, Weapon or Armor. Only something one. 0 - Nothing
+ @default 0
+
+ @param armorId:i
+ @text Armor
+ @type armor 
+ @desc Select Item, Weapon or Armor. Only something one. 0 - Nothing
+ @default 0
+
+ @param sellPrice:i
+ @text Sell price
  @type number 
- @min 0
- @max 100
- @desc Basic chance (without any Baits) for that fish will appear in region.
- @default 20
+ @min -1
+ @desc Selling price (to this shop). -1 - default from Database
+ @default -1 
+
+ @param buyPrice:i
+ @text Buy price
+ @type number 
+ @min -1
+ @desc Buying price (for player). -1 - default from Database
+ @default -1 
+
+*/
+
+/*~struct~Category:
+
+ @param id:str
+ @text ID
+ @type text 
+ @desc Category unique ID (using for assign trade items to this category)
+ @default cat1 
 
 
- @param progressBarFillSpeed:i
- @text Speed
+ @param title:str
+ @text Title
+ @type text 
+ @desc Category name text
+ @default Items 
+
+
+ @param images:s
+ @text Button
+ @type struct<str51> 
+ @desc Category button
+ @default {} 
+
+
+ @param position:s
+ @parent images:s
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+*/
+
+
+/*~struct~ExtraImage:
+
+ @param image:str
+ @text Image
+ @type file
+ @dir img/pShop/
+ @require 1
+ @desc 
+ @default
+
+ @param margins:s
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+*/
+
+/*~struct~Shop:
+
+ @param id
+ @text Shop ID
+ @default testShop
+ @desc Unique Shop ID, used for open this shop via Script call
+
+ @param mainGroup
+ @text Main
+
+ @param size:s
+ @parent mainGroup
+ @text Window size
+ @type struct<str0> 
+ @desc 
+ @default {} 
+
+ @param image:s
+ @parent mainGroup
+ @text Title Icon
+ @type struct<TitleIcon> 
+ @desc 
+ @default {} 
+
+ @param sounds:s
+ @parent mainGroup
+ @text Sounds
+ @type struct<Sound> 
+ @desc 
+ @default {} 
+
+ @param titleText:str
+ @parent mainGroup
+ @text Title
+ @type text 
+ @desc Shop name (title)
+ @default     JOHN DOE SHOP 
+
+ @param titleSettings:s
+ @parent titleText:str
+ @text Setting
+ @type struct<str4> 
+ @desc Title text settings
+ @default {} 
+
+ @param titlePosition:s
+ @parent titleText:str
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+ @param extraGraphic:structA
+ @parent mainGroup
+ @text Extra Images
+ @type struct<ExtraImage>[]
+ @desc [Optional] Extra images that you can add to Shop for better visual look
+ @default []
+
+ @param cells:structA
+ @text All cells
+ @type struct<CellsLine>[]
+ @desc
+ @default []
+
+ @param cellSize:i
+ @parent cells:structA
+ @text Cell size
  @type number 
  @min 1
- @max 1000
- @desc Catch fish progress bar fill speed. Less value = more quick filling.
- @default 1 
-
- @param goodClickProgressAdd:i
- @text Click Bonus
- @type number 
- @min 0
  @max 100
- @desc Bonus in % to progress bar fill when player made right click (in game zone)
- @default 10
+ @desc Cell size for calculations. This parameter not change cell image real size.
+ @default 44
 
- @param baits:structA
- @text Baits
- @type struct<FishPerBait>[] 
- @desc Baits for fish
+ @param cellSellPriceTextPosition:s
+ @parent cells:structA
+ @text Price position
+ @type struct<str2> 
+ @desc
+ @default {} 
+
+ @param cellSellPriceText:s
+ @parent cells:structA
+ @text Price settings
+ @type struct<str4> 
+ @desc Price text settings
+ @default {} 
+
+ @param buttons
+ @text Buttons
+
+ @param sell:s
+ @parent buttons
+ @text Start selling
+ @type struct<SellInfo> 
+ @desc 
+ @default {} 
+
+ @param buttonBack:s
+ @parent buttons
+ @text Back
+ @type struct<Button> 
+ @desc 
+ @default {} 
+
+
+ @param buttonBuy:s
+ @parent buttons
+ @text Buy
+ @type struct<Button> 
+ @desc 
+ @default {} 
+
+
+ @param buttonSell:s
+ @parent buttons
+ @text Sell
+ @type struct<Button> 
+ @desc 
+ @default {} 
+
+
+ @param buttonAdd:s
+ @parent buttons
+ @text Add +
+ @type struct<Button> 
+ @desc 
+ @default {} 
+
+
+ @param buttonRemove:s
+ @parent buttons
+ @text Remove -
+ @type struct<Button> 
+ @desc 
+ @default {} 
+
+ @param itemBuyGroup
+ @text BuySell settings
+
+
+ @param itemBuyNameText:s
+ @parent itemBuyGroup
+ @text Item name text
+ @type struct<str4> 
+ @desc Item name (when buy or sell) text settings
+ @default {} 
+
+
+ @param itemBuyNameTextPosition:s
+ @parent itemBuyNameText:s
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+
+ @param itemBuyCountText:s
+ @parent itemBuyGroup
+ @text Item count text
+ @type struct<str4> 
+ @desc Item count (when buy or sell) text settings
+ @default {} 
+
+
+ @param itemBuyCountTextPosition:s
+ @parent itemBuyCountText:s
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+
+ @param itemBuyCountFormat:str
+ @parent itemBuyCountText:s
+ @text Format
+ @type text 
+ @desc %1 will be replaced by count number
+ @default x%1
+
+
+ @param itemBuyMoneyTotalText:s
+ @parent itemBuyGroup
+ @text Cost text
+ @type struct<str4> 
+ @desc 
+ @default {} 
+
+
+ @param itemBuyMoneyTotalTextPosition:s
+ @parent itemBuyMoneyTotalText:s
+ @text Position
+ @type struct<str2> 
+ @desc Item total cost (when buy or sell) text settings
+ @default {} 
+
+
+ @param itemBuyIconSize:i
+ @parent itemBuyGroup
+ @text Icon Size
+ @type number 
+ @desc Item icons size (when buy or sell)
+ @default 48 
+
+
+ @param itemBuyIconPosition:s
+ @parent itemBuyIconSize:i
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+
+ @param moneyTotalBadColor:str
+ @parent itemBuyMoneyTotalText:s
+ @text No money 
+ @type text 
+ @desc [Hex color] Money total text color when player not have enougth money to buy item
+ @default #a83632 
+
+ @param moneyTotalImagePosition:s
+ @parent itemBuyMoneyTotalText:s
+ @text Icon position
+ @type struct<str2> 
+ @desc Money total image position (when buy or sell)
+ @default {} 
+
+ 
+
+ @param categories:structA
+ @text Categories
+ @type struct<Category>[]
+ @desc Categories in this shop for selling goods. Should be one at least.
+ @default []
+
+ @param categoryTitleTextSetting:s
+ @parent categories:structA
+ @text Text setttings
+ @type struct<str4> 
+ @desc Category title text settings
+ @default {} 
+
+ @param categoryTitleTextPosition:s
+ @parent categoryTitleTextSetting:s
+ @text Position
+ @type struct<str2> 
+ @desc 
+ @default {} 
+
+ @param defaultGoods:structA
+ @text Default Goods
+ @type struct<DefItem>[]
+ @desc This stuff always be in Shop by default. !You can't remove or hide this stuff using Script Calls!
  @default []
 
 */
 
-/*~struct~FishData:ru
 
- @param id:i
- @text Fish Item
- @type item 
- @desc Предемет, который игрок получит, поймав данную рыбу (а также ID рыбы)
-
- @param appearChance:i
- @text Chance %
- @type number 
- @min 0
- @max 100
- @desc Базовый шанс что данная рыба клюент (в %)
- @default 20
-
-
- @param progressBarFillSpeed:i
- @text Speed
- @type number 
- @min 1
- @max 1000
- @desc Скорось заполнения шкалы прогресса. МЕНЬШЕ занчение = БОЛЬШЕ скорость. (вот так вот)
- @default 1 
-
- @param goodClickProgressAdd:i
- @text Click Bonus
- @type number 
- @min 0
- @max 100
- @desc Бонус в % добавленный к шкале програссе, если игрок попал в игровую зону
- @default 10
-
- @param baits:structA
- @text Baits
- @type struct<FishPerBait>[] 
- @desc Любимые наживки
- @default []
-
-*/
-
-/*~struct~FishPerBait:
-
- @param id:i
- @text Bait ID
- @type number 
- @min 1
- @desc Bait ID (number)
- @default 1
-
-
- @param addToChance:i
- @text Chance in %
- @type number 
- @min 0
- @max 100
- @desc The chance that this fish will appear for this bait
- @default 40
-
-*/
-
-/*~struct~FishPerBait:ru
-
- @param id:i
- @text Bait ID
- @type number 
- @min 1
- @desc Номер наживки
- @default 1
-
-
- @param addToChance:i
- @text Chance in %
- @type number 
- @min 0
- @max 100
- @desc Шанс в % что данная рыба клюнет на эту наживку
- @default 40
-
-*/
-
-/*~struct~RegionData:
-
- @param region:i
- @text Region Number
- @type number 
- @min 1
- @max 255
- @desc The region for which these settings will be used
- @default 1 
-
- @param fishes:structA
- @text Fishes
- @type struct<FishData>[] 
- @desc Settings of fish that can be caught in this region
- @default []
-
-*/
-
-/*~struct~RegionData:ru
-
- @param region:i
- @text Region Number
- @type number 
- @min 1
- @max 255
- @desc Номер региона на карте
- @default 1 
-
- @param fishes:structA
- @text Fishes
- @type struct<FishData>[] 
- @desc Настройки рыбы, которую можно поймать в этом региона (игрок должен стоять на клекте карты с этим регионом)
- @default []
-
-*/
-
-
-// * Дата начала разработки плагина: 14.03.2022
 
 var Imported = Imported || {};
-Imported.PKD_SimpleFishing = true;
+Imported.PKD_Shop = true;
 
-var PKD_SimpleFishing = {};
-PKD_SimpleFishing.version = 100;
-
-PKD_SimpleFishing.link = function (library) {
-    this[library.name] = library;
-};
+var PKD_Shop = {};
+PKD_Shop.Version = 100;
 
 //?VERSION
-PKD_SimpleFishing.isPro = function() { return false; };
+PKD_Shop.isPro = function() { return false; };
 
 // * For parameters
-PKD_SimpleFishing.PP = {};
+PKD_Shop.PP = {};
+PKD_Shop.Utils = {};
 
 // * Загрзука параметров
-PKD_SimpleFishing.LoadPluginSettings = () => {
-    PKD_SimpleFishing.PP._loader = new KDCore.ParamLoader("rodsData:structA");
+PKD_Shop.LoadPluginSettings = () => {
+    PKD_Shop.PP._loader = new KDCore.ParamLoader("PKD_SHOP");
 };
 
+if(!Imported.PKD_MapInventory || PKD_MI.Version < 200) {
+    let error = `PKD_Shop plugin require Map_Inventory plugin v2.0+<hr><a <a href="https://kdworkshop.net/plugins/map-inventory/">Download Map Inventory</a>`;
+    console.warn(error);
+    throw(new Error(error));
+}
 
 /*
 # ==========================================================================
@@ -984,7 +1031,7 @@ PKD_SimpleFishing.LoadPluginSettings = () => {
 // * LIBRARY WITH MZ AND MZ SUPPORT
 //! {OUTER FILE}
 
-//?rev 10.05.22
+//?rev 25.07.22
 var KDCore;
 
 window.Imported = window.Imported || {};
@@ -995,7 +1042,7 @@ KDCore = KDCore || {};
 
 // * Двузначные числа нельзя в версии, сравнение идёт по первой цифре поулчается (3.43 - нельзя, можно 3.4.3)
 //%[МЕНЯТЬ ПРИ ИЗМЕНЕНИИ]
-KDCore._fileVersion = '2.8.4';
+KDCore._fileVersion = '2.9.7';
 
 // * Методы и библиотеки данной версии
 KDCore._loader = 'loader_' + KDCore._fileVersion;
@@ -1286,7 +1333,7 @@ KDCore.registerLibraryToLoad(function() {
       __alias_Bitmap_blt_kdCore.call(this, ...arguments);
     }
   };
-  Bitmap.prototype.drawIcon = function(x, y, icon, size = 32) {
+  Bitmap.prototype.drawIcon = function(x, y, icon, size = 32, noSmoth = false) {
     var bitmap;
     bitmap = null;
     if (icon instanceof Bitmap) {
@@ -1294,7 +1341,9 @@ KDCore.registerLibraryToLoad(function() {
     } else {
       bitmap = KDCore.BitmapSrc.LoadFromIconIndex(icon).bitmap;
     }
-    return this.drawOnMe(bitmap, x, y, size, size);
+    this._context.imageSmoothingEnabled = !noSmoth;
+    this.drawOnMe(bitmap, x, y, size, size);
+    this._context.imageSmoothingEnabled = true;
   };
   Bitmap.prototype.drawOnMe = function(bitmap, x = 0, y = 0, sw = 0, sh = 0) {
     if (sw <= 0) {
@@ -1305,6 +1354,7 @@ KDCore.registerLibraryToLoad(function() {
     }
     this.blt(bitmap, 0, 0, bitmap.width, bitmap.height, x, y, sw, sh);
   };
+  //TODO: Не работает?
   Bitmap.prototype.drawInMe = function(bitmap) {
     return Bitmap.prototype.drawOnMe(bitmap, 0, 0, this.width, this.height);
   };
@@ -1312,6 +1362,41 @@ KDCore.registerLibraryToLoad(function() {
     return this.drawText(text, 0, 0, this.width, this.height, position);
   };
 });
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ Game_CharacterBase.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = Game_CharacterBase.prototype;
+  // * Нахожусь ли Я в точке по диагонале (рядом), относительно char
+  _.kdInDiagonalPointRelativeTo = function(char) {
+    var e, x, y;
+    try {
+      if (char == null) {
+        return false;
+      }
+      ({x, y} = char);
+      if (x === this.x - 1 && ((y === this.y - 1) || (y === this.y + 1))) {
+        return true; // * left up or down
+      }
+      if (x === this.x + 1 && (y === this.y - 1 || y === this.y + 1)) {
+        return true; // * right up or down
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+    }
+    return false;
+  };
+})();
+
+// ■ END Game_CharacterBase.coffee
+//---------------------------------------------------------------------------
 
 
 // Generated by CoffeeScript 2.6.1
@@ -1817,6 +1902,27 @@ KDCore.registerLibraryToLoad(function() {
         e = error;
         KDCore.warning(e);
         return null;
+      }
+    };
+    //@[2.9.7] since
+    // * Shrink number 100000 to "100k" and ect, returns STRING
+    _.formatNumberToK = function(num) {
+      var e;
+      try {
+        if (num >= 1000000000) {
+          return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+        }
+        if (num >= 1000000) {
+          return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (num >= 1000) {
+          return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        }
+        return num;
+      } catch (error) {
+        e = error;
+        KDCore.warning(e);
+        return num;
       }
     };
   })();
@@ -2775,6 +2881,127 @@ KDCore.registerLibraryToLoad(function() {
 
 
 // Generated by CoffeeScript 2.6.1
+// * Класс для глобального события игры (НЕ события на карте)
+KDCore.registerLibraryToLoad(function() {
+  //@[AUTO EXTEND]
+  return KDCore.GEvent = class GEvent {
+    constructor(name) {
+      this.name = name;
+      this.clear();
+    }
+
+    addListener(listener, isSingle = false) {
+      if (listener == null) {
+        return;
+      }
+      if (isSingle === true) {
+        this.listeners = [listener];
+      } else {
+        this.listeners.push(listener);
+      }
+    }
+
+    removeListener(listener) {
+      if (listener == null) {
+        return;
+      }
+      return this.listener.delete(listener);
+    }
+
+    call() {
+      var i, l, len, ref;
+      ref = this.listeners;
+      for (i = 0, len = ref.length; i < len; i++) {
+        l = ref[i];
+        l();
+      }
+    }
+
+    clear() {
+      return this.listeners = [];
+    }
+
+  };
+});
+
+
+// Generated by CoffeeScript 2.6.1
+// * Менеджер для управления глобальными событиями игры (GEvent) (НЕ события на карте)
+KDCore.registerLibraryToLoad(function() {
+  var GEventsManager;
+  // * Данный менеджер глобальный, т.е. с ним работают ВСЕ плагины, которые его используют!
+  GEventsManager = function() {};
+  (function() {
+    var _;
+    _ = GEventsManager;
+    // * Существует ли событие с данным именем
+    _.isEventExists = function(gEventName) {
+      return this._getEventByName(gEventName) != null;
+    };
+    // * Получить список всех зарегестрированных событий (имён)
+    _.getAllEvents = function() {
+      if (this.events == null) {
+        return [];
+      }
+      return this.events.map(function(ev) {
+        return ev.name;
+      });
+    };
+    // * Зарегестрировать событие (используется только имя события)
+    _.register = function(gEventName) {
+      if (this.events == null) {
+        this.events = [];
+      }
+      this.events.push(new KDCore.GEvent(gEventName));
+    };
+    // * Подписаться на событие (имя события) и слушатель
+    // * если isSingle == true - то у события может быть только один исполнитель
+    _.subscribeFor = function(evName, listener, isSingle = false) {
+      var ref;
+      return (ref = this._getEventByName(evName)) != null ? ref.addListener(listener, isSingle) : void 0;
+    };
+    // * Подписаться на событие (уникально) для объекта
+    // * Т.е. при вызове этого метода ещё раз, если объект
+    // * уже подписан на событие, ничего не будет (без дубликатов)
+    //? ВНИМАНИЕ ! Если объект подписался через subscribeForX, то
+    // выполнив clear по данному evName, он уже не подпишится!
+    _.subscribeForX = function(context, evName, listener) {
+      var e, key;
+      try {
+        key = "__kdCoreGEvent_" + evName;
+        if (context[key] == null) {
+          this.subscribeFor(evName, listener);
+          return context[key] = true;
+        }
+      } catch (error) {
+        e = error;
+        return KDCore.warning(e);
+      }
+    };
+    // * Вызвать событие (по имени)
+    _.call = function(evName) {
+      var ref;
+      return (ref = this._getEventByName(evName)) != null ? ref.call() : void 0;
+    };
+    _.clear = function(evName) {
+      var ref;
+      return (ref = this._getEventByName(evName)) != null ? ref.clear() : void 0;
+    };
+    _._getEventByName = function(name) {
+      if (!this.events) {
+        return null;
+      }
+      return this.events.find(function(ev) {
+        return ev.name === name;
+      });
+    };
+  })();
+  //@[EXTEND]
+  return KDCore.GEventsManager = GEventsManager;
+});
+
+
+// Generated by CoffeeScript 2.6.1
 KDCore.registerLibraryToLoad(function() {
   //@[AUTO EXTEND]
   //?[DEPRECATED]
@@ -2987,7 +3214,7 @@ KDCore.registerLibraryToLoad(function() {
         switch (type) {
           case "int":
           case "i":
-            return parseInt(item);
+            return Number(item);
           case "intA": // * массив чисел
             if (String.any(item)) {
               return JsonEx.parse(item).map((e) => {
@@ -3025,7 +3252,14 @@ KDCore.registerLibraryToLoad(function() {
             }
             break;
           case "note": // * если несколько строк в тексте
-            return JsonEx.parse(item);
+            try {
+              return JsonEx.parse(item);
+            } catch (error) {
+              e = error;
+              KDCore.warning(e);
+              return item;
+            }
+            break;
           case "css":
             return item.toCss();
           case "color":
@@ -3035,7 +3269,7 @@ KDCore.registerLibraryToLoad(function() {
         }
       } catch (error) {
         e = error;
-        console.warn(e);
+        KDCore.warning(e);
         return item;
       }
     }
@@ -4040,7 +4274,7 @@ KDCore.registerLibraryToLoad(function() {
         ref.disable(); // * Нажата
       }
       if (this.clickCallback != null) {
-        this.clickCallback();
+        this.clickCallback(index);
       }
     };
     _._resetAllButtons = function() {
@@ -4057,6 +4291,81 @@ KDCore.registerLibraryToLoad(function() {
   // ■ END PRIVATE
   //---------------------------------------------------------------------------
   return KDCore.Sprite_ButtonsGroup = Sprite_ButtonsGroup;
+});
+
+
+// Generated by CoffeeScript 2.6.1
+KDCore.registerLibraryToLoad(function() {
+  var Sprite_ButtonsGroupHandler;
+  // * Класс для реализации набора кнопок переключателей (Tabs)
+  // * Когда только одна кнопка может быть нажата (выбрана)
+  // * В отличии от Sprite_ButtonsGroup, принимает массив
+  // * уже созданных кнопок
+
+    //rev 10.07.22
+  Sprite_ButtonsGroupHandler = class Sprite_ButtonsGroupHandler extends KDCore.Sprite {
+    // _buttons = [Button object with enable, disable, isEnable, addClickHandler methods]
+    constructor(_buttons, clickCallback, activeIndex = 0) {
+      var button, i, index, len, ref;
+      super();
+      this._buttons = _buttons;
+      this.clickCallback = clickCallback;
+      ref = this._buttons;
+      for (index = i = 0, len = ref.length; i < len; index = ++i) {
+        button = ref[index];
+        this._processButton(button, index);
+      }
+      this._onButtonClick(activeIndex);
+      return;
+    }
+
+    getSelectedIndex() {
+      return this._buttons.findIndex(function(btn) {
+        return !btn.isEnabled();
+      });
+    }
+
+  };
+  (function() {    //╒═════════════════════════════════════════════════════════════════════════╛
+    // ■ PRIVATE
+    //╒═════════════════════════════════════════════════════════════════════════╛
+    //---------------------------------------------------------------------------
+    var _;
+    //@[DEFINES]
+    _ = Sprite_ButtonsGroupHandler.prototype;
+    _._processButton = function(btn, index) {
+      var method;
+      // * Так как кнопки работают как переключатели, то 03 должен быть всегда
+      method = () => {
+        return this._onButtonClick(index);
+      };
+      btn.addClickHandler(method);
+      this.add(btn);
+    };
+    _._onButtonClick = function(index = 0) {
+      var ref;
+      this._resetAllButtons();
+      if ((ref = this._buttons[index]) != null) {
+        ref.disable(); // * Нажата
+      }
+      if (this.clickCallback != null) {
+        this.clickCallback(index);
+      }
+    };
+    _._resetAllButtons = function() {
+      var btn, i, len, ref;
+      ref = this._buttons;
+      for (i = 0, len = ref.length; i < len; i++) {
+        btn = ref[i];
+        if (btn != null) {
+          btn.enable();
+        }
+      }
+    };
+  })();
+  // ■ END PRIVATE
+  //---------------------------------------------------------------------------
+  return KDCore.Sprite_ButtonsGroupHandler = Sprite_ButtonsGroupHandler;
 });
 
 
@@ -4666,7 +4975,11 @@ KDCore.registerLibraryToLoad(function() {
         }
 
         rootImageFolder() {
-          return Sprite_UIElement.RootImageFolder;
+          if (String.any(this.params.rootImageFolder)) {
+            return this.params.rootImageFolder;
+          } else {
+            return Sprite_UIElement.RootImageFolder;
+          }
         }
 
         // * Сделать чёрно белым
@@ -5150,7 +5463,8 @@ KDCore.registerLibraryToLoad(function() {
         return {
           visible: true,
           index: 0,
-          size: 32
+          size: 32,
+          rootImageFolder: null //?optional
         };
       }
 
@@ -5158,9 +5472,9 @@ KDCore.registerLibraryToLoad(function() {
         return this.drawIcon(...arguments);
       }
 
-      drawIcon(index = 0) {
+      drawIcon(index = 0, noSmoth = false) {
         this._lastValue = index;
-        return this._drawIcon(index);
+        return this._drawIcon(index, noSmoth);
       }
 
     };
@@ -5186,20 +5500,20 @@ KDCore.registerLibraryToLoad(function() {
     _._onReady = function() {
       return this.drawIcon(this._lastValue);
     };
-    _._drawIcon = function(index) {
+    _._drawIcon = function(index, noSmoth = false) {
       this._icon.clear();
       if (KDCore.SDK.isString(index)) {
-        this._drawImageIcon(index);
+        this._drawImageIcon(index, noSmoth);
       } else {
         if (index <= 0) {
           return;
         }
-        this._icon.drawIcon(0, 0, index, this.params.size);
+        this._icon.drawIcon(0, 0, index, this.params.size, noSmoth);
       }
     };
-    _._drawImageIcon = function(imageName) {
+    _._drawImageIcon = function(imageName, noSmoth = false) {
       return KDCore.Utils.loadImageAsync(this.rootImageFolder(), imageName).then((bitmap) => {
-        return this._icon.drawIcon(0, 0, bitmap, this.params.size);
+        return this._icon.drawIcon(0, 0, bitmap, this.params.size, noSmoth);
       });
     };
   })();
@@ -5222,7 +5536,8 @@ KDCore.registerLibraryToLoad(function() {
       defaultParams() {
         return {
           visible: true,
-          image: ""
+          image: "",
+          rootImageFolder: null //?optional
         };
       }
 
@@ -5483,14 +5798,14 @@ KDCore.registerLibraryToLoad(function() {
             text = text.replace("%" + i, arguments[i]);
           } catch (error) {
             e = error;
-            KDCore.UI.warning(e);
+            KDCore.warning(e);
             text = "[wrong format text input]";
           }
         }
         return text;
       } catch (error) {
         e = error;
-        KDCore.UI.warning(e);
+        KDCore.warning(e);
         return "[wrong format text input]";
       }
     };
@@ -5852,7 +6167,11 @@ KDCore.registerLibraryToLoad(function() {
       }
       size = params[1];
       if (params[1] == null) {
-        size = ImageManager.iconWidth;
+        if (KDCore.isMZ()) {
+          size = ImageManager.iconWidth;
+        } else {
+          size = Window_Base._iconWidth;
+        }
       }
       if (params[2] == null) {
         params[2] = 0;
@@ -5866,8 +6185,12 @@ KDCore.registerLibraryToLoad(function() {
       staticMargin = 2;
       x = textState.x + staticMargin + dx;
       y = textState.y + staticMargin + dy;
-      // * Только в режиме рисования
-      if (textState.drawing === true) {
+      if (KDCore.isMZ()) {
+        if (textState.drawing === true) {
+          // * Только в режиме рисования
+          this.contents.drawIcon(x, y, iconIndex, size);
+        }
+      } else {
         this.contents.drawIcon(x, y, iconIndex, size);
       }
       textState.x += size + (staticMargin * 2) + dx;
@@ -5903,7 +6226,7 @@ KDCore.registerLibraryToLoad(function() {
       y = textState.y + 2 + params[4];
       drawBitmap = this.contents;
       source = this.pGetSourceImageForDrawPictureSized(name);
-      if (textState.drawing === true) {
+      if ((KDCore.isMZ() && textState.drawing === true) || KDCore.isMV()) {
         drawProcess = function() {
           var e;
           try {
@@ -6789,6 +7112,34 @@ KDCore.registerLibraryToLoad(function() {
 
 // Generated by CoffeeScript 2.6.1
 KDCore.registerLibraryToLoad(function() {
+  var ALIAS___startLoading, _;
+  // * В версии RPG Maker MZ 1.5.0 появился баг что картинки не успевают прогрузится
+  // * Данный фикс, возвращает старое поведение
+  if (!KDCore.isMZ()) {
+    return;
+  }
+  //@[DEFINES]
+  _ = Bitmap.prototype;
+  //@[ALIAS]
+  ALIAS___startLoading = _._startLoading;
+  return _._startLoading = function() {
+    if (Utils.hasEncryptedImages()) {
+      ALIAS___startLoading.call(this, ...arguments);
+    } else {
+      // * Это из RPG Maker MZ до версии 1.5
+      this._image = new Image();
+      this._image.onload = this._onLoad.bind(this);
+      this._image.onerror = this._onError.bind(this);
+      this._destroyCanvas();
+      this._loadingState = "loading";
+      this._image.src = this._url;
+    }
+  };
+});
+
+
+// Generated by CoffeeScript 2.6.1
+KDCore.registerLibraryToLoad(function() {
   var alias_WBDTEX_KDCore29122021;
   // * <center>, для RPG Maker MZ и если нету Visu Message Core
   if (KDCore.isMZ()) {
@@ -6908,952 +7259,1799 @@ if (KDCore._requireLoadLibrary === true) {
 // ==========================================================================
 // ==========================================================================
 
-//Plugin KDCore builded by PKD PluginBuilder 2.1 - 10.05.2022
+//Plugin KDCore builded by PKD PluginBuilder 2.1 - 25.07.2022
+
+(function(){
+
+    (function(){
+        
+        var _ = PKD_MI.LIBS.MapInvController.prototype;
+
+        //@[ALIAS]
+        var _alias___onAction = _._onAction;
+        _._onAction = function (cell) {
+            if($gameTemp.miSellMode == true) {
+                if(cell.item && !cell._inSpecialState && PShopManager.isCanSellItem(cell.item)) {
+                    SoundManager.playCursor();
+                    PShopManager.onSellItemPick(cell.item);
+                    PKD_MI.closeInventory();
+                } else {
+                    SoundManager.playBuzzer();
+                }
+            } else {
+                _alias___onAction.call(this, cell);
+            }
+        };
+
+    })();
+
+    (function(){
+        
+        var _ = PKD_MI.LIBS.Sprite_MapInvCell.prototype;
+
+        //@[ALIAS]
+        var _alias___onCheckUsableTick = _._onCheckUsableTick;
+        _._onCheckUsableTick = function () {
+            _alias___onCheckUsableTick.call(this, ...arguments);
+            if($gameTemp.miSellMode == true) {
+                this._onCheckUsableOnItemPickForSell();
+                return;
+            }
+        };
+
+        //@[ALIAS]
+        var _alias__refreshSpecialState = _.refreshSpecialState;
+        _.refreshSpecialState = function () {
+            _alias__refreshSpecialState.call(this, ...arguments);
+            if($gameTemp.miSellMode == true) {
+                this._onCheckUsableOnItemPickForSell();
+            }
+        };
+
+        _._onCheckUsableOnItemPickForSell = function() {
+            if (this.item == null) {
+                return;
+            }
+            this._refreshEquipmentState();
+            this.enableItem();
+            if (this.item && (DataManager.isWeapon(this.item) || DataManager.isArmor(this.item)) && this._inSpecialState) {
+                this.disableItem();
+            }
+            if (!PShopManager.isCanSellItem(this.item)) {
+                this.disableItem();
+            }
+        };
+
+    })();
+
+    (function(){
+        
+        var _ = PKD_MI.LIBS.Sprite_MapInvHelp.prototype;
+
+        //@[ALIAS]
+        var _alias__drawCost = _.drawCost;
+        _.drawCost = function () {
+            if(this.cell.isShopCell && !PKD_Shop.PP.isShowRealItemPriceInDescription()) {
+                let text = PShopManager.getItemBuyPrice(this.cell.item);
+                this._textCostSpr.drawTextWithSettings(text);
+            } else
+                _alias__drawCost.call(this);
+        };
+
+        //@[ALIAS]
+        var _alias__showActionHelp = _.showActionHelp;
+        _.showActionHelp = function () {
+            if(this.cell.isShopCell) {
+                this._drawActionHelpText(PKD_Shop.PP.helpWindowActionText());
+            } else
+                _alias__showActionHelp.call(this);
+        };
+
+    })();
+
+    //@[ALIAS]
+    var _alias_Spriteset_InvUI_closeInventory = Spriteset_InvUI.prototype.closeInventory;
+    Spriteset_InvUI.prototype.closeInventory = function () {
+        if ($gameTemp.miSellMode == true) {
+            PShopManager.stopShopSell();
+        }
+        _alias_Spriteset_InvUI_closeInventory.call(this);
+    };
+
+})();
 
 // Generated by CoffeeScript 2.6.1
-//$[ENCODE]
 //╒═════════════════════════════════════════════════════════════════════════╛
-// ■ Plugin Paramters.coffee
+// ■ Parameters.coffee
 //╒═════════════════════════════════════════════════════════════════════════╛
 //---------------------------------------------------------------------------
 (function() {
   var _;
   //@[DEFINES]
-  _ = PKD_SimpleFishing.PP;
-  _.getGameEventsData = function() {
-    return this._loader.getParam("gameEventsData", {
-      onGameInitedCommonEventId: 1,
-      onGameStartedCommonEventId: 2,
-      onGameEndCommonEventId: 3,
-      onPlayerClickGood: 4,
-      onPlayerCatchFish: 5,
-      onPlayerClickBad: 6,
-      onPlayerLoseFish: 7
-    });
+  _ = PKD_Shop.PP;
+  // * Стандартный модификатор цены продажи торговцу любого предмета
+  _.getDefaultSellPriceMod = function() {
+    return this._loader.getParam("ms_defaultPriceMod", 0.5);
   };
-  _.getMainUIVisualSettings = function() {
-    return this._loader.getParam("visualSettings", {
-      gameBarPosition: {
-        x: "Graphics.width / 2 - 162",
-        y: "60"
+  _.isShopWindowDragable = function() {
+    return this._loader.getParam("ms_isDraggable", true);
+  };
+  _.isShowWindowHaveCloseButton = function() {
+    return this._loader.getParam("ms_isCloseButton", true);
+  };
+  _.helpWindowActionText = function() {
+    return this._loader.getParam("ms_helpWindowActionText", "Buy");
+  };
+  _.isPlayerCanMoveWhenShopIsOpen = function() {
+    return this._loader.getParam("ms_isPlayerMove", false);
+  };
+  // * Показывать в описании предмета продажи его реальную цену (из БД) ?
+  _.isShowRealItemPriceInDescription = function() {
+    return this._loader.getParam("ms_isRealPrice", false);
+  };
+  // * -------------------------------------------------------------------------
+  _.getShopDataById = function(shopId) {
+    return this.allShops().getById(shopId);
+  };
+  _.shopExampleDefault = {
+    id: "testShop",
+    titleText: "    JOHN DOE SHOP",
+    titleSettings: {
+      visible: true,
+      size: {
+        w: 360,
+        h: 52
       },
-      gameBarSettings: {
-        redZoneFillOpacity: 125,
-        redZoneFillColor: KDCore.Color.MAGENTA,
-        redZoneMinWidthBeforeBadEnd: 6
+      alignment: "center",
+      font: {
+        face: "Arial",
+        size: 28,
+        italic: false
       },
-      rodIconPosition: {
-        x: "Graphics.width / 2 - 38 - 50",
-        y: "110"
+      margins: {
+        x: 10,
+        y: 0
       },
-      baitIconPosition: {
-        x: "Graphics.width / 2 - 38 + 50",
-        y: "110"
+      outline: {
+        color: null,
+        width: 2
       },
-      fishIconPosition: {
-        x: "Graphics.width / 2 - 62",
-        y: "Graphics.height - 224"
+      textColor: "#FFFFFF".toCss()
+    },
+    titlePosition: {
+      x: 0,
+      y: 0
+    },
+    cellSize: 44,
+    cells: [
+      {
+        position: {
+          x: 100,
+          y: 62
+        },
+        spaceBetween: 4,
+        direction: 'horizontal',
+        count: 5
       },
-      progressBarPosition: {
-        x: "Graphics.width / 2 - 162",
-        y: "Graphics.height - 100"
+      {
+        position: {
+          x: 100,
+          y: 122
+        },
+        spaceBetween: 4,
+        direction: 'horizontal',
+        count: 5
       },
-      progressBarSettings: {
-        visible: true,
-        fill: "progressBarFill",
-        foreground: "progressBarFore",
-        mask: "",
-        backColor: "#CCCCCC".toCss(),
-        backOpacity: 125,
-        vertical: false
+      {
+        position: {
+          x: 100,
+          y: 182
+        },
+        spaceBetween: 4,
+        direction: 'horizontal',
+        count: 5
+      },
+      {
+        position: {
+          x: 100,
+          y: 242
+        },
+        spaceBetween: 4,
+        direction: 'horizontal',
+        count: 5
       }
-    });
-  };
-  _.getGameVariablesData = function() {
-    return this._loader.getParam("variablesData", {
-      baitVariableId: 1,
-      rodVariableId: 2
-    });
-  };
-  _.getRodsData = function() {
-    return this._loader.getParam("rodsData", [
+    ],
+    cellSellPriceTextPosition: {
+      x: -1,
+      y: 36
+    },
+    cellSellPriceText: {
+      visible: true,
+      size: {
+        w: 38,
+        h: 18
+      },
+      alignment: "center",
+      font: {
+        face: null,
+        size: 14,
+        italic: false
+      },
+      margins: {
+        x: 0,
+        y: 0
+      },
+      outline: {
+        color: null,
+        width: 1
+      },
+      textColor: "#baab25".toCss()
+    },
+    size: {
+      w: 380,
+      h: 400
+    },
+    sell: {
+      images: {
+        main: "sell_00",
+        hover: "sell_01",
+        disabled: "sell_03"
+      },
+      position: {
+        x: 8,
+        y: 294
+      },
+      sellInfoPosition: {
+        x: 76,
+        y: 42
+      }
+    },
+    buttonBack: {
+      images: {
+        main: "back_00",
+        hover: "back_01",
+        disabled: ""
+      },
+      position: {
+        x: 120,
+        y: 260
+      }
+    },
+    buttonBuy: {
+      images: {
+        main: "buy_00",
+        hover: "buy_01",
+        disabled: ""
+      },
+      position: {
+        x: 180,
+        y: 260
+      }
+    },
+    buttonSell: {
+      images: {
+        main: "buttonSell_00",
+        hover: "buttonSell_01",
+        disabled: ""
+      },
+      position: {
+        x: 180,
+        y: 260
+      }
+    },
+    buttonAdd: {
+      images: {
+        main: "Add_00",
+        hover: "Add_01",
+        disabled: ""
+      },
+      position: {
+        x: 238,
+        y: 92
+      }
+    },
+    buttonRemove: {
+      images: {
+        main: "Rem_00",
+        hover: "Rem_01",
+        disabled: ""
+      },
+      position: {
+        x: 238,
+        y: 128
+      }
+    },
+    itemBuyNameText: {
+      visible: true,
+      size: {
+        w: 280,
+        h: 32
+      },
+      alignment: "center",
+      font: {
+        face: null,
+        size: 24,
+        italic: false
+      },
+      margins: {
+        x: 0,
+        y: 0
+      },
+      outline: {
+        color: null,
+        width: 2
+      },
+      textColor: "#FFFFFF".toCss()
+    },
+    itemBuyNameTextPosition: {
+      x: 80,
+      y: 50
+    },
+    itemBuyCountText: {
+      visible: true,
+      size: {
+        w: 80,
+        h: 24
+      },
+      alignment: "center",
+      font: {
+        face: null,
+        size: 22,
+        italic: false
+      },
+      margins: {
+        x: 0,
+        y: 0
+      },
+      outline: {
+        color: null,
+        width: 2
+      },
+      textColor: "#1d9fbf".toCss()
+    },
+    itemBuyCountTextPosition: {
+      x: 176,
+      y: 160
+    },
+    itemBuyCountFormat: "x%1",
+    itemBuyMoneyTotalText: {
+      visible: true,
+      size: {
+        w: 180,
+        h: 30
+      },
+      alignment: "right",
+      font: {
+        face: "Consolas",
+        size: 26,
+        italic: false
+      },
+      margins: {
+        x: 0,
+        y: 0
+      },
+      outline: {
+        color: null,
+        width: 1
+      },
+      textColor: "#baab25".toCss()
+    },
+    itemBuyMoneyTotalTextPosition: {
+      x: 140,
+      y: 200
+    },
+    itemBuyIconSize: 48,
+    itemBuyIconPosition: {
+      x: 200,
+      y: 120
+    },
+    moneyTotalBadColor: "#a83632",
+    moneyTotalImagePosition: {
+      x: 100,
+      y: 190
+    },
+    extraGraphic: [
       {
-        "id": 1,
-        "iconName": "rod1",
-        "progressBarTimerMod": 1,
-        "gameZoneFillSpeed": 1,
-        "redBarShrinkSpeed": 10,
-        "whiteCursorMoveSpeed": 3,
-        "redBarMinWidth": 60,
-        "redBarMaxWidth": 120,
-        "badClickProgressPenalty": 20,
-        "goodClickProgressAdd": 0
+        image: "categoriesBackground",
+        margins: {
+          x: 2,
+          y: 0
+        }
       },
       {
-        "id": 2,
-        "iconName": "",
-        "progressBarTimerMod": 0.8,
-        "gameZoneFillSpeed": 1,
-        "redBarShrinkSpeed": 9,
-        "whiteCursorMoveSpeed": 4,
-        "redBarMinWidth": 50,
-        "redBarMaxWidth": 110,
-        "badClickProgressPenalty": 50,
-        "goodClickProgressAdd": 2
+        image: "itemsBackground",
+        margins: {
+          x: 76,
+          y: 42
+        }
       }
-    ]);
-  };
-  _.getBaitsData = function() {
-    return this._loader.getParam("baitsData", [
+    ],
+    categories: [
       {
-        "id": 1,
-        "iconName": "worm"
+        id: "cat0",
+        title: "Items",
+        images: {
+          main: "cat0_00",
+          hover: "cat0_01",
+          disabled: "cat0_03"
+        },
+        position: {
+          x: 8,
+          y: 20
+        }
       },
       {
-        "id": 2,
-        "iconName": ""
-      }
-    ]);
-  };
-  _.getRegionsData = function() {
-    return this._loader.getParam("regionsData", [
+        id: "cat1",
+        title: "Weapons",
+        images: {
+          main: "cat1_00",
+          hover: "cat1_01",
+          disabled: "cat1_03"
+        },
+        position: {
+          x: 8,
+          y: 78
+        }
+      },
       {
-        "region": 70,
-        "fishes": [
-          {
-            "id": 34,
-            "appearChance": 20,
-            "progressBarFillSpeed": 10,
-            "goodClickProgressAdd": 10,
-            "baits": [
-              {
-                "id": 1,
-                "addToChance": 40
-              },
-              {
-                "id": 2,
-                "addToChance": 80
-              }
-            ]
-          },
-          {
-            "id": 35,
-            "appearChance": 10,
-            "progressBarFillSpeed": 40,
-            "goodClickProgressAdd": 12,
-            "baits": [
-              {
-                "id": 1,
-                "addToChance": 10
-              },
-              {
-                "id": 2,
-                "addToChance": 80
-              }
-            ]
-          }
-        ]
+        id: "cat2",
+        title: "Armors",
+        images: {
+          main: "cat2_00",
+          hover: "cat2_01",
+          disabled: "cat2_03"
+        },
+        position: {
+          x: 8,
+          y: 136
+        }
       }
-    ]);
+    ],
+    categoryTitleTextSetting: {
+      visible: true,
+      size: {
+        w: 300,
+        h: 26
+      },
+      alignment: "center",
+      font: {
+        face: "Tahoma",
+        size: 20,
+        italic: false
+      },
+      margins: {
+        x: 0,
+        y: 0
+      },
+      outline: {
+        color: null,
+        width: 2
+      },
+      textColor: "#FFFFFF".toCss()
+    },
+    categoryTitleTextPosition: {
+      x: 60,
+      y: 8
+    },
+    image: {
+      image: "shopIcon2",
+      position: {
+        x: -20,
+        y: -30
+      }
+    },
+    sounds: {
+      onSellSE: "",
+      onBuySE: ""
+    },
+    defaultGoods: [
+      {
+        catId: "cat0",
+        itemId: 7,
+        sellPrice: -1,
+        buyPrice: -1
+      },
+      {
+        catId: "cat0",
+        itemId: 8,
+        sellPrice: -1,
+        buyPrice: -1
+      },
+      {
+        catId: "cat0",
+        itemId: 9,
+        sellPrice: -1,
+        buyPrice: -1
+      },
+      {
+        catId: "cat1",
+        weaponId: 7,
+        sellPrice: -1,
+        buyPrice: -1
+      },
+      {
+        catId: "cat2",
+        armorId: 2,
+        sellPrice: -1,
+        buyPrice: -1 // * {catId, itemId, weaponId, armorId, sellPrice, buyPrice}
+      }
+    ]
   };
-  _.getRodDataById = function(id) {
-    return this.getRodsData().getById(id);
-  };
-  _.getBaitDataById = function(id) {
-    return this.getBaitsData().getById(id);
-  };
-  _.getRegionDataById = function(region) {
-    return this.getRegionsData().getByField("region", region);
+  //?VERSION
+  _.allShops = function() {
+    return [];
   };
 })();
 
-
-// Generated by CoffeeScript 2.6.1
-//╒═════════════════════════════════════════════════════════════════════════╛
-// ■ Plugin Paramters.coffee
-//╒═════════════════════════════════════════════════════════════════════════╛
-//---------------------------------------------------------------------------
-PKD_SimpleFishing.isPro = function() {
-  return true;
-};
-
-(function() {
-  var ALIAS__getRodsData, _;
-  //@[DEFINES]
-  _ = PKD_SimpleFishing.PP;
-  //@[ALIAS]
-  ALIAS__getRodsData = _.getRodsData;
-  _.getRodsData = function() {
-    var rods;
-    return rods = ALIAS__getRodsData.call(this);
-  };
-})();
-
-
-// Generated by CoffeeScript 2.6.1
-//╒═════════════════════════════════════════════════════════════════════════╛
-// ■ SCRIPT CALLS.coffee
-//╒═════════════════════════════════════════════════════════════════════════╛
-//---------------------------------------------------------------------------
-(function() {
-  window.InitFishingGame = function() {
-    var e;
-    try {
-      if (KDCore.Utils.isSceneMap()) {
-        return SceneManager._scene.pInitFishingGame();
-      }
-    } catch (error) {
-      e = error;
-      return KDCore.warning(e);
-    }
-  };
-  window.IsInFishingGame = function() {
-    var e;
-    try {
-      if (KDCore.Utils.isSceneMap()) {
-        return SceneManager._scene.pInFishing();
-      }
-    } catch (error) {
-      e = error;
-      KDCore.warning(e);
-    }
-    return false;
-  };
-  window.StartFishingGame = function() {
-    var e;
-    try {
-      if (KDCore.Utils.isSceneMap()) {
-        return SceneManager._scene.pStartFishingGame();
-      }
-    } catch (error) {
-      e = error;
-      return KDCore.warning(e);
-    }
-  };
-  window.PauseFishingGame = function() {
-    var e;
-    try {
-      if (KDCore.Utils.isSceneMap()) {
-        return SceneManager._scene.pPauseFishingGame();
-      }
-    } catch (error) {
-      e = error;
-      return KDCore.warning(e);
-    }
-  };
-  window.StopFishingGame = function() {
-    var e;
-    try {
-      if (KDCore.Utils.isSceneMap()) {
-        return SceneManager._scene.pStopFishingGame();
-      }
-    } catch (error) {
-      e = error;
-      return KDCore.warning(e);
-    }
-  };
-})();
-
-// ■ END SCRIPT CALLS.coffee
+// ■ END Parameters.coffee
 //---------------------------------------------------------------------------
 
 
 // Generated by CoffeeScript 2.6.1
-//╒═════════════════════════════════════════════════════════════════════════╛
-// ■ DataManager.coffee
-//╒═════════════════════════════════════════════════════════════════════════╛
-//---------------------------------------------------------------------------
-(function() {
-  var _;
-  //@[DEFINES]
-  _ = DataManager;
-})();
+// * Главный менеджер для работы с магазином
 
-// ■ END DataManager.coffee
-//---------------------------------------------------------------------------
-//@[ALIAS]
-/*ALIAS__loadDatabase = _.loadDatabase
-_.loadDatabase = ->
-    console.log(Graphics.width)
-    PKD_SimpleFishing.LoadPluginSettings()
-    ALIAS__loadDatabase.call(@, ...arguments)*/
-
-
-// Generated by CoffeeScript 2.6.1
-var FSH_Sprite_GameMainBar;
-
-FSH_Sprite_GameMainBar = class FSH_Sprite_GameMainBar extends KDCore.Sprite {
-  constructor() {
-    super();
-    this.settings = PKD_SimpleFishing.PP.getMainUIVisualSettings().gameBarSettings;
-    this._create();
-    this._initValues();
-  }
-
-  setCallbackOnFillBad(callbackOnBad) {
-    this.callbackOnBad = callbackOnBad;
-  }
-
-  setCallbackOnFillGood(callbackOnGood) {
-    this.callbackOnGood = callbackOnGood;
-  }
-
-  isPaused() {
-    return this._paused === true;
-  }
-
-  _create() {
-    return this._preloadImage();
-  }
-
-  _preloadImage() {
-    var b;
-    this.maxGameLength = 320; // * fallback value
-    this.maxGameHeight = 38; // * fallback value
-    b = ImageManager.loadPictureForFSHplugin("gameBarBack");
-    b.addLoadListener(() => {
-      this.maxGameWidth = b.width;
-      this.maxGameHeight = b.height;
-      return this._createAfter();
-    });
-  }
-
-  _createAfter() {
-    this._createBack();
-    this._createRedFillSpr();
-    this._createFore();
-    return this._createWhiteCursor();
-  }
-
-  _createBack() {
-    var backgroundImage;
-    backgroundImage = new KDCore.UI.Sprite_UIImage();
-    backgroundImage.rootImageFolder = function() {
-      return "pSimpleFishing";
-    };
-    backgroundImage.draw("gameBarBack");
-    return this.addChild(backgroundImage);
-  }
-
-  _createRedFillSpr() {
-    this.fill = new Sprite(new Bitmap(100, 100));
-    this.fill.visible = false;
-    this.fill.opacity = this.settings.redZoneFillOpacity;
-    return this.addChild(this.fill);
-  }
-
-  _createFore() {
-    var foreImage;
-    foreImage = new KDCore.UI.Sprite_UIImage();
-    foreImage.rootImageFolder = function() {
-      return "pSimpleFishing";
-    };
-    foreImage.draw("gameBarFore");
-    return this.addChild(foreImage);
-  }
-
-  _createWhiteCursor() {
-    var whiteIcon;
-    this.white = new Sprite();
-    whiteIcon = new Sprite(ImageManager.loadPictureForFSHplugin("cursorSmall"));
-    whiteIcon.anchor.x = 0.5;
-    this.white.addChild(whiteIcon);
-    return this.addChild(this.white);
-  }
-
-  _initValues() {
-    this._paused = true;
-    this.tSpeed = 10;
-    this.rSpeed = 1;
-    this._timer = 0;
-    this.minW = 60;
-    this.maxW = 220;
-    this.wSpeed = 3;
-    this._goToRight = true;
-    this.rMinW = this.settings.redZoneMinWidthBeforeBadEnd || 6;
-  }
-
-  setTimerSpeed(tSpeed) {
-    this.tSpeed = tSpeed;
-  }
-
-  setMinMaxFill(minW, maxW) {
-    this.minW = minW;
-    this.maxW = maxW;
-  }
-
-  setWhiteProbeSpeed(wSpeed) {
-    this.wSpeed = wSpeed;
-  }
-
-  setFillSpeed(rSpeed) {
-    this.rSpeed = rSpeed;
-  }
-
-  //%[Запуск анимации движения курсора и уменьшения зоны]
-  start() {
-    this._paused = false;
-    return this._reCreateRedFill();
-  }
-
-  pause() {
-    return this._paused = true;
-  }
-
-  _reCreateRedFill() {
-    return setTimeout((() => {
-      this._createRedFill();
-      if (this.tSpeed > 2) {
-        return this.tSpeed -= 1;
-      }
-    }), 500);
-  }
-
-  update() {
-    super.update();
-    if (this._paused === true) {
-      return;
-    }
-    this._timer++;
-    if (this._timer >= this.tSpeed) {
-      this._timer = 0;
-      this._onTimerTick();
-    }
-    return this._updateWhiteProbTimer();
-  }
-
-  _onTimerTick() {
-    if (this.fill.visible === false) {
-      return;
-    }
-    this._processRedFill();
-    if (this.fill.bitmap.width <= this.rMinW) {
-      return this.onRedFillBad();
-    }
-  }
-
-  _processRedFill() {
-    var h, w;
-    w = this.fill.bitmap.width;
-    h = this.fill.bitmap.height;
-    this.fill.bitmap = new Bitmap(w - (this.rSpeed * 2), h);
-    this.fill.x += this.rSpeed;
-    return this.fill.bitmap.fillAll(this.settings.redZoneFillColor);
-  }
-
-  onRedFillBad() {
-    this.fill.visible = false;
-    this._reCreateRedFill();
-    if (this.callbackOnBad != null) {
-      return this.callbackOnBad();
-    }
-  }
-
-  _createRedFill() {
-    var w, x;
-    w = this.minW + Math.randomInt(this.maxW);
-    this.fill.bitmap = new Bitmap(w, this.maxGameHeight);
-    this.fill.bitmap.fillAll(this.settings.redZoneFillColor);
-    x = Math.randomInt(this.maxGameWidth - w - 1);
-    this.fill.move(x, 0);
-    return this.fill.visible = true;
-  }
-
-  _updateWhiteProbTimer() {
-    var x;
-    x = this.white.x;
-    if (this._goToRight === true) {
-      if (x >= this.maxGameWidth) {
-        this._goToRight = false;
-      } else {
-        return this.white.x = x + this.wSpeed;
-      }
-    } else {
-      if (x <= 0) {
-        this._goToRight = true;
-      } else {
-        return this.white.x = x - this.wSpeed;
-      }
-    }
-  }
-
-  isWhiteInRedZone() {
-    var rE, rX, wX;
-    rX = this.fill.x;
-    rE = this.fill.x + this.fill.bitmap.width;
-    wX = this.white.x;
-    if (wX >= rX && wX <= rE) {
-      return true;
-    }
-    return false;
-  }
-
-  onRedFillGood() {
-    this.fill.visible = false;
-    this._reCreateRedFill();
-    if (this.callbackOnGood != null) {
-      return this.callbackOnGood();
-    }
-  }
-
-  isReady() {
-    return this._paused === false && this.fill.visible === true;
-  }
-
-  clear() {
-    this.fill.visible = false;
-    this._timer = 0;
-    this._goToRight = true;
-    return this.white.x = 0;
-  }
-
-};
-
-
-// Generated by CoffeeScript 2.6.1
-var FSH_Sprite_GameProgressBar;
-
-FSH_Sprite_GameProgressBar = class FSH_Sprite_GameProgressBar extends KDCore.UI.Sprite_UIGauge {
-  constructor() {
-    super();
-    this._initValues();
-  }
-
-  rootImageFolder() {
-    return "pSimpleFishing";
-  }
-
-  defaultParams() {
-    return PKD_SimpleFishing.PP.getMainUIVisualSettings().progressBarSettings;
-  }
-
-  _initValues() {
-    this._currentProgress = 0;
-    this._paused = true;
-    this._isEndGood = false;
-    this._isEndBad = false;
-    this.tSpeed = 10;
-    return this._timer = 0;
-  }
-
-  setTimerSpeed(tSpeed) {
-    this.tSpeed = tSpeed;
-  }
-
-  // * float value from 0 to 1
-  extraMoveBy(dx) {
-    this._currentProgress -= dx;
-    this.refreshProgress();
-    if (this._currentProgress <= 0) {
-      this._isEndGood = false;
-      this._isEndBad = true;
-    }
-  }
-
-  refreshProgress() {
-    if (this._currentProgress > 1.0) {
-      this._currentProgress = 1.0;
-    } else if (this._currentProgress < 0) {
-      this._currentProgress = 0;
-    }
-    return this.draw(this._currentProgress);
-  }
-
-  // * float value from 0 to 1
-  extraMoveBy2(dx) {
-    this._currentProgress += dx;
-    this.refreshProgress();
-    if (this._currentProgress >= 1) {
-      this._isEndGood = true;
-      this._isEndBad = false;
-    }
-  }
-
-  isEndGood() {
-    return this._isEndGood === true;
-  }
-
-  isEndBad() {
-    return this._isEndBad === true;
-  }
-
-  isAnyEnd() {
-    return this.isEndGood() || this.isEndBad();
-  }
-
-  start() {
-    return this._paused = false;
-  }
-
-  pause() {
-    return this._paused = true;
-  }
-
-  clear() {
-    this._currentProgress = 0;
-    this._timer = 0;
-    this._isEndGood = false;
-    this._isEndBad = false;
-    this.refreshProgress();
-  }
-
-  update() {
-    Sprite.prototype.update.call(this);
-    if (this._paused === true) {
-      return;
-    }
-    this._timer++;
-    if (this._timer >= this.tSpeed) {
-      this._timer = 0;
-      return this._onTimerTick();
-    }
-  }
-
-  _onTimerTick() {
-    if (this.isAnyEnd()) {
-      return;
-    }
-    this._currentProgress += 0.01;
-    this.refreshProgress();
-    if (this._currentProgress >= 1) {
-      this._isEndGood = true;
-      this._isEndBad = false;
-    }
-  }
-
-};
-
-
-// Generated by CoffeeScript 2.6.1
 //@[GLOBAL]
-var FSH_Sprite_MainGameUI;
+var PShopManager;
 
-FSH_Sprite_MainGameUI = class FSH_Sprite_MainGameUI extends KDCore.Sprite {
-  constructor() {
-    super();
-    this._fInit();
-    this._fCreateElements();
-    this._fSetupHandlers();
-    this._callCommonEvent(this.pEvents.onGameInitedCommonEventId);
-    return;
-  }
-
-  //%[MAIN]
-  start() {
-    this.bonus = 0;
-    this._prepareFish();
-    if ((this.fish != null) && (this.bait != null) && (this.rod != null)) {
-      this._prepareRod();
-      this.gameBar.start();
-      this.progressBar.start();
-      return this._callCommonEvent(this.pEvents.onGameStartedCommonEventId);
-    } else {
-      console.warn("Fish or Bait or Rod data not found!");
-      return window.StopFishingGame();
-    }
-  }
-
-  pause() {
-    this.gameBar.pause();
-    return this.progressBar.pause();
-  }
-
-  clear() {
-    this.gameBar.clear();
-    this.progressBar.clear();
-    return this._refreshFishIcon(0);
-  }
-
-  isPlaying() {
-    return !this.gameBar.isPaused();
-  }
-
-  stop() {
-    var ref;
-    this.visible = false;
-    this.terminate();
-    if ((ref = this.parent) != null) {
-      ref.removeChild(this);
-    }
-  }
-
-  terminate() {
-    var ref;
-    return this._callCommonEvent((ref = this.pEvents) != null ? ref.onGameEndCommonEventId : void 0);
-  }
-
-  update() {
-    super.update();
-    this._updateInput();
-    this._updateState();
-  }
-
-};
+PShopManager = function() {};
 
 (function() {  //╒═════════════════════════════════════════════════════════════════════════╛
-  // ■ FSH_Sprite_MainGameUI.coffee
+  // ■ PShopManager.coffee
   //╒═════════════════════════════════════════════════════════════════════════╛
   //---------------------------------------------------------------------------
   var _;
+  //REMOVE AND UNLOCK - только влияют на фильтр  добавляемых вещей в магазин, только для ПРЕДОПРЕДЕЛЁННЫХ МАГИЗНОВ (через параметры)
+
   //@[DEFINES]
-  _ = FSH_Sprite_MainGameUI.prototype;
-  _._fInit = function() {
-    this.pEvents = PKD_SimpleFishing.PP.getGameEventsData();
-    this.pVars = PKD_SimpleFishing.PP.getGameVariablesData();
-    this.pVisual = PKD_SimpleFishing.PP.getMainUIVisualSettings();
-    this.rod = this._getRodData();
-    this.bait = this._getBaitData();
+  _ = PShopManager;
+  _.isShopOpen = function() {
+    return KDCore.Utils.isSceneMap() && SceneManager._scene.pIsShowIsOpened();
   };
-  //console.info @rod
-  //console.info @bait
-  _._getRodData = function() {
-    var rodId;
-    rodId = KDCore.Utils.getVar(this.pVars.rodVariableId);
-    return PKD_SimpleFishing.PP.getRodDataById(rodId);
-  };
-  _._getBaitData = function() {
-    var baidId;
-    baidId = KDCore.Utils.getVar(this.pVars.baitVariableId);
-    if (baidId > 0) {
-      return PKD_SimpleFishing.PP.getBaitDataById(baidId);
-    } else {
-      return null;
+  // * Открыть магазин на карте (опционально с подготовкой или без)
+  // * shopId - не обязательно
+  _.openShop = function(shopId) {
+    this.loadShop(shopId);
+    if (!this.isShopLoaded()) { // * Не существует такого магазина!
+      return;
     }
-  };
-  _._fCreateElements = function() {
-    this._createGameBar();
-    this._createProgressBar();
-    this._createFishIcon();
-    this._createRodIcon();
-    this._createBaitIcon();
-  };
-  _._createGameBar = function() {
-    var position;
-    position = this.pVisual.gameBarPosition;
-    this.gameBar = new FSH_Sprite_GameMainBar();
-    this.gameBar.x = eval(position.x);
-    this.gameBar.y = eval(position.y);
-    return this.addChild(this.gameBar);
-  };
-  _._createProgressBar = function() {
-    var position;
-    position = this.pVisual.progressBarPosition;
-    this.progressBar = new FSH_Sprite_GameProgressBar();
-    this.progressBar.x = eval(position.x);
-    this.progressBar.y = eval(position.y);
-    this.progressBar.draw(0);
-    return this.addChild(this.progressBar);
-  };
-  _._createFishIcon = function() {
-    var position;
-    position = this.pVisual.fishIconPosition;
-    this.fishIconBack = new Sprite(ImageManager.loadPictureForFSHplugin("fishBackground"));
-    this.fishIconBack.x = eval(position.x);
-    this.fishIconBack.y = eval(position.y);
-    this.fishIcon = new Sprite();
-    this.fishIconBack.addChild(this.fishIcon);
-    return this.addChild(this.fishIconBack);
-  };
-  _._createRodIcon = function() {
-    var position, rodIcon;
-    position = this.pVisual.rodIconPosition;
-    this.rodIconBack = new Sprite(ImageManager.loadPictureForFSHplugin("rodBackground"));
-    this.rodIconBack.x = eval(position.x);
-    this.rodIconBack.y = eval(position.y);
-    rodIcon = new Sprite();
-    if (String.any(this.rod.iconName)) {
-      rodIcon.bitmap = ImageManager.loadPictureForFSHplugin(this.rod.iconName);
-    }
-    this.rodIconBack.addChild(rodIcon);
-    this.addChild(this.rodIconBack);
-  };
-  _._createBaitIcon = function() {
-    var baitIcon, position;
-    position = this.pVisual.baitIconPosition;
-    this.baitIconBack = new Sprite(ImageManager.loadPictureForFSHplugin("baitBackground"));
-    this.baitIconBack.x = eval(position.x);
-    this.baitIconBack.y = eval(position.y);
-    baitIcon = new Sprite();
-    if (String.any(this.bait.iconName)) {
-      baitIcon.bitmap = ImageManager.loadPictureForFSHplugin(this.bait.iconName);
-    }
-    this.baitIconBack.addChild(baitIcon);
-    return this.addChild(this.baitIconBack);
-  };
-  _._fSetupHandlers = function() {
-    this.gameBar.setCallbackOnFillBad(() => {
-      this.progressBar.extraMoveBy(this.penalty);
-      if (!this.progressBar.isEndBad()) {
-        return this._callCommonEvent(this.pEvents.onPlayerClickBad);
-      }
-    });
-    this.gameBar.setCallbackOnFillGood(() => {
-      this.progressBar.extraMoveBy2(this.bonus);
-      return this._callCommonEvent(this.pEvents.onPlayerClickGood);
-    });
-  };
-  _._callCommonEvent = function(cId) {
-    if (cId > 0) {
-      return $gameTemp.reserveCommonEvent(cId);
-    }
-  };
-  _._prepareFish = function() {
-    var msg, regionNumber;
-    if (this.bait == null) {
-      window.StopFishingGame();
-    }
-    regionNumber = $gamePlayer.pGetRegionOnMyFront();
-    this.region = PKD_SimpleFishing.PP.getRegionDataById(regionNumber);
-    if (this.region != null) {
-      this._extractFishesFromRegionData();
-      if (this.fish != null) {
-        this._refreshFishIcon(this.fish.id);
-      }
-    } else {
-      msg = "Not found fishing settings for Region " + regionNumber;
-      console.warn(msg);
-      window.alert(msg);
-      window.StopFishingGame();
-    }
-  };
-  _._extractFishesFromRegionData = function() {
-    var a, b, chance, chancesOnly, data, fish, fishId, i, len, max, maxRandom, r, ref, values;
-    chancesOnly = [];
-    data = {};
-    ref = this.region.fishes;
-    for (i = 0, len = ref.length; i < len; i++) {
-      fish = ref[i];
-      chance = this._getChanceForFishWithBait(fish);
-      data[fish.id] = chance;
-      chancesOnly.push(chance);
-    }
-    maxRandom = 0;
-    for (a in data) {
-      b = data[a];
-      maxRandom += b;
-    }
-    maxRandom *= 100;
-    r = Math.randomInt(maxRandom);
-    values = [];
-    for (a in data) {
-      b = data[a];
-      if ((b * 100) <= r) {
-        values.push(b);
+    if (KDCore.Utils.isSceneMap()) {
+      if (!this.isShopOpen()) {
+        SceneManager._scene.pOpenShopWindow();
       }
     }
-    if (values.length === 0) {
-      max = chancesOnly.max();
-    } else {
-      max = values.max();
-    }
-    this.fish = null;
-    for (fishId in data) {
-      chance = data[fishId];
-      if (max === chance) {
-        this.fish = this.region.fishes.getById(parseInt(fishId));
-        break;
-      }
-    }
-    if (this.fish == null) {
-      this.fish = this.region.fishes[0];
-    }
-    if (this.fish != null) {
-      this.bonus = this.fish.goodClickProgressAdd / 100;
-      this.progressBar.setTimerSpeed(this.fish.progressBarFillSpeed);
+  };
+  _.closeCurrentShopWindow = function() {
+    if (this.isShopOpen()) {
+      return SceneManager._scene.pCloseShopWindow();
     }
   };
-  //console.info @fish
-  _._getChanceForFishWithBait = function(fish) {
-    var baitChance, baseChance;
-    baseChance = fish.appearChance / 100;
-    baitChance = fish.baits.getById(this.bait.id);
-    if (baitChance != null) {
-      baseChance += baitChance.addToChance / 100;
+  // * Загрузка данных магазина (подготовка товаров)
+  _.loadShop = function(shopId) {
+    var data, shopData;
+    data = PKD_Shop.PP.getShopDataById(shopId);
+    if (data == null) {
+      console.warn("Shop with ID " + shopId + " not defined in Plugin Parameters!");
+      return;
     }
-    return baseChance;
+    shopData = {
+      data,
+      goods: {} // * товары в магазине (уже отфильтрованные и с данными)
+    };
+    this._currentShop = shopData;
+    this._refreshShopGoods();
   };
-  _._refreshFishIcon = function(fishId) {
-    var e, fishData;
-    this.fishIcon.bitmap = new Bitmap(1, 1);
+  // * itemData: itemId, type, sellPrice, buyPrice, canSell, notForSell, catId
+  //console.info shopData
+  _.addItemToShop = function(itemData) {
+    var e, itemId, key, type;
     try {
-      if (fishId > 0) {
-        fishData = $dataItems[this.fish.id];
-        if (String.any(fishData.meta.fishIcon)) {
-          this.fishIcon.bitmap = ImageManager.loadPictureForFSHplugin(fishData.meta.fishIcon);
-        }
+      if (!this.isShopLoaded()) {
+        return;
+      }
+      ({itemId, type} = itemData);
+      key = PKD_Shop.Utils.getKey(itemId, type);
+      if (this._currentShop.goods == null) {
+        this._currentShop.goods = {};
+      }
+      return this._currentShop.goods[key] = itemData;
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  _.getItemBuyPrice = function(dbItem) {
+    return this._getCurrentShopItemPrice(dbItem, 'buyPrice');
+  };
+  _._getCurrentShopItemPrice = function(dbItem, priceField) {
+    var e, itemData, key;
+    if (dbItem == null) {
+      return 0;
+    }
+    if (!this.isShopLoaded()) {
+      return dbItem.price;
+    }
+    try {
+      key = PKD_Shop.Utils.getKeyFromItem(dbItem);
+      itemData = this._currentShop.goods[key];
+      if (itemData == null) {
+        return dbItem.price;
+      }
+      if (itemData[priceField] != null) {
+        return itemData[priceField];
+      } else {
+        return dbItem.price;
       }
     } catch (error) {
       e = error;
       KDCore.warning(e);
-      this.fishIcon.bitmap = new Bitmap(1, 1);
+      return 0;
     }
   };
-  _._prepareRod = function() {
-    var mod;
-    if (this.rod == null) {
-      return;
-    }
-    mod = this.progressBar.tSpeed * this.rod.progressBarTimerMod;
-    this.progressBar.setTimerSpeed(mod);
-    this.gameBar.setFillSpeed(this.rod.gameZoneFillSpeed);
-    this.gameBar.setWhiteProbeSpeed(this.rod.whiteCursorMoveSpeed);
-    this.gameBar.setTimerSpeed(this.rod.redBarShrinkSpeed);
-    this.gameBar.setMinMaxFill(this.rod.redBarMinWidth, this.rod.redBarMaxWidth);
-    this.penalty = this.rod.badClickProgressPenalty / 100;
-    this.bonus += this.rod.goodClickProgressAdd / 100;
+  _.getItemSellPrice = function(dbItem) {
+    return this._getCurrentShopItemPrice(dbItem, 'sellPrice');
   };
-  _._updateInput = function() {
-    if (!this.gameBar.isReady()) {
-      return;
+  _.isCanSellItem = function(dbItem) {
+    var e, itemData, key;
+    if (dbItem == null) {
+      return false;
     }
-    if (TouchInput.isTriggered() || Input.isTriggered('ok')) {
-      this._onAction();
-    } else if (Input.isCancel()) {
-      this.pause();
-      this.clear();
-      Input.clear();
-      window.StopFishingGame();
+    if (!this.isShopLoaded()) {
+      return true;
+    }
+    try {
+      // * Global flag
+      if ((dbItem.meta != null) && (dbItem.meta.pNotForSale != null)) {
+        return false;
+      }
+      key = PKD_Shop.Utils.getKeyFromItem(dbItem);
+      itemData = this._currentShop.goods[key];
+      if (itemData == null) {
+        return true;
+      }
+      if (itemData.notForSell === true) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return false;
     }
   };
-  _._onAction = function() {
-    if (this.gameBar.isWhiteInRedZone()) {
-      return this.gameBar.onRedFillGood();
+  _.itemBoughtSellTimes = function(itemId) {
+    var e, key;
+    try {
+      key = PKD_Shop.Utils.getKeyFromItem($dataItems[itemId]);
+      return [$gameSystem.pGetItemBuys(key), $gameSystem.pGetItemSells(key)];
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return [0, 0];
+    }
+  };
+  _.weaponBoughtSellTimes = function(weaponId) {
+    var e, key;
+    try {
+      key = PKD_Shop.Utils.getKeyFromItem($dataWeapons[weaponId]);
+      return [$gameSystem.pGetItemBuys(key), $gameSystem.pGetItemSells(key)];
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return [0, 0];
+    }
+  };
+  _.armorBoughtSellTimes = function(armorId) {
+    var e, key;
+    try {
+      key = PKD_Shop.Utils.getKeyFromItem($dataArmors[armorId]);
+      return [$gameSystem.pGetItemBuys(key), $gameSystem.pGetItemSells(key)];
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return [0, 0];
+    }
+  };
+  _.getShopName = function() {
+    if (this.isShopLoaded()) {
+      return this._currentShop.data.titleText;
     } else {
-      return this.gameBar.onRedFillBad();
+      return "";
     }
   };
-  _._updateState = function() {
-    if (!this.gameBar.isReady()) {
+  _.isShopLoaded = function() {
+    return this._currentShop != null;
+  };
+  // * Загрузка предметов в магазин
+  _._refreshShopGoods = function() {
+    var e;
+    try {
+      if (!this.isShopLoaded()) {
+        return;
+      }
+      // 1 - Загрузка стандартных из параметров
+      this._addDefaultGoods(this._currentShop.data.defaultGoods, this._currentShop.data.id);
+      // 2 - Загрузка всех предметов из Note
+      return this._collectGoodsFromDB(this._currentShop.data.id);
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  // * Стандартные предметы (с параметров плагина) (которые всегда есть в магазине)
+  _._addDefaultGoods = function(goodsList, shopId) {
+    var buyPrice, i, item, itemId, itemToAdd, len, realDBItem, sellPrice, type;
+    if (goodsList == null) {
       return;
     }
-    if (this.progressBar.isEndGood()) {
-      this._onCaughtFish();
-      return;
-    }
-    if (this.progressBar.isEndBad()) {
-      this._onDropFish();
+    for (i = 0, len = goodsList.length; i < len; i++) {
+      item = goodsList[i];
+      // * Из трёх вариантов выбирается только один
+      type = 0; // * Item
+      itemId = item.itemId;
+      if (item.weaponId > 0) {
+        type = 1; // * Weapon
+        itemId = item.weaponId;
+      } else if (item.armorId > 0) {
+        type = 2; // * Armor
+        itemId = item.armorId;
+      }
+      realDBItem = KDCore.Utils.getItemByType(itemId, type);
+      if (realDBItem == null) {
+        continue;
+      }
+      ({sellPrice, buyPrice} = this._getRealItemPrices(realDBItem, item.sellPrice, item.buyPrice, shopId));
+      itemToAdd = {
+        type,
+        itemId,
+        sellPrice,
+        buyPrice,
+        catId: item.catId,
+        //canSell: true,
+        notForSell: false
+      };
+      this.addItemToShop(itemToAdd);
     }
   };
-  _._onCaughtFish = function() {
-    var fish;
-    this.pause();
-    this.clear();
-    this._callCommonEvent(this.pEvents.onPlayerCatchFish);
-    fish = this.fish.id;
-    if (fish > 0) {
-      setTimeout((function() {
-        return $gameParty.gainItem($dataItems[fish], 1);
-      }), 600);
+  _._getRealItemPrices = function(realDBItem, defaultSell, defaultBuy, forShopId) {
+    var buyPrice, e, sellPrice, specialPrices;
+    try {
+      if (!defaultSell || defaultSell === -1) {
+        sellPrice = realDBItem.price * PKD_Shop.PP.getDefaultSellPriceMod();
+      } else {
+        sellPrice = defaultSell;
+      }
+      if (!defaultBuy || defaultBuy === -1) {
+        buyPrice = realDBItem.price;
+      } else {
+        buyPrice = defaultBuy;
+      }
+      
+      // * Если цена была изменена командами плагина
+      specialPrices = $gameSystem.pGetItemSpecialPrices([realDBItem.id, KDCore.Utils.getItemTypeId(realDBItem)], forShopId);
+      if (specialPrices != null) {
+        if (specialPrices.buyPrice != null) {
+          buyPrice = specialPrices.buyPrice;
+        }
+        if (specialPrices.sellPrice != null) {
+          sellPrice = specialPrices.sellPrice;
+        }
+      }
+      return {buyPrice, sellPrice};
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+    }
+    return {
+      buyPrice: 0,
+      sellPrice: 0
+    };
+  };
+  
+  // * ITEM NOTE
+  // <pShopConfig: ID, CAT_ID, BUY, SELL, HIDDEN, NOT_FOR_SALE>
+  _._collectGoodsFromDB = function(forShopId) {
+    var allStuffForCurrentShop, db, e, i, item, j, len, len1, line, lines, note, results;
+    try {
+      allStuffForCurrentShop = [];
+      db = $dataItems.concat($dataWeapons).concat($dataArmors);
+      for (i = 0, len = db.length; i < len; i++) {
+        item = db[i];
+        if (item == null) {
+          continue;
+        }
+        if ((item.meta != null) && String.any(item.meta.pShopConfig)) {
+          note = item.note;
+          if (note.contains(forShopId)) {
+            allStuffForCurrentShop.push(item);
+          }
+        }
+      }
+//"CANDIDATES TO SHOP".p(forShopId)
+      results = [];
+      for (j = 0, len1 = allStuffForCurrentShop.length; j < len1; j++) {
+        item = allStuffForCurrentShop[j];
+        lines = item.note.split("<pShopConfig:");
+        results.push((function() {
+          var k, len2, results1;
+          results1 = [];
+          for (k = 0, len2 = lines.length; k < len2; k++) {
+            line = lines[k];
+            if (!line.contains(",")) {
+              continue;
+            }
+            if (line.contains(forShopId)) {
+              results1.push(this._addItemWithNotesAndFilters(forShopId, item, line));
+            } else {
+              results1.push(void 0);
+            }
+          }
+          return results1;
+        }).call(this));
+      }
+      return results;
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
     }
   };
-  _._onDropFish = function() {
-    this.pause();
-    this.clear();
-    this._callCommonEvent(this.pEvents.onPlayerLoseFish);
+  _._addItemWithNotesAndFilters = function(forShopId, item, lineWithParams) {
+    var buyPrice, catId, defaultBuy, defaultSell, e, itemId, itemToAdd, key, notForSell, params, sellPrice, type;
+    try {
+      params = lineWithParams.split(",");
+      itemId = item.id;
+      type = KDCore.Utils.getItemTypeId(item);
+      key = PKD_Shop.Utils.getKey(itemId, type);
+      // * Если предмет спрятан, то не добавляем его
+      if (lineWithParams.contains("hidden")) {
+        if ($gameSystem.pIsItemIsHidden(key, forShopId)) {
+          return;
+        }
+      }
+      // * Если предмет был удалён из магазина
+      if ($gameSystem.pIsItemIsRemoved(key, forShopId)) {
+        return;
+      }
+      catId = params[1].trim();
+      defaultBuy = KDCore.Utils.getEValue(params[2].trim());
+      defaultSell = KDCore.Utils.getEValue(params[3].trim());
+      ({sellPrice, buyPrice} = this._getRealItemPrices(item, defaultSell, defaultBuy, forShopId));
+      notForSell = lineWithParams.contains("noSale");
+      itemToAdd = {itemId, type, catId, sellPrice, buyPrice, notForSell};
+      return this.addItemToShop(itemToAdd);
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  _.stopShopSell = function() {
+    var e, ref;
+    try {
+      if ((ref = SceneManager._scene.pShopWindow) != null) {
+        ref.stopSellMode();
+      }
+      return $gameTemp.miSellMode = false;
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  _.onSellItemPick = function(item) {
+    var e, ref;
+    try {
+      if (item == null) {
+        this.stopShopSell();
+        return SoundManager.playBuzzer();
+      } else {
+        return (ref = SceneManager._scene.pShopWindow) != null ? ref.startItemSelling(item) : void 0;
+      }
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  _.onBuyItemClick = function(item) {
+    var e, ref;
+    try {
+      if (item == null) {
+        return SoundManager.playBuzzer();
+      } else {
+        //console.log(item)
+        return (ref = SceneManager._scene.pShopWindow) != null ? ref.startItemBuy(item) : void 0;
+      }
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
   };
 })();
 
-// ■ END FSH_Sprite_MainGameUI.coffee
+// ■ END PShopManager.coffee
+//---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
+(function() {
+  
+  //%[MAIN Открыть магазин]
+  window.PSHOP_Open = function(shopId) {
+    var e;
+    try {
+      if (!String.any(shopId)) {
+        return;
+      }
+      return PShopManager.openShop(shopId);
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  window.PSHOP_IsOpen = function() {
+    var e;
+    try {
+      return PShopManager.isShopOpen();
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return false;
+    }
+  };
+  //?VERSION
+  window.PSHOP_Unlock = function(type, id, shopId) {}; // * PRO ONLY
+  
+  //?VERSION
+  window.PSHOP_Remove = function(type, id, shopId) {}; // * PRO ONLY
+  
+  //?VERSION
+  window.PSHOP_HowManyBought = function(type, id) {}; // * PRO ONLY
+  
+  //?VERSION
+  window.PSHOP_HowManySell = function(type, id) {}; // * PRO ONLY
+  
+  //?VERSION
+  window.PSHOP_SetSellPrice = function(type, id, price, shopId) {}; // * PRO ONLY
+  
+  //?VERSION
+  window.PSHOP_SetBuyPrice = function(type, id, price, shopId) {}; // * PRO ONLY
+})();
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ UTILS.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+(function() {
+  var _;
+  //@[DEFINES]
+  _ = PKD_Shop.Utils;
+  _.getKeyFromItem = function(dbItem) {
+    return this.getKey(dbItem.id, KDCore.Utils.getItemTypeId(dbItem));
+  };
+  _.getTypeIdByString = function(typeString) {
+    switch (typeString) {
+      case 'armor':
+        return 2;
+      case 'weapon':
+        return 1;
+      default:
+        return 0;
+    }
+  };
+  _.getKey = function(id, type) {
+    return [id, type];
+  };
+  _.getKeyFromStringType = function(itemId, typeString) {
+    return this.getKey(itemId, this.getTypeIdByString(typeString));
+  };
+})();
+
+// ■ END UTILS.coffee
+//---------------------------------------------------------------------------
+
+
+// Generated by CoffeeScript 2.6.1
+PKD_Shop.isPro = function() {
+  return true;
+};
+
+
+// Generated by CoffeeScript 2.6.1
+(function() {
+  var _;
+  
+  //@[DEFINES]
+  _ = PKD_Shop.PP;
+  _.allShops = function() {
+    return this._loader.getParam("shops", [PKD_Shop.PP.shopExampleDefault]);
+  };
+})();
+
+
+// Generated by CoffeeScript 2.6.1
+(function() {
+  var _PSHOP_HowMany;
+  window.PSHOP_Unlock = function(type, id, shopId) {
+    var e, key;
+    try {
+      key = PKD_Shop.Utils.getKeyFromStringType(id, type);
+      return $gameSystem.pSetItemNoHidden(key, shopId);
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  window.PSHOP_Remove = function(type, id, shopId) {
+    var key;
+    key = PKD_Shop.Utils.getKeyFromStringType(id, type);
+    $gameSystem.pSetItemRemovedFrom(key, shopId);
+  };
+  _PSHOP_HowMany = function(type, id) {
+    var e, method;
+    try {
+      method = ['itemBoughtSellTimes', 'weaponBoughtSellTimes', 'armorBoughtSellTimes'][PKD_Shop.Utils.getTypeIdByString(type)];
+      if (method != null) {
+        return PShopManager[method](id);
+      } else {
+        return [0, 0];
+      }
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return [0, 0];
+    }
+  };
+  window.PSHOP_HowManyBought = function(type, id) {
+    var count, e;
+    try {
+      count = _PSHOP_HowMany(type, id);
+      return count[0];
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return 0;
+    }
+  };
+  window.PSHOP_HowManySell = function(type, id) {
+    var count, e;
+    try {
+      count = _PSHOP_HowMany(type, id);
+      return count[1];
+    } catch (error) {
+      e = error;
+      KDCore.warning(e);
+      return 0;
+    }
+  };
+  window.PSHOP_SetSellPrice = function(type, id, price, shopId) {
+    var e, key;
+    try {
+      key = PKD_Shop.Utils.getKeyFromStringType(id, type);
+      price = KDCore.Utils.getEValue(price);
+      return $gameSystem.pSetItemSpecialPrice(key, price, null, shopId);
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+  window.PSHOP_SetBuyPrice = function(type, id, price, shopId) {
+    var e, key;
+    try {
+      key = PKD_Shop.Utils.getKeyFromStringType(id, type);
+      price = KDCore.Utils.getEValue(price);
+      return $gameSystem.pSetItemSpecialPrice(key, null, price, shopId);
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  };
+})();
+
+
+// Generated by CoffeeScript 2.6.1
+var Component_PShopCounter;
+
+Component_PShopCounter = class Component_PShopCounter extends KDCore.Sprite {
+  constructor(onEndHandler) {
+    super();
+    this.onEndHandler = onEndHandler;
+    this._create();
+  }
+
+  //%[I] Добавить поддержку Scroll мышки на +/- и клик с нажатым Shift (+10)
+  isActive() {
+    return this.visible === true;
+  }
+
+  shopData() {
+    return PShopManager._currentShop.data;
+  }
+
+  setup(item, isBuyMode) {
+    this.item = item;
+    this.isBuyMode = isBuyMode;
+    this.itemNameText.draw(this.item.name);
+    if ((this.item.meta != null) && String.any(this.item.meta.iImg)) {
+      this.itemIcon.draw(this.item.meta.iImg);
+    } else {
+      this.itemIcon.draw(this.item.iconIndex, true);
+    }
+    this.totalMoney = 0;
+    this.setCount(1);
+    this.buyButton.visible = this.isBuyMode;
+    this.sellButton.visible = !this.buyButton.visible;
+  }
+
+  onCountUp() {
+    if (this.isBuyMode === true) {
+      this.count++;
+    } else {
+      if ($gameParty.numItems(this.item) >= (this.count + 1)) {
+        this.count++;
+      } else {
+        SoundManager.playBuzzer();
+      }
+    }
+    this.setCount(this.count);
+  }
+
+  onCountDown() {
+    this.count--;
+    if (this.count <= 0) {
+      this.count = 1;
+    }
+    this.setCount(this.count);
+  }
+
+  setCount(count) {
+    this.count = count;
+    this.itemCountText.drawTextWithFormat(this.shopData().itemBuyCountFormat, this.count);
+    this._refreshTotalMoney();
+  }
+
+  sellItem() {
+    if (!this.isActive()) {
+      return;
+    }
+    $gameSystem.pAddItemSells(PKD_Shop.Utils.getKeyFromItem(this.item), this.count);
+    $gameParty.loseItem(this.item, this.count);
+    $gameParty.gainGold(this.totalMoney);
+    KDCore.Utils.playSE(this.shopData().sounds.onSellSE);
+    if (this.onEndHandler != null) {
+      this.onEndHandler();
+    }
+  }
+
+  buyItem() {
+    if (!this.isActive()) {
+      return;
+    }
+    // * Учитывается MapInventory Cells Limit System
+    if (this._isCantBuyItemNow()) {
+      SoundManager.playBuzzer();
+    } else {
+      $gameSystem.pAddItemBuys(PKD_Shop.Utils.getKeyFromItem(this.item), this.count);
+      $gameParty.gainItem(this.item, this.count);
+      $gameParty.loseGold(this.totalMoney);
+      KDCore.Utils.playSE(this.shopData().sounds.onBuySE);
+      if (this.onEndHandler != null) {
+        this.onEndHandler();
+      }
+    }
+  }
+
+  _isCantBuyItemNow() {
+    var isOverWeight;
+    isOverWeight = false;
+    if (PKD_MI.isPro() && PKD_MI.Parameters.get_UsedWSystem()) {
+      isOverWeight = IsOverWeight();
+    }
+    return $gameParty.gold() < this.totalMoney || !$gameParty.isCanAddNewItem(this.item) || isOverWeight;
+  }
+
+  _create() {
+    this._createBackButton();
+    this._createBuyButton();
+    this._createSellButton();
+    this._createMoneyTotal();
+    this._createItemIcon();
+    this._createItemCountText();
+    this._createItemCountChangeButtons();
+    this._createItemNameText();
+  }
+
+  _createBackButton() {
+    var b;
+    b = this._createCommonButton('buttonBack', this.onEndHandler);
+    b.visible = true;
+  }
+
+  _createCommonButton(name, method) {
+    var b, p;
+    p = this.shopData()[name];
+    b = new KDCore.ButtonMU(p.images, false, 'pShop');
+    b.move(p.position);
+    b.visible = false;
+    b.addClickHandler(method);
+    this.addChild(b);
+    return b;
+  }
+
+  _createBuyButton() {
+    return this.buyButton = this._createCommonButton('buttonBuy', this.buyItem.bind(this));
+  }
+
+  _createSellButton() {
+    return this.sellButton = this._createCommonButton('buttonSell', this.sellItem.bind(this));
+  }
+
+  _createMoneyTotal() {
+    this._createMoneyTotalIcon();
+    this._createMoneyTotalText();
+  }
+
+  _createMoneyTotalIcon() {
+    var moneyTotalImage, p;
+    p = {
+      visible: true,
+      image: "money",
+      rootImageFolder: "pShop"
+    };
+    moneyTotalImage = new KDCore.UI.Sprite_UIImage(p);
+    moneyTotalImage.move(this.shopData().moneyTotalImagePosition);
+    this.addChild(moneyTotalImage);
+  }
+
+  _createMoneyTotalText() {
+    var p;
+    p = this.shopData().itemBuyMoneyTotalText;
+    this.itemTotalMoneyText = new KDCore.UI.Sprite_UIText(p);
+    this.itemTotalMoneyText.move(this.shopData().itemBuyMoneyTotalTextPosition);
+    this.addChild(this.itemTotalMoneyText);
+  }
+
+  _createItemCountText() {
+    var p;
+    p = this.shopData().itemBuyCountText;
+    this.itemCountText = new KDCore.UI.Sprite_UIText(p);
+    this.itemCountText.move(this.shopData().itemBuyCountTextPosition);
+    this.addChild(this.itemCountText);
+  }
+
+  _createItemIcon() {
+    var p;
+    p = {
+      visible: true,
+      index: 0,
+      size: this.shopData().itemBuyIconSize,
+      rootImageFolder: "pMapInventory/Icons"
+    };
+    this.itemIcon = new KDCore.UI.Sprite_UIIcon(p);
+    this.itemIcon.move(this.shopData().itemBuyIconPosition);
+    this.itemIcon.pivot.x = this.shopData().itemBuyIconSize / 2;
+    this.itemIcon.pivot.y = this.itemIcon.pivot.x;
+    this.addChild(this.itemIcon);
+  }
+
+  _createItemCountChangeButtons() {
+    this.addButton = this._createCommonButton('buttonAdd', this.onCountUp.bind(this));
+    this.remButton = this._createCommonButton('buttonRemove', this.onCountDown.bind(this));
+    this.addButton.visible = true;
+    this.remButton.visible = true;
+  }
+
+  _createItemNameText() {
+    var p;
+    p = this.shopData().itemBuyNameText;
+    this.itemNameText = new KDCore.UI.Sprite_UIText(p);
+    this.itemNameText.move(this.shopData().itemBuyNameTextPosition);
+    this.addChild(this.itemNameText);
+  }
+
+  _refreshTotalMoney() {
+    this.totalMoney = this.count * this._itemPrice();
+    this._drawTotalMoneyText();
+  }
+
+  _drawTotalMoneyText() {
+    var tColor;
+    tColor = this.shopData().itemBuyMoneyTotalText.textColor;
+    if (this.isBuyMode === true) {
+      if ($gameParty.gold() < this.totalMoney) {
+        tColor = this.shopData().moneyTotalBadColor;
+      }
+    }
+    this.itemTotalMoneyText.drawTextColor(this.totalMoney.toString(), tColor);
+  }
+
+  _itemPrice() {
+    if (this.isBuyMode === true) {
+      return PShopManager.getItemBuyPrice(this.item);
+    } else {
+      return PShopManager.getItemSellPrice(this.item);
+    }
+  }
+
+};
+
+
+// Generated by CoffeeScript 2.6.1
+var Component_PShopItemCell;
+
+Component_PShopItemCell = class Component_PShopItemCell extends PKD_MI.LIBS.Sprite_MapInvCell {
+  constructor(index, sellItemData) {
+    var item;
+    super(index);
+    this.sellItemData = sellItemData;
+    if (this.sellItemData == null) {
+      return;
+    }
+    item = KDCore.Utils.getItemByType(this.sellItemData.itemId, this.sellItemData.type);
+    if (item == null) {
+      return;
+    }
+    this.isShopCell = true; // * Флаг для окна описания
+    this.setItem(item);
+    return;
+  }
+
+  isValidSellItem() {
+    return (this.sellItemData != null) && (this.item != null);
+  }
+
+  //$[OVER] Теперь цена
+  drawCount() { // * EMPTY
+    var data, p;
+    if (this.itemSellPrice == null) {
+      data = PShopManager._currentShop.data;
+      p = data.cellSellPriceText;
+      this.itemSellPrice = new KDCore.UI.Sprite_UIText(p);
+      this.itemSellPrice.move(data.cellSellPriceTextPosition);
+      this.addChild(this.itemSellPrice);
+    }
+    this.itemSellPrice.draw(this.getShopSellPrice());
+  }
+
+  getShopSellPrice() {
+    var price;
+    if (this.sellItemData == null) {
+      return "";
+    }
+    price = this.sellItemData.buyPrice; // * Да, buyPrice, т.к. игрок покупает
+    if (price > 99999) {
+      return KDCore.Utils.formatNumberToK(price);
+    } else {
+      return price.toString();
+    }
+  }
+
+  //$[OVER]
+  refreshSpecialState() {
+    this._checkUsableThread = null;
+    this.enableItem(); // * Всегда можно купить
+  }
+
+  //$[OVER]
+  _checkUsable() {
+    return this.enableItem();
+  }
+
+  //$[OVER]
+  _onCheckUsableTick() {} // * EMPTY
+
+  
+    //$[OVER]
+  startMovingCell() {} // * EMPTY
+
+  
+    //$[OVER]
+  registerClick() {
+    var item;
+    this._cell._clickHandlers = [];
+    item = this.item;
+    return this._cell.addClickHandler(function() {
+      return PShopManager.onBuyItemClick(item);
+    });
+  }
+
+};
+
+
+// Generated by CoffeeScript 2.6.1
+//╒═════════════════════════════════════════════════════════════════════════╛
+// ■ FWindow_Shop.coffee
+//╒═════════════════════════════════════════════════════════════════════════╛
+//---------------------------------------------------------------------------
+
+//$[ENCODE]
+var FWindow_Shop;
+
+FWindow_Shop = class FWindow_Shop extends KDCore.FloatingWindow {
+  constructor() {
+    super(...arguments);
+  }
+
+  _init() {
+    this.parameters = {
+      draggable: PKD_Shop.PP.isShopWindowDragable(),
+      closeButton: PKD_Shop.PP.isShowWindowHaveCloseButton(),
+      moveToCenter: true,
+      alwaysOnTop: true,
+      header: true
+    };
+    this.showHintDelay = 10;
+    KDCore.FloatingWindow.prototype._init.call(this);
+  }
+
+  closeButtonPosition() {
+    return {
+      x: this.width + 2,
+      y: 2
+    };
+  }
+
+  shopData() {
+    return PShopManager._currentShop.data;
+  }
+
+  shopGoods() {
+    return PShopManager._currentShop.goods || {};
+  }
+
+  shopGoodsForCurrentCategory() {
+    var items, key, ref, value;
+    items = [];
+    ref = this.shopGoods();
+    for (key in ref) {
+      value = ref[key];
+      if (value.catId === this.__lastCategoryId) {
+        items.push(value);
+      }
+    }
+    return items;
+  }
+
+  rootImageFolder() {
+    return "pShop";
+  }
+
+  inSelectForSellMode() {
+    return $gameTemp.miSellMode === true;
+  }
+
+  isCounterForSellBuyMode() {
+    return (this.selectedItem != null) && this.shopCounter.visible === true;
+  }
+
+  //%[MAIN, after window is loaded]
+  loadShop() {
+    this.createExtraGraphics();
+    this.createCategoryTitle();
+    this.createCategories();
+    this.refreshHeader();
+    this.open();
+  }
+
+  createExtraGraphics() {
+    var exg, g, j, len, ref;
+    ref = this.shopData().extraGraphic;
+    for (j = 0, len = ref.length; j < len; j++) {
+      exg = ref[j];
+      g = new KDCore.UI.Sprite_UIImage({
+        visible: true,
+        image: exg.image,
+        rootImageFolder: "pShop"
+      });
+      g.move(exg.margins);
+      this.addContent(g);
+    }
+  }
+
+  createCategoryTitle() {
+    var p;
+    p = this.shopData().categoryTitleTextSetting;
+    this.catTitleText = new KDCore.UI.Sprite_UIText(p);
+    // * Добавляем на Header (поверх всего) и поверх картинки
+    this.addContent(this.catTitleText);
+    this.catTitleText.move(this.shopData().categoryTitleTextPosition);
+  }
+
+  createCategories() {
+    var availableCategories, b, cat, j, len;
+    this.catButtons = [];
+    availableCategories = this.shopData().categories;
+    if (!PKD_Shop.isPro()) {
+      availableCategories = availableCategories.slice(0, 3);
+    }
+    for (j = 0, len = availableCategories.length; j < len; j++) {
+      cat = availableCategories[j];
+      b = new KDCore.ButtonMU(cat.images, true, 'pShop');
+      b.move(cat.position);
+      this.catButtons.push(b);
+    }
+    this._sellCatIndex = this.catButtons.length;
+    this.catButtons.push(this.createSellButton());
+    this.allCategories = new KDCore.Sprite_ButtonsGroupHandler(this.catButtons, this.onCategoryClick.bind(this));
+    return this.addContent(this.allCategories);
+  }
+
+  createSellButton() {
+    var b, p;
+    p = this.shopData().sell;
+    b = new KDCore.ButtonMU(p.images, true, 'pShop');
+    b.move(p.position);
+    return b;
+  }
+
+  onCategoryClick(index) {
+    var category;
+    this.clearShopContent();
+    this.catTitleText.draw("");
+    if (index === this._sellCatIndex) {
+      this.startSellMode();
+      return;
+    }
+    category = this.shopData().categories[index];
+    if (category == null) {
+      return;
+    }
+    this.__lastCategory = index;
+    this.__lastCategoryId = category.id;
+    this.refreshCategoryTitle();
+    this.selectedItem = null; // * больше нет текущей вещи
+    this.createShopItems();
+  }
+
+  refreshCategoryTitle() {
+    var category, e;
+    try {
+      category = this.shopData().categories[this.__lastCategory];
+      return this.catTitleText.draw(category.title);
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  }
+
+  clearShopContent() {
+    var ref, ref1;
+    if ((ref = this.sellInfo) != null) {
+      ref.visible = false;
+    }
+    if ((ref1 = this.shopCounter) != null) {
+      ref1.visible = false;
+    }
+    if (this.allCellsContainer != null) {
+      this.allCellsContainer.removeFromParent();
+      this.allCellsContainer.visible = false;
+      this.allCellsContainer = null;
+    }
+  }
+
+  startSellMode() {
+    $gameTemp.miSellMode = true;
+    if (this.sellInfo == null) {
+      this._createSellInfo();
+    }
+    this.sellInfo.visible = true;
+    this.catTitleText.draw("");
+    PKD_MI.openInventory();
+  }
+
+  stopSellMode() {
+    $gameTemp.miSellMode = false;
+    // * После выбора предмета, инвентарь закрывается и вызывает этот метод снова
+    // * Чтобы не мешало окошку ввода числа, проверка эта тут дополнительно
+    if (this.isCounterForSellBuyMode()) {
+      return;
+    }
+    this.allCategories._onButtonClick(this.__lastCategory);
+  }
+
+  startItemSelling(item) {
+    return this.showItemCountMode(item, false);
+  }
+
+  startItemBuy(item) {
+    return this.showItemCountMode(item, true);
+  }
+
+  showItemCountMode(selectedItem, isBuyMode) {
+    this.selectedItem = selectedItem;
+    this.isBuyMode = isBuyMode;
+    this.clearShopContent();
+    if (this.shopCounter == null) {
+      this._createShopCounter();
+    }
+    this.shopCounter.setup(this.selectedItem, this.isBuyMode);
+    this.shopCounter.visible = true;
+    this.catTitleText.draw("");
+  }
+
+  stopCounterMode() {
+    var ref;
+    if ((ref = this.shopCounter) != null) {
+      ref.visible = false;
+    }
+    this.selectedItem = null;
+    return this.allCategories._onButtonClick(this.__lastCategory);
+  }
+
+  createShopItems() {
+    var cellLine, j, len, ref;
+    this.allCellsContainer = new Sprite();
+    this.allCells = [];
+    this.shopGoodsToSell = this.shopGoodsForCurrentCategory();
+    ref = this.shopData().cells;
+    for (j = 0, len = ref.length; j < len; j++) {
+      cellLine = ref[j];
+      //"CREATE ITEMS LIST".p()
+      //console.log @shopGoodsToSell
+      this._createCellsLine(cellLine);
+    }
+    this.addContent(this.allCellsContainer);
+  }
+
+  refreshHeader() {
+    var ref;
+    return (ref = this.headerText) != null ? ref.drawText(this.shopData().titleText) : void 0;
+  }
+
+  refreshItemCategoryNameText() {
+    var hoveredCell;
+    // * Показываем имя предмета, если под курсором ячейка
+    if (this.allCells != null) {
+      hoveredCell = this.allCells.find(function(c) {
+        return c.isHovered();
+      });
+      if ((hoveredCell != null) && (hoveredCell.item != null)) {
+        this.catTitleText.draw(hoveredCell.item.name);
+        this.refreshItemCellHover(hoveredCell);
+        return;
+      } else {
+        this.refreshItemCellHover(null);
+      }
+    }
+    
+    // * Ничего не показываем если в режиме покупки (продажи) или выбора предмета для продажи
+    if (this.isCounterForSellBuyMode() || ((this.sellInfo != null) && this.sellInfo.visible === true)) {
+      this.catTitleText.draw("");
+      return;
+    }
+    // * По умолчанию - название категории
+    this.refreshCategoryTitle();
+  }
+
+  refreshItemCellHover(hoveredCell) {
+    if (this.showHintDelay > 0) {
+      this.showHintDelay--;
+    }
+    if (hoveredCell === this.__lastHoveredCell) {
+      return;
+    }
+    this.hideSellItemDesc();
+    if ((hoveredCell != null) && this.showHintDelay <= 0) {
+      this.showSellItemDesc(hoveredCell);
+    }
+  }
+
+  showSellItemDesc(hoveredCell) {
+    this.__lastHoveredCell = hoveredCell;
+    if (PKD_MI.Version >= 230) {
+      PKD_MI.showExternalHelpWindow(hoveredCell);
+    }
+  }
+
+  hideSellItemDesc() {
+    if (this.__lastHoveredCell == null) {
+      return;
+    }
+    this.__lastHoveredCell = null;
+    if (PKD_MI.Version >= 230) {
+      PKD_MI.closeExternalHelpWindow();
+    }
+  }
+
+  update() {
+    super.update();
+    this.refreshItemCategoryNameText();
+    this.refreshExtraInput();
+  }
+
+  // * Открыть \ закрыть инвентарь на кнопку I (если игрок не может двигаться)
+  refreshExtraInput() {
+    var e, key, key2;
+    if (PKD_Shop.PP.isPlayerCanMoveWhenShopIsOpen()) {
+      return;
+    }
+    try {
+      key = PKD_MI.Parameters.get_InventoryOpenKey();
+      key2 = PKD_MI.Parameters.gpOpenCloseKey();
+      if (Input.isTriggered(key) || (PKD_MI.IsGamepad() && KDGamepad.isKey(key2))) {
+        PKD_MI.openOrCloseInventory();
+        return Input.clear();
+      }
+    } catch (error) {
+      e = error;
+      return KDCore.warning(e);
+    }
+  }
+
+  //$[OVER]
+  _createCustomElements() {
+    this._createHeaderImage();
+    this._createHeaderText();
+  }
+
+  _createHeaderImage() {
+    var p;
+    p = this.shopData().image;
+    if (!String.any(p.image)) {
+      return;
+    }
+    this.headerImage = new KDCore.UI.Sprite_UIImage();
+    this.headerImage.rootImageFolder = function() {
+      return "pShop";
+    };
+    this.headerImage.draw(p.image);
+    this.headerImage.move(p.position);
+    this.addChild(this.headerImage);
+  }
+
+  _createHeaderText() {
+    var p;
+    p = this.shopData().titleSettings;
+    this.headerText = new KDCore.UI.Sprite_UIText(p);
+    // * Добавляем на Header (поверх всего) и поверх картинки
+    this.addChild(this.headerText);
+    this.headerText.move(this.shopData().titlePosition);
+  }
+
+  _createSellInfo() {
+    var p;
+    p = {
+      visible: true,
+      image: "selectItemForSellInfo",
+      rootImageFolder: "pShop"
+    };
+    this.sellInfo = new KDCore.UI.Sprite_UIImage(p);
+    this.sellInfo.move(this.shopData().sell.sellInfoPosition);
+    this.addContent(this.sellInfo);
+  }
+
+  _createShopCounter() {
+    this.shopCounter = new Component_PShopCounter(this.stopCounterMode.bind(this));
+    this.addContent(this.shopCounter);
+    this.shopCounter.visible = false;
+  }
+
+  _createCellsLine(line) {
+    var cell, cellSize, i, index, j, nextItem, nextPosition, ref, x, y;
+    if (this.allCells.length >= this.shopGoodsToSell.length) {
+      return;
+    }
+    ({x, y} = line.position);
+    cellSize = this.shopData().cellSize;
+    for (i = j = 0, ref = line.count; (0 <= ref ? j < ref : j > ref); i = 0 <= ref ? ++j : --j) {
+      //continue if @allCells.length >= @shopGoodsToSell.length
+      index = this.allCells.length;
+      nextItem = this.shopGoodsToSell[index];
+      cell = new Component_PShopItemCell(index, nextItem);
+      nextPosition = (line.spaceBetween + cellSize) * i;
+      if (line.direction === 'horizontal') {
+        cell.y = y;
+        cell.x = x + nextPosition;
+      } else {
+        cell.x = x;
+        cell.y = y + nextPosition;
+      }
+      this.allCellsContainer.addChild(cell);
+      this.allCells.push(cell);
+    }
+  }
+
+};
+
+// ■ END FWindow_Shop.coffee
 //---------------------------------------------------------------------------
 
 
@@ -7869,7 +9067,7 @@ FSH_Sprite_MainGameUI = class FSH_Sprite_MainGameUI extends KDCore.Sprite {
   //@[ALIAS]
   ALIAS__canMove = _.canMove;
   _.canMove = function() {
-    if (IsInFishingGame()) {
+    if (PSHOP_IsOpen() && !PKD_Shop.PP.isPlayerCanMoveWhenShopIsOpen()) {
       return false;
     }
     return ALIAS__canMove.call(this, ...arguments);
@@ -7882,36 +9080,106 @@ FSH_Sprite_MainGameUI = class FSH_Sprite_MainGameUI extends KDCore.Sprite {
 
 // Generated by CoffeeScript 2.6.1
 //╒═════════════════════════════════════════════════════════════════════════╛
-// ■ Game_Player.coffee
+// ■ Game_System.coffee
 //╒═════════════════════════════════════════════════════════════════════════╛
 //---------------------------------------------------------------------------
 (function() {
-  var _;
+  var SB_ID, _;
+  SB_ID = "___buySellCount";
   //@[DEFINES]
-  _ = Game_Player.prototype;
-  _.pGetRegionBelowMe = function() {
-    return $gameMap.regionId(this.x, this.y);
+  _ = Game_System.prototype;
+  _.pShopDataStorage = function() {
+    this._pInitShopDataStorage();
+    return this._pShopDataStorage;
   };
-  _.pGetRegionOnMyFront = function() {
-    var regionId;
-    regionId = this.pGetRegionBelowMe();
-    if (regionId > 0) {
-      return regionId;
+  _._pInitShopDataStorage = function() {
+    if (this._pShopDataStorage == null) {
+      return this._pShopDataStorage = {};
     }
-    if (this.direction() === 2) {
-      regionId = $gameMap.regionId(this.x, this.y + 1);
-    } else if (this.direction() === 4) {
-      regionId = $gameMap.regionId(this.x - 1, this.y);
-    } else if (this.direction() === 8) {
-      regionId = $gameMap.regionId(this.x, this.y - 1);
+  };
+  // * key =  [itemId, type]
+  // * Тут инверсия, так как по умолчанию, если у предмета есть hidden, то он скрыт
+  // * Проверяются только с hidden параметров, все остальные как-бы не участвуют
+  _.pIsItemIsHidden = function(key, shopId) {
+    this._pInitShopDataForId(shopId, 'noHiddenItems', []);
+    return !this._pShopDataStorage[shopId].noHiddenItems.contains(key.toString());
+  };
+  _.pIsItemIsRemoved = function(key, shopId) {
+    this._pInitShopDataForId(shopId, 'removedItems', []);
+    return this._pShopDataStorage[shopId].removedItems.contains(key.toString());
+  };
+  _.pSetItemNoHidden = function(key, shopId) {
+    this._pInitShopDataForId(shopId, 'noHiddenItems', []);
+    this._pShopDataStorage[shopId].noHiddenItems.push(key.toString());
+  };
+  _._pInitShopWithId = function(shopId) {
+    this._pInitShopDataStorage();
+    if (this._pShopDataStorage[shopId] == null) {
+      this._pShopDataStorage[shopId] = {};
+    }
+  };
+  _._pInitShopDataForId = function(shopId, dataField, initialValue) {
+    this._pInitShopWithId(shopId);
+    if (this._pShopDataStorage[shopId][dataField] == null) {
+      this._pShopDataStorage[shopId][dataField] = initialValue;
+    }
+  };
+  _.pSetItemRemovedFrom = function(key, shopId) {
+    this._pInitShopDataForId(shopId, 'removedItems', []);
+    this._pShopDataStorage[shopId].removedItems.push(key.toString());
+  };
+  // return {sellPrice, buyPrice}
+  _.pGetItemSpecialPrices = function(key, shopId) {
+    this._pInitShopDataForId(shopId, 'prices', {});
+    if (this._pShopDataStorage[shopId].prices[key]) {
+      return this._pShopDataStorage[shopId].prices[key];
     } else {
-      regionId = $gameMap.regionId(this.x + 1, this.y);
+      return null;
     }
-    return regionId;
+  };
+  // sellPrice or buyPrice can be null (no change)
+  _.pSetItemSpecialPrice = function(key, sellPrice, buyPrice, shopId) {
+    this._pInitShopDataForId(shopId, 'prices', {});
+    if (!this._pShopDataStorage[shopId].prices[key]) {
+      this._pShopDataStorage[shopId].prices[key] = {
+        sellPrice: null, // * null - not changes
+        buyPrice: null
+      };
+    }
+    if (sellPrice != null) {
+      this._pShopDataStorage[shopId].prices[key].sellPrice = sellPrice;
+    }
+    if (buyPrice != null) {
+      this._pShopDataStorage[shopId].prices[key].buyPrice = buyPrice;
+    }
+  };
+  _.pAddItemSells = function(key, count) {
+    this._pInitShopDataForId(SB_ID, 'sells', {});
+    if (this._pShopDataStorage[SB_ID].sells[key] == null) {
+      this._pShopDataStorage[SB_ID].sells[key] = count;
+    } else {
+      this._pShopDataStorage[SB_ID].sells[key] += count;
+    }
+  };
+  _.pAddItemBuys = function(key, count) {
+    this._pInitShopDataForId(SB_ID, 'buys', {});
+    if (this._pShopDataStorage[SB_ID].buys[key] == null) {
+      this._pShopDataStorage[SB_ID].buys[key] = count;
+    } else {
+      this._pShopDataStorage[SB_ID].buys[key] += count;
+    }
+  };
+  _.pGetItemSells = function(key) {
+    this.pAddItemSells(key, 0); // * для инициализации
+    return this._pShopDataStorage[SB_ID].sells[key];
+  };
+  _.pGetItemBuys = function(key) {
+    this.pAddItemBuys(key, 0); // * для инициализации
+    return this._pShopDataStorage[SB_ID].buys[key];
   };
 })();
 
-// ■ END Game_Player.coffee
+// ■ END Game_System.coffee
 //---------------------------------------------------------------------------
 
 
@@ -7924,8 +9192,8 @@ FSH_Sprite_MainGameUI = class FSH_Sprite_MainGameUI extends KDCore.Sprite {
   var _;
   //@[DEFINES]
   _ = ImageManager;
-  _.loadPictureForFSHplugin = function(filename) {
-    return this.loadBitmap('img/pSimpleFishing/', filename);
+  _.loadPictureForSHPplugin = function(filename) {
+    return this.loadBitmap('img/pShop/', filename);
   };
 })();
 
@@ -7946,7 +9214,7 @@ FSH_Sprite_MainGameUI = class FSH_Sprite_MainGameUI extends KDCore.Sprite {
   ALIAS__start = _.start;
   _.start = function() {
     ALIAS__start.call(this, ...arguments);
-    return PKD_SimpleFishing.LoadPluginSettings();
+    PKD_Shop.LoadPluginSettings();
   };
 })();
 
@@ -7960,28 +9228,16 @@ FSH_Sprite_MainGameUI = class FSH_Sprite_MainGameUI extends KDCore.Sprite {
 //╒═════════════════════════════════════════════════════════════════════════╛
 //---------------------------------------------------------------------------
 (function() {
-  var ALIAS__isMenuCalled, ALIAS__stop, _;
+  var ALIAS___createInvUILayer, _;
   //@[DEFINES]
   _ = Scene_Map.prototype;
+  //?PKD_MI
   //@[ALIAS]
-  ALIAS__isMenuCalled = _.isMenuCalled;
-  _.isMenuCalled = function() {
-    if (this.pInFishing()) {
-      return false;
-    }
-    return ALIAS__isMenuCalled.call(this, ...arguments);
-  };
-  
-  //@[ALIAS]
-  ALIAS__stop = _.stop;
-  _.stop = function() {
-    var ref;
-    if (this.pInFishing()) {
-      if ((ref = this._pFishingGameMain) != null) {
-        ref.terminate();
-      }
-    }
-    return ALIAS__stop.call(this, ...arguments);
+  ALIAS___createInvUILayer = _._createInvUILayer;
+  _._createInvUILayer = function() {
+    this._pkdShopBaseSprite = new Sprite();
+    this.addChild(this._pkdShopBaseSprite);
+    ALIAS___createInvUILayer.call(this, ...arguments);
   };
 })();
 
@@ -7998,41 +9254,81 @@ FSH_Sprite_MainGameUI = class FSH_Sprite_MainGameUI extends KDCore.Sprite {
   var _;
   //@[DEFINES]
   _ = Scene_Map.prototype;
-  _.pInitFishingGame = function() {
-    if (this._pFishingGameMain != null) {
-      this.pStopFishingGame();
+  _.pShopParent = function() {
+    return this._pkdShopBaseSprite; //@_spritesetIUI
+  };
+  _.pOpenShopWindow = function() {
+    var settings;
+    if (this.pIsShowIsOpened() || (this.pShopWindow != null)) {
+      this.pCloseShopWindow();
     }
-    this._pFishingGameMain = new FSH_Sprite_MainGameUI();
-    this.addChild(this._pFishingGameMain);
+    settings = PShopManager._currentShop.data;
+    this.pShopWindow = new FWindow_Shop(this.pShopParent(), settings.size.w, settings.size.h);
+    this.pShopWindow.setOnReadyHandler(() => {
+      return this.pShopWindow.loadShop();
+    });
   };
-  _.pStartFishingGame = function() {
-    if (this._pFishingGameMain != null) {
-      this._pFishingGameMain.start();
-    } else {
-      console.warn("You should call InitFishingGame() first!");
-    }
-  };
-  _.pPauseFishingGame = function() {
-    var ref;
-    return (ref = this._pFishingGameMain) != null ? ref.pause() : void 0;
-  };
-  _.pStopFishingGame = function() {
-    if (this._pFishingGameMain == null) {
+  _.pCloseShopWindow = function() {
+    if (!this.pIsShowIsOpened()) {
       return;
     }
-    this.pPauseFishingGame();
-    this._pFishingGameMain.stop();
-    this._pFishingGameMain = null;
+    $gameTemp.miSellMode = false;
+    this.pShopWindow.close();
+    this.pShopParent().removeChild(this.pShopWindow);
+    this.pShopWindow = null;
   };
-  _.pInFishing = function() {
-    if (this._pFishingGameMain != null) {
-      return this._pFishingGameMain.isPlaying();
-    }
-    return false;
+  _.pIsShowIsOpened = function() {
+    return (this.pShopWindow != null) && this.pShopWindow.isOpen();
   };
 })();
 
 // ■ END Scene_Map.coffee
 //---------------------------------------------------------------------------
 
-//Plugin PKD_SimpleFishing builded by PKD PluginBuilder 2.1 - 22.05.2022
+
+// Generated by CoffeeScript 2.6.1
+// * NOT USED, DEPRECATED
+var Sprite_PShopCategoryItem;
+
+Sprite_PShopCategoryItem = class Sprite_PShopCategoryItem extends Sprite {
+  constructor() {
+    super();
+    this._create();
+  }
+
+  _create() {
+    return this.content = new KDCore.Sprite();
+  }
+
+  onHover() {
+    if (this._isHovered === true) {
+      return;
+    }
+    this._isHovered = true;
+    this._currentScale = 1;
+    this._scaleChanger = new KDCore.Changer(this);
+    this._scaleChanger.change('_currentScale').from(1).to(1.4).step(0.1).start();
+  }
+
+  revertToNormal() {
+    this._isHovered = false;
+    this._scaleChanger = null;
+    this._currentScale = null;
+    this.content.scale.set(1, 1);
+  }
+
+  update() {
+    super.update();
+    if (this._isHovered === true) {
+      this.content.scale.set(this._currentScale);
+      this._scaleChanger.update();
+    } else {
+      if (this._currentScale != null) {
+        this.revertToNormal();
+      }
+    }
+  }
+
+};
+
+//Plugin PKD_Shop builded by PKD PluginBuilder 2.1 - 10.08.2022
